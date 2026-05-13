@@ -1,0 +1,336 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100;0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;0,9..40,1000;1,9..40,100;1,9..40,200;1,9..40,300;1,9..40,400;1,9..40,500;1,9..40,600;1,9..40,700;1,9..40,800;1,9..40,900;1,9..40,1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap");
+@import url("/node_modules/flag-icons/css/flag-icons.min.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Lemon Milk Font";
+  src: url("./assets/fonts/lemon_milk/LEMONMILK-Regular.otf") format("opentype"),
+    url("./assets/fonts/lemon_milk/LEMONMILK-Bold.otf") format("opentype");
+}
+
+body {
+  @apply font-DM-Sans;
+}
+
+.app-container {
+  @apply container mx-auto px-4;
+}
+
+.app-container-max-xl {
+  @apply container 2xl:max-w-[1280px] mx-auto px-4;
+}
+
+.app-container-max-lg {
+  @apply container lg:max-w-[1024px] mx-auto px-4;
+}
+
+.pt-nav {
+  @apply pt-[72px];
+}
+
+.h-screen-no-nav {
+  @apply h-[calc(100vh-72px)];
+}
+
+.h-screen-no-nav-no-footer {
+  @apply h-[calc(100dvh-131px)] lg:h-[calc(100vh-72px)];
+}
+
+.pb-sidebar-profile {
+  @apply pb-[59px] lg:pb-0;
+}
+
+.section-py {
+  @apply py-5 md:py-8;
+}
+
+.page-py {
+  @apply py-5 md:py-10;
+}
+
+.page-pb {
+  @apply pb-5 md:pb-10;
+}
+
+.page-pt {
+  @apply pt-5 md:pt-10;
+}
+
+.page-pt-sm {
+  @apply pt-4 md:pt-5;
+}
+
+.nav-link {
+  @apply flex items-center w-full border-l-4 lg:border-none border-transparent hover:border-gray-300 py-2 hover:bg-gray-50 lg:hover:bg-transparent lg:bg-white lg:text-gray-800 text-base lg:text-sm font-semibold px-4 lg:px-2 lg:group-hover:text-primary-orange transition-all capitalize;
+}
+
+.nav-link.active {
+  @apply border-primary-orange text-primary-orange bg-blue-50 lg:bg-white;
+}
+
+.after-gradient::after {
+  @apply bg-[rgba(243,111,36,0.3)] content-[''] bottom-[4px] md:bottom-[15px] h-[15px] md:h-[19px] left-[-5px] absolute w-full z-[-1];
+}
+
+.btn-primary {
+  @apply bg-primary-orange px-4 text-white rounded-md py-2 font-semibold hover:bg-primary-orange transition-all flex items-center justify-center gap-2;
+}
+
+.btn-primary.notAllowed {
+  @apply bg-gray-300 cursor-not-allowed;
+}
+
+.btn-primary.loading {
+  @apply bg-primary-orange;
+}
+
+.btn-secondary-white {
+  @apply flex items-center gap-2 justify-center px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-all;
+}
+
+.btn-secondary-white.loading {
+  @apply bg-gray-50 hover:bg-gray-50;
+}
+
+.btn-ghost {
+  @apply text-primary-orange font-semibold hover:text-primary-blue-all-900 hover:bg-gray-50 transition-all;
+}
+
+.line {
+  @apply border-b border-gray-200;
+}
+
+.category-filter-link {
+  @apply text-sm w-fit text-gray-700 cursor-pointer font-semibold hover:text-primary-blue hover:underline;
+}
+
+.cards-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4;
+}
+
+.title-h1 {
+  @apply text-2xl sm:text-4xl md:text-5xl text-primary-blue font-bold;
+}
+
+.title-h2 {
+  @apply text-xl sm:text-3xl md:text-4xl text-primary-blue font-bold;
+}
+
+.title-h3 {
+  @apply text-lg sm:text-xl md:text-2xl text-primary-blue font-bold;
+}
+
+.title-h4 {
+  @apply text-base sm:text-lg md:text-xl text-primary-blue font-bold;
+}
+
+.input {
+  @apply w-full px-3 py-[6px] border rounded-md text-gray-700 focus:outline-none focus:border-primary-blue-all-800;
+}
+
+.input.error {
+  @apply border-red-500;
+}
+
+.sidebar-link {
+  @apply h-12 w-12 lg:h-14 lg:w-14 flex items-center justify-center hover:bg-gray-100 rounded-md group-hover:text-primary-orange;
+}
+
+.sidebar-link.active {
+  @apply bg-gray-100 text-primary-orange;
+}
+
+.chat-box-h {
+  @apply h-[100dvh] lg:h-[calc(100vh-72px)];
+}
+
+.messages-box {
+  @apply h-[calc(100dvh-64px)] lg:h-[calc(100vh-141px)];
+}
+
+.simplebar-track.simplebar-vertical .simplebar-scrollbar:before {
+  @apply bg-[#afafaf];
+}
+
+.label {
+  @apply text-sm text-gray-600;
+}
+
+.h-line {
+  @apply h-[3px];
+}
+
+.swiper-slide-thumb-active {
+  @apply opacity-50;
+}
+
+.next-btn {
+  @apply absolute top-1/2 right-6 transform -translate-y-1/2 z-30 bg-white hover:bg-gray-50 shadow-xl rounded-full p-3 border-2 border-gray-300 w-12 h-12 flex items-center justify-center;
+}
+
+.prev-btn {
+  @apply absolute top-1/2 left-6 transform -translate-y-1/2 z-30 bg-white hover:bg-gray-50 shadow-xl rounded-full p-3 border-2 border-gray-300 w-12 h-12 flex items-center justify-center;
+}
+
+.specialities-category-prev-btn {
+  @apply left-2 !important;
+}
+
+.specialities-category-next-btn {
+  @apply right-2 !important;
+}
+
+.slide-shadow {
+  @apply absolute inset-y-0 right-[-2px] w-16 bg-gradient-to-l from-white to-transparent z-20 pointer-events-none;
+}
+
+.slide-shadow.rtl {
+  @apply left-[-2px] right-auto rotate-180;
+}
+
+.container-post-page {
+  @apply container mx-auto px-4 max-w-[550px];
+}
+
+.plus-minus-btn {
+  @apply bg-primary-blue-all-800 text-white rounded-full p-2 hover:bg-blue-900 transition-all;
+}
+
+.plus-minus-btn.end-of-range-btn {
+  @apply bg-gray-300 text-gray-600 cursor-not-allowed;
+}
+
+.post-job > .react-international-phone-country-selector {
+  @apply !h-[40px] w-[70px];
+}
+
+.post-job
+  > .react-international-phone-country-selector
+  > .react-international-phone-country-selector-button {
+  @apply !h-[40px] w-[70px];
+}
+
+.register-input-tel
+  > .react-international-phone-country-selector
+  > .react-international-phone-country-selector-button {
+  @apply w-[50px];
+}
+
+.btn-danger {
+  @apply bg-red-400 text-white rounded-md hover:bg-red-600 transition-all;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Toast animations */
+@keyframes fade-in-down {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.3s ease-out;
+}
+
+/* Loading skeleton animation improvements */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Breadcrumb styles */
+.breadcrumb-container {
+  @apply bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 shadow-sm border border-gray-100;
+}
+
+.breadcrumb-link {
+  @apply transition-all duration-200 hover:bg-gray-50 rounded-md px-2 py-1 -mx-2 -my-1;
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Stagger animation for job offers */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+.stagger-5 {
+  animation-delay: 0.5s;
+}
+.stagger-6 {
+  animation-delay: 0.6s;
+}

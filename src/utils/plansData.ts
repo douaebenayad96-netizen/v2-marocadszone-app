@@ -1,0 +1,43 @@
+export const pricingTiers = [
+  {
+    name: "Pack Gratuit",
+    price: 0,
+    yearlyPrice: 0,
+    description: "Commencez gratuitement",
+    features: ["2 annonces gratuites chaque mois", "Valides 30 jours chacune", "Visibilité standard"],
+    transactionFee: "Gratuit",
+    buttonVariant: "secondary" as const,
+    popular: false,
+  },
+  {
+    name: "Pack Premium",
+    price: 49,
+    yearlyPrice: 39,
+    description: "Boostez votre visibilité",
+    features: [
+      "10 annonces par mois",
+      "Mises en avant (badge + couleur)",
+      "Priorité de diffusion",
+      "Statistiques de performance",
+    ],
+    transactionFee: "Premium",
+    buttonVariant: "default" as const,
+    popular: true,
+  },
+  {
+    name: "Pack Pro",
+    price: 199,
+    yearlyPrice: 159,
+    description: "Solution professionnelle",
+    features: [
+      "Annonces illimitées",
+      "Badge « Pro vérifié »",
+      "Priorisation dans les résultats",
+      "Tableau de bord & statistiques avancées",
+      "Support dédié 7j/7",
+    ],
+    transactionFee: "Pro vérifié",
+    buttonVariant: "default" as const,
+    popular: false,
+  },
+]

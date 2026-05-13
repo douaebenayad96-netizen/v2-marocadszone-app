@@ -1,0 +1,62 @@
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.speech-bubble-right::before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 5px solid rgb(229, 231, 235);
+  border-right: 5px solid transparent;
+  border-top: 5px solid rgb(229, 231, 235);
+  border-bottom: 5px solid transparent;
+  right: -5px;
+  top: 0;
+}
+
+.speech-bubble-right-rtl::before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 5px solid rgb(4, 59, 92);
+  border-right: 5px solid transparent;
+  border-top: 5px solid rgb(4, 59, 92);
+  border-bottom: 5px solid transparent;
+  right: -5px;
+  top: 0;
+}
+
+.speech-bubble-left::before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 5px solid transparent;
+  border-right: 5px solid rgb(4, 59, 92);
+  border-top: 5px solid rgb(4, 59, 92);
+  border-bottom: 5px solid transparent;
+  left: -5px;
+  top: 0;
+}
+
+.speech-bubble-left-rtl::before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 5px solid transparent;
+  border-right: 5px solid rgb(229, 231, 235);
+  border-top: 5px solid rgb(229, 231, 235);
+  border-bottom: 5px solid transparent;
+  left: -5px;
+  top: 0;
+}

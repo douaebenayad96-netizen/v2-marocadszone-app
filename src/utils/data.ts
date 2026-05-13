@@ -1,0 +1,3 @@
+export const ListSortByFR = [{ label: "Nouveaux", value: 'newest' }, { label: "Populaires", value: 'popular' }, { label: "Meilleurs notes", value: 'best_rates' }, { label: "Prix croissant", value: 'highest_price' }, { label: "Prix décroissant", value: 'lowest_price' }]
+export const ListSortByEN = [{ label: "Newest", value: 'newest' }, { label: "Popular", value: 'popular' }, { label: "Best rates", value: 'best_rates' }, { label: "Highest price", value: 'highest_price' }, { label: "Lowest price", value: 'lowest_price' }]
+export const ListSortByAR = [{ label: "الأحدث", value: 'newest' }, { label: "الأكثر شعبية", value: 'popular' }, { label: "أفضل الأسعار", value: 'best_rates' }, { label: "أعلى سعر", value: 'highest_price' }, { label: "أقل سعر", value: 'lowest_price' }]
