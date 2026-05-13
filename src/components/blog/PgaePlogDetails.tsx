@@ -34,6 +34,8 @@ function PgaePlogDetails() {
     }
   }, [slug, refetch]);
 
+  const canApply = Boolean(jobOffer?.redirect_to);
+
   const handleApplyClick = () => {
     if (jobOffer?.redirect_to) {
       window.open(jobOffer.redirect_to, "_blank", "noopener,noreferrer");
@@ -120,17 +122,17 @@ function PgaePlogDetails() {
         <meta name="twitter:description" content={jobOffer?.description} />
         <meta name="twitter:image" content={jobOffer?.images?.[0]?.url} />
         {/* this for google */}
-        <meta itemProp="name" content={jobOffer.title} />
-        <meta itemProp="description" content={jobOffer.description} />
-        <meta itemProp="image" content={jobOffer.images?.[0].url} />
+        <meta itemProp="name" content={jobOffer?.title} />
+        <meta itemProp="description" content={jobOffer?.description} />
+        <meta itemProp="image" content={jobOffer?.images?.[0]?.url} />
 
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Product",
-            name: jobOffer.title,
-            image: jobOffer.images?.map((img) => img.url),
-            description: jobOffer.description,
+            name: jobOffer?.title,
+            image: jobOffer?.images?.map((img) => img.url) || [],
+            description: jobOffer?.description,
             brand: "MarocAdsZone",
             url: `https://marocadszone.com/offers/${jobOffer?.slug}`,
             offers: {
@@ -141,13 +143,15 @@ function PgaePlogDetails() {
           })}
         </script>
       </Helmet>
-      <img
-        src={jobOffer.images?.[0].url}
-        alt={`${jobOffer.title} à vendre à ${jobOffer.city?.name} - ${jobOffer.type}`}
-        width={1200}
-        height={630}
-        style={{ display: "none" }}
-      />
+      {jobOffer?.images?.[0]?.url && (
+        <img
+          src={jobOffer.images[0].url}
+          alt={`${jobOffer?.title} à vendre à ${jobOffer?.city?.name} - ${jobOffer?.type}`}
+          width={1200}
+          height={630}
+          style={{ display: "none" }}
+        />
+      )}
       <div className="app-container-max-xl page-py">
         <PageHeader>
           <h1 className="title-h1">Offre d'Emploi</h1>
@@ -194,14 +198,18 @@ function PgaePlogDetails() {
                 </MarkdownLayout>
 
                 {/* Apply Button */}
-                {jobOffer?.redirect_to && (
-                  <div className="mt-8 p-6  rounded-lg text-white text-center">
-                    <h3 className="text-xl font-bold mb-4  text-gray-900">
+                {jobOffer && (
+                  <div className="mt-8 p-6 rounded-lg text-white text-center">
+                    <h3 className="text-xl font-bold mb-4 text-gray-900">
                       Intéressé par cette offre ?
                     </h3>
                     <button
                       onClick={handleApplyClick}
-                      className="inline-flex items-center px-8 py-3 bg-white text-orange-600 font-semibold rounded-lg hover:bg-orange-50 transition-colors shadow-lg"
+                      disabled={!canApply}
+                      className={`inline-flex items-center px-8 py-3 bg-white text-orange-600 font-semibold rounded-lg transition-colors shadow-lg ${
+                        !canApply ? "cursor-not-allowed opacity-50" : "hover:bg-orange-50"
+                      }`}
+                      type="button"
                     >
                       <FaExternalLinkAlt className="mr-2" />
                       Postuler maintenant
