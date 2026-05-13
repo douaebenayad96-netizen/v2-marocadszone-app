@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { differenceInSeconds, parse, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 import { CardsType } from "../services/types/checkout";
@@ -120,67 +121,106 @@ export const formatPrice = (price: number): string => {
 };
 
 /**
- * Format a date string to a relative time format (e.g., "il y a 2 jours")
- * @param dateString - The date string to format
- * @returns A formatted relative time string in French
+ * Parse a backend timestamp into a JavaScript Date object.
+ * Handles ISO strings and the common MySQL-style format returned by many APIs.
  */
-export const formatRelativeTime = (dateString: string): string => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-  // If the date is in the future or invalid, return a default message
-  if (diffInSeconds < 0 || isNaN(diffInSeconds)) {
-    return "Date invalide";
+const parseBackendDate = (dateString: string): Date | null => {
+  if (!dateString) {
+    return null;
   }
 
-  // Define time intervals in seconds
+  const trimmed = dateString.trim();
+
+  // ISO 8601 format with timezone or T separator
+  if (/^\d{4}-\d{2}-\d{2}T/.test(trimmed) || trimmed.endsWith("Z") || /[+-]\d{2}:?\d{2}$/.test(trimmed)) {
+    const parsed = parseISO(trimmed);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  // Common backend format: yyyy-MM-dd HH:mm:ss or yyyy-MM-dd HH:mm:ss.SSS
+  // Parse as UTC so backend timestamps without explicit timezone are compared correctly.
+  const utcDateMatch = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:\.\d+)?$/.exec(trimmed);
+  if (utcDateMatch) {
+    const [, year, month, day, hour, minute, second] = /^(.{4})-(.{2})-(.{2}) (.{2}):(.{2}):(.{2})/.exec(trimmed)!;
+    const utcDate = new Date(Date.UTC(
+      Number(year),
+      Number(month) - 1,
+      Number(day),
+      Number(hour),
+      Number(minute),
+      Number(second)
+    ));
+    return isNaN(utcDate.getTime()) ? null : utcDate;
+  }
+
+  const parsed = new Date(trimmed);
+  return isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const getRelativeTimeLabel = (diffInSeconds: number, prefix: string): string => {
+  if (diffInSeconds === 0) {
+    return `${prefix} à l'instant`;
+  }
+
   const intervals = {
-    year: 31536000, // 365 * 24 * 60 * 60
-    month: 2592000, // 30 * 24 * 60 * 60
-    week: 604800, // 7 * 24 * 60 * 60
-    day: 86400, // 24 * 60 * 60
-    hour: 3600, // 60 * 60
+    year: 31536000,
+    month: 2592000,
+    week: 604800,
+    day: 86400,
+    hour: 3600,
     minute: 60,
   };
 
-  // Check each interval
   if (diffInSeconds >= intervals.year) {
     const years = Math.floor(diffInSeconds / intervals.year);
-    return `Publié il y a ${years} an${years > 1 ? "s" : ""}`;
+    return `${prefix} il y a ${years} an${years > 1 ? "s" : ""}`;
   }
 
   if (diffInSeconds >= intervals.month) {
     const months = Math.floor(diffInSeconds / intervals.month);
-    return `Publié il y a ${months} mois`;
+    return `${prefix} il y a ${months} mois`;
   }
 
   if (diffInSeconds >= intervals.week) {
     const weeks = Math.floor(diffInSeconds / intervals.week);
-    return `Publié il y a ${weeks} semaine${weeks > 1 ? "s" : ""}`;
+    return `${prefix} il y a ${weeks} semaine${weeks > 1 ? "s" : ""}`;
   }
 
   if (diffInSeconds >= intervals.day) {
     const days = Math.floor(diffInSeconds / intervals.day);
-    return `Publié il y a ${days} jour${days > 1 ? "s" : ""}`;
+    return `${prefix} il y a ${days} jour${days > 1 ? "s" : ""}`;
   }
 
   if (diffInSeconds >= intervals.hour) {
     const hours = Math.floor(diffInSeconds / intervals.hour);
-    return `Publié il y a ${hours} heure${hours > 1 ? "s" : ""}`;
+    return `${prefix} il y a ${hours} heure${hours > 1 ? "s" : ""}`;
   }
 
   if (diffInSeconds >= intervals.minute) {
     const minutes = Math.floor(diffInSeconds / intervals.minute);
-    return `Publié il y a ${minutes} minute${minutes > 1 ? "s" : ""}`;
+    return `${prefix} il y a ${minutes} minute${minutes > 1 ? "s" : ""}`;
   }
 
-  // Entre 0 et 59 secondes: afficher juste “à l'instant”
-  if (diffInSeconds >= 0) {
-    return "Publié à l'instant";
+  return `${prefix} il y a ${diffInSeconds} seconde${diffInSeconds > 1 ? "s" : ""}`;
+};
+
+/**
+ * Format a date string to a relative time format (e.g., "Publié il y a 2 jours")
+ * @param dateString - The date string to format
+ * @returns A formatted relative time string in French
+ */
+export const formatRelativeTime = (dateString: string): string => {
+  const date = parseBackendDate(dateString);
+  if (!date) {
+    return "Date invalide";
   }
 
-  return "Publié à l'instant";
+  const diffInSeconds = differenceInSeconds(new Date(), date);
+  if (diffInSeconds < 0) {
+    return diffInSeconds >= -60 ? "Publié à l'instant" : "Date invalide";
+  }
+
+  return getRelativeTimeLabel(diffInSeconds, "Publié");
 };
 
 /**
@@ -189,57 +229,17 @@ export const formatRelativeTime = (dateString: string): string => {
  * @returns A formatted relative time string in French for updates
  */
 export const formatRelativeUpdateTime = (dateString: string): string => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-  // If the date is in the future or invalid, return a default message
-  if (diffInSeconds < 0 || isNaN(diffInSeconds)) {
+  const date = parseBackendDate(dateString);
+  if (!date) {
     return "Date invalide";
   }
 
-  // Define time intervals in seconds
-  const intervals = {
-    year: 31536000, // 365 * 24 * 60 * 60
-    month: 2592000, // 30 * 24 * 60 * 60
-    week: 604800, // 7 * 24 * 60 * 60
-    day: 86400, // 24 * 60 * 60
-    hour: 3600, // 60 * 60
-    minute: 60,
-  };
-
-  // Check each interval
-  if (diffInSeconds >= intervals.year) {
-    const years = Math.floor(diffInSeconds / intervals.year);
-    return `Mis à jour il y a ${years} an${years > 1 ? "s" : ""}`;
+  const diffInSeconds = differenceInSeconds(new Date(), date);
+  if (diffInSeconds < 0) {
+    return diffInSeconds >= -60 ? "Mis à jour à l'instant" : "Date invalide";
   }
 
-  if (diffInSeconds >= intervals.month) {
-    const months = Math.floor(diffInSeconds / intervals.month);
-    return `Mis à jour il y a ${months} mois`;
-  }
-
-  if (diffInSeconds >= intervals.week) {
-    const weeks = Math.floor(diffInSeconds / intervals.week);
-    return `Mis à jour il y a ${weeks} semaine${weeks > 1 ? "s" : ""}`;
-  }
-
-  if (diffInSeconds >= intervals.day) {
-    const days = Math.floor(diffInSeconds / intervals.day);
-    return `Mis à jour il y a ${days} jour${days > 1 ? "s" : ""}`;
-  }
-
-  if (diffInSeconds >= intervals.hour) {
-    const hours = Math.floor(diffInSeconds / intervals.hour);
-    return `Mis à jour il y a ${hours} heure${hours > 1 ? "s" : ""}`;
-  }
-
-  if (diffInSeconds >= intervals.minute) {
-    const minutes = Math.floor(diffInSeconds / intervals.minute);
-    return `Mis à jour il y a ${minutes} minute${minutes > 1 ? "s" : ""}`;
-  }
-
-  return "Mis à jour à l'instant";
+  return getRelativeTimeLabel(diffInSeconds, "Mis à jour");
 };
 
 export const getFirstWord = (text: string): string => {
