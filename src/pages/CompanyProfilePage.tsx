@@ -78,15 +78,15 @@ const CompanyProfilePage = () => {
 
   const { data: company, isLoading, error } = useGetCompany(slug as string);
 
-  const announcements =
-    company?.announcements.filter(
-      (announcement) => announcement?.announcement_type !== "short"
-    ) || [];
+  const companyAnnouncements = company?.announcements ?? [];
 
-  const announcementsVideo =
-    company?.announcements.filter(
-      (announcement) => announcement?.announcement_type === "short"
-    ) || [];
+const announcements = companyAnnouncements.filter(
+  (announcement) => announcement?.announcement_type !== "short"
+);
+
+const announcementsVideo = companyAnnouncements.filter(
+  (announcement) => announcement?.announcement_type === "short"
+);
 
   const announcementsCount = announcements.length;
 
@@ -191,7 +191,7 @@ const CompanyProfilePage = () => {
                   <span className="text-slate-700">{company.phone_number}</span>
                 </div>
               )}
-              {company.url && company.url.length > 0 && (
+              {Array.isArray(company.url) && company.url.length > 0 && (
                 <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-100 sm:col-span-2">
                   <FaGlobe className="text-primary-orange mt-1 flex-shrink-0" />
                   <div className="flex flex-col gap-1">

@@ -10,13 +10,19 @@ type JobOfferBlogCardProps = {
 
 function JobOfferBlogCard({ jobOffer }: JobOfferBlogCardProps) {
   const getImageUrl = () => {
-    if (jobOffer.images && jobOffer.images.length > 0 && jobOffer.images[0].url) {
-      let imageUrl = jobOffer.images[0].url;
-      imageUrl = imageUrl.replace(/https?:\/\/([^/]+)\/\1\//, 'http://$1/');
-      return imageUrl;
-    }
-    return NoImage;
-  };
+  const image =
+    jobOffer.images?.[0]?.url ||
+    jobOffer.images?.[0]?.original_url ||
+    jobOffer.images?.[0]?.preview_url ||
+    jobOffer.media?.[0]?.original_url ||
+    jobOffer.media?.[0]?.url;
+
+  if (!image) return NoImage;
+
+  return image
+    .replace(/https?:\/\/([^/]+)\/\1\//, "https://$1/")
+    .replace("http://app.maison-savoy.store", "https://app.maison-savoy.store");
+};
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react"
 import SectionHeader from "./SectionHeader"
 import { useAnnonces, useAnnoncesByLocation } from "../../services/api/fetchAnnonce"
-import { PrestataireCardV2 } from '../annonce/PrestataireCard'
+import AnnonceCard from "../annonce/AnnonceCard"
 import AnnonceCardSkeleton from "../ui/skeletons/AnnonceCardSkeleton"
 
 const HomeAnnonces = () => {
@@ -81,7 +81,7 @@ const HomeAnnonces = () => {
         {
           !isLoading && annoncesData && annoncesData.length > 0 ? (
             annoncesData.slice(0, 8).map((annonce, index) => (
-              <PrestataireCardV2 key={annonce.id || index} annonce={annonce} />
+              <AnnonceCard key={annonce.id || index} annonce={annonce} />
             ))
           ) : (
             !isLoading && (

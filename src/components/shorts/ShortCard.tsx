@@ -1,5 +1,5 @@
 import { RiArrowRightLine, RiShareLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 import { Annonce } from "../../services/types/annonce";
 import Skeleton from "react-loading-skeleton";
 import UserPic from "../../assets/img/user_pic.png";
@@ -50,16 +50,18 @@ const ShortCard = ({ video }: ShortCardProps) => {
     return video?.title || "Regardez cette vidéo incroyable ! 🔥 #tendance";
   };
 
-  const getVideoLink = () => {
-    return video?.slug ? `/videos/${video.slug}` : "/404";
-  };
+  //const getVideoLink = () => {
+    //return video?.slug ? `/videos/${video.slug}` : "/404";
+  //};
   // see video
   const ctaText = "Voir video";
   // video?.video_source_type === "phone" ? "Contacter" : "Voir plus details";
 
   return (
-    <Link
-      to={getVideoLink()}
+    <a
+      href={video?.video_url || video?.video?.url || "#"}
+      target="_blank"
+      rel="noopener noreferrer"
       className="relative rounded-xl overflow-hidden aspect-[9/16] bg-gray-100 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
     >
       {/* Vidéo / Miniature */}
@@ -132,7 +134,7 @@ const ShortCard = ({ video }: ShortCardProps) => {
           </button>
         </div>
       </div>
-    </Link>
+    </a>
   );
 };
 
