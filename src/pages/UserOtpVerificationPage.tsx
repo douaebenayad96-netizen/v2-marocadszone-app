@@ -5,11 +5,14 @@ import { useTranslation } from "react-i18next";
 import CustomToast from "../components/common/CustomToast";
 import OtpInput4 from "../components/auth/OtpInput4";
 import { useResendOtp, useVerifyOtp } from "../utils/apiVerify";
+import { useAuthStore } from "../services/store/authStore";
 
 const OTP_EMAIL_KEY = "otp_email";
 
 export default function UserOtpVerificationPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { signIn } = useAuthStore();
 
   const [email, setEmail] = useState<string>("");
   const [otp, setOtp] = useState<string>("");
@@ -46,6 +49,7 @@ export default function UserOtpVerificationPage() {
       CustomToast("Email OTP introuvable. Veuillez vous inscrire à nouveau.", "error");
       return;
     }
+
     if (!otpComplete) {
       CustomToast("Veuillez saisir le code OTP à 6 chiffres.", "error");
       return;
@@ -53,17 +57,19 @@ export default function UserOtpVerificationPage() {
 
     try {
       setIsSubmitting(true);
-      await verifyMutation.mutateAsync({ email, otp });
+
+      const response = await verifyMutation.mutateAsync({ email, otp });
+      console.log("OTP verify response:", response);
+
+      signIn(response, false);
+
       CustomToast(t("compte_cree_avec_succes"), "success");
 
-      // Cleanup (optionnel)
       localStorage.removeItem(OTP_EMAIL_KEY);
-      navigate("/");
+    
+      window.location.href = "/annonces/new";
     } catch (e) {
-      CustomToast(
-        "Code OTP incorrect ou expiré. Réessayez.",
-        "error"
-      );
+      CustomToast("Code OTP incorrect ou expiré. Réessayez.", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -90,12 +96,10 @@ export default function UserOtpVerificationPage() {
           <h1 className="text-2xl font-bold mb-2">
             {t("Vérification OTP", "Vérification OTP")}
           </h1>
+
           <p className="text-gray-600 mb-6">
             {email
-              ? t(
-                  "Saisissez le code envoyé à {{email}}",
-                  `Saisissez le code envoyé à ${email}`
-                )
+              ? t("Saisissez le code envoyé à {{email}}", `Saisissez le code envoyé à ${email}`)
               : t("Saisissez le code OTP envoyé", "Saisissez le code OTP envoyé")}
           </p>
 
@@ -125,12 +129,7 @@ export default function UserOtpVerificationPage() {
                 {t("Renvoyer le code", "Renvoyer le code")}
               </button>
             ) : (
-              <span>
-                {t(
-                  "Renvoyer dans {{s}}s",
-                  `Renvoyer dans ${timer}s`
-                )}
-              </span>
+              <span>{t("Renvoyer dans {{s}}s", `Renvoyer dans ${timer}s`)}</span>
             )}
           </div>
 
@@ -144,4 +143,3 @@ export default function UserOtpVerificationPage() {
     </div>
   );
 }
-

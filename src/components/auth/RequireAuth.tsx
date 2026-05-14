@@ -15,12 +15,16 @@ const RequireAuth = ({ children }: RequireAuthProps) => {
   const { token, user } = useAuthStore();
 
   useEffect(() => {
-    // Check if both token and user exist
-    if (!token || !user) {
-      openLoginModel();
-      navigate("/");
-    }
-    setIsChecking(false);
+    const timer = setTimeout(() => {
+      if (!token || !user) {
+        openLoginModel();
+        navigate("/");
+      }
+
+      setIsChecking(false);
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [token, user, openLoginModel, navigate]);
 
   if (isChecking) {

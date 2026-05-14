@@ -33,43 +33,8 @@ const InfoFormStep = ({ form }: InfoFormStepProps) => {
 
 
   useEffect(() => {
-    // Lors du changement du type, on évite de garder une valeur "condition" incompatible
-    if (!announcementType) {
-      if (condition) form.setValue('condition', '')
-      return
-    }
-
-    if (isService) {
-      // service ne doit garder aucune valeur de vente/location
-      if (condition === 'new' || condition === 'used' || condition === 'good_condition') {
-        form.setValue('condition', '')
-      }
-      return
-    }
-
-    if (isSale) {
-      // vente ne doit garder aucune valeur de service
-      if (condition === 'hour' || condition === 'day' || condition === 'mission_ok') {
-        form.setValue('condition', '')
-      }
-      return
-    }
-    if (isRental) {
-      // location ne doit garder aucune valeur de service
-      if (condition === 'hour' || condition === 'day' || condition === 'mission_ok') {
-        form.setValue('condition', '')
-      }
-      return
-    }
-
-
-
-
-    // type inconnu: reset
-    if (condition) form.setValue('condition', '')
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [announcementType, isService, isSale, isRental])
+    form.setValue('condition', '')
+  }, [announcementType])
 
   return (
     <motion.div
@@ -183,20 +148,18 @@ const InfoFormStep = ({ form }: InfoFormStepProps) => {
               {/* location */}
               {announcementType === 'rental' && (
                 <>
-                  <option value="day">Jour</option>
-                  <option value="week">Semaine</option>
-                  <option value="month">Mois</option>
+                  <option value="rental_day">Jour</option>
+                  <option value="rental_week">Semaine</option>
+                  <option value="rental_month">Mois</option>
                 </>
               )}
-
-
 
               {/* service */}
               {isService && (
                 <>
-                  <option value="hour">Heure</option>
-                  <option value="day">Jour</option>
-                  <option value="mission_ok">Mission</option>
+                  <option value="service_hour">Heure</option>
+                  <option value="service_day">Jour</option>
+                  <option value="service_mission">Mission</option>
                 </>
               )}
 

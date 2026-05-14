@@ -214,9 +214,7 @@ const StepsRegister = () => {
 
       // Backend: item_condition n'existe que pour les annonces de type sale (new/used/good_condition)
       // Pour rental et service, on ne doit PAS envoyer item_condition.
-      if (formValues.announcementType === "sale" && formValues.condition) {
-        formData.append("item_condition", formValues.condition);
-      }
+      
 
 
       // Price
@@ -242,6 +240,14 @@ const StepsRegister = () => {
       }
 
       try {
+        console.log("FORM VALUES:", formValues);
+        console.log("condition:", formValues.condition);
+        console.log("announcementType:", formValues.announcementType);
+        if (formValues.condition) {
+          formData.set("item_condition", formValues.condition);
+        }
+
+        console.log("BEFORE SEND item_condition:", formData.get("item_condition"));
         await savePost(formData);
         CustomToast(
           t("annonce_creee_avec_succes", "Annonce créée avec succès!"),

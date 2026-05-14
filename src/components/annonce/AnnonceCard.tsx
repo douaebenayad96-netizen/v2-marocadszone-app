@@ -35,42 +35,21 @@ const AnnonceCard = ({ annonce, showDistance = false }: AnnonceCardProps) => {
   //   }
   // }
   const getAnnonceDetailBadge = () => {
-    if (annonce.announce_type === 'sale') {
-      return annonce.item_condition === 'new'
-        ? 'Neuf'
-        : annonce.item_condition === 'used'
-          ? 'Occasion'
-          : annonce.item_condition === 'good_condition'
-            ? 'Bon état'
-            : annonce.item_condition
-    }
+    if (!annonce.item_condition) return null
 
-    if (annonce.announce_type === 'rental') {
-      return annonce.rental_period
-    }
+    if (annonce.item_condition === 'new') return 'Neuf'
+    if (annonce.item_condition === 'used') return 'Occasion'
+    if (annonce.item_condition === 'good_condition') return 'Bon état'
 
-    if (annonce.announce_type === 'service') {
-      return annonce.service_pricing
-    }
+    if (annonce.item_condition === 'rental_day') return 'Jour'
+    if (annonce.item_condition === 'rental_week') return 'Semaine'
+    if (annonce.item_condition === 'rental_month') return 'Mois'
 
-    return null
-  }
+    if (annonce.item_condition === 'service_hour') return 'Heure'
+    if (annonce.item_condition === 'service_day') return 'Jour'
+    if (annonce.item_condition === 'service_mission') return 'Mission'
 
-  const getAnnonceExtraLabel = () => {
-    // Vente: état already handled by getAnnonceDetailBadge
-    if (annonce.announce_type === 'rental') {
-      return annonce.rental_period
-        ? `Période: ${annonce.rental_period}`
-        : null
-    }
-
-    if (annonce.announce_type === 'service') {
-      return annonce.service_pricing
-        ? `Tarification: ${annonce.service_pricing}`
-        : null
-    }
-
-    return null
+    return annonce.item_condition
   }
 
   const getImageUrl = () => {
@@ -170,11 +149,6 @@ const AnnonceCard = ({ annonce, showDistance = false }: AnnonceCardProps) => {
             {getAnnonceDetailBadge() && (
               <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
                 {getAnnonceDetailBadge()}
-              </span>
-            )}
-            {getAnnonceExtraLabel() && (
-              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                {getAnnonceExtraLabel()}
               </span>
             )}
 
