@@ -8,6 +8,8 @@ import { Annonce } from "../../services/types/annonce";
 import { useState, useEffect, useCallback } from "react";
 import ReactDOM from "react-dom";
 import axios, { apiClientV2 } from "../../services/config/axiosConfig";
+import { formatTimeAgoFr } from "../../utils/timeAgo";
+
 
 const AnnoncesListPage = () => {
   const { t } = useTranslation();
@@ -750,8 +752,9 @@ const AnnoncesList = () => {
                 })()}
               </td>
               <td className="px-4 py-3 text-gray-700">
-                {annonce.created_at?.slice(0, 10) || "-"}
+                {annonce.created_at ? formatTimeAgoFr(annonce.created_at) : "-"}
               </td>
+
               <td className="px-4 py-3 text-sm flex gap-2">
                 <button
                   className="text-primary-orange hover:text-primary-orange/80"

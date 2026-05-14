@@ -35,11 +35,7 @@ async function postVideoAnnounce(
       );
     }
 
-    const response = await apiClientV2.post("/video-announces", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await apiClientV2.post("/video-announces", formData);
 
     return response.data as VideoAnnounceResponse;
   } catch (error) {

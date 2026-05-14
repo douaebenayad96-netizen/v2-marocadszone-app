@@ -317,7 +317,27 @@ const VideoUploadPage: React.FC = () => {
   const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      setValue("video", files[0]);
+      const file = files[0];
+
+      if (!file.type.startsWith("video/")) {
+        CustomToast("Veuillez sélectionner un fichier vidéo valide", "error");
+        e.target.value = "";
+        setValue("video", undefined);
+        return;
+      }
+
+      const maxSizeInBytes = 100 * 1024 * 1024; // 100MB
+      if (file.size > maxSizeInBytes) {
+        CustomToast(
+          "Le fichier vidéo est trop volumineux (max 100MB)",
+          "error"
+        );
+        e.target.value = "";
+        setValue("video", undefined);
+        return;
+      }
+
+      setValue("video", file);
     }
   };
 
@@ -408,7 +428,20 @@ const VideoUploadPage: React.FC = () => {
       await loadVideoAnnouncements();
     } catch (error) {
       console.error("Error submitting video announcement:", error);
-      CustomToast("Une erreur est survenue lors de la publication", "error");
+
+      let message = "Une erreur est survenue lors de la publication";
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: any; status?: number; statusText?: string };
+        };
+        if (axiosError.response?.data?.message) {
+          message = axiosError.response.data.message;
+        } else if (axiosError.response?.statusText) {
+          message = axiosError.response.statusText;
+        }
+      }
+
+      CustomToast(message, "error");
     } finally {
       setIsSubmitting(false);
     }

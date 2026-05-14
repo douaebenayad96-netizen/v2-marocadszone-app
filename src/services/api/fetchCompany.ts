@@ -38,9 +38,22 @@ async function createCompany(companyData: FormData, token: string): Promise<Comp
         throw new Error('Authentication failed')
       }
       
-      if (axiosError.response?.status === 422) {
+        if (axiosError.response?.status === 422) {
         console.error('🏢 [CreateCompany] Validation failed')
-        throw new Error('Validation failed - please check your input')
+        const responseData = axiosError.response.data as CompanyApiError
+        if (responseData?.errors) {
+          const fieldErrors = Object.entries(responseData.errors)
+            .map(([field, messages]) => `${field}: ${messages?.join(' ')}`)
+            .join(' \n')
+          throw new Error(
+            responseData.message
+              ? `${responseData.message} - ${fieldErrors}`
+              : `Validation failed - ${fieldErrors}`
+          )
+        }
+        throw new Error(
+          responseData?.message || 'Validation failed - please check your input'
+        )
       }
     }
     
@@ -109,9 +122,10 @@ async function getCompany(token: string, companySlug?: string): Promise<Company 
 // Update company profile
 async function updateCompany(companyData: FormData, token: string): Promise<CompanyResponse> {
   console.log('🏢 [UpdateCompany] Updating company profile...')
+  companyData.append('_method', 'PUT')
   
   try {
-    const { data } = await axios.put('/profile/company', companyData, {
+    const { data } = await axios.post('/profile/company', companyData, {
       headers: {
         'Authorization': `Bearer ${token}`,
         // Don't set Content-Type for FormData - let axios handle it automatically

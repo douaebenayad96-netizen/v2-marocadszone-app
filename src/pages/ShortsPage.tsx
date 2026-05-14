@@ -42,7 +42,7 @@ const ShortsPage = () => {
               <div>
                 <span className="text-base text-gray-400">
                   {videosData?.data && videosData.data.length > 0
-                    ? `${videosData?.meta.total} vidéos disponibles`
+                    ? `${videosData?.total ?? 0} vidéos disponibles`
                     : "Vidéos disponibles"}
                 </span>
               </div>
@@ -77,8 +77,7 @@ const ShortsPage = () => {
             </div>
           ) : videosData?.data && videosData.data.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-              {console.log(videosData.data)}
-              {videosData.data.map((video, index) => (
+{videosData.data.map((video, index) => (
                 <ShortCard key={video.id || index} video={video} />
               ))}
 
@@ -106,9 +105,9 @@ const ShortsPage = () => {
               Shorts
             </span>
           </h3>
-          <Pagination
+            <Pagination
             currentPage={Number(page)}
-            totalPages={videosData?.meta?.last_page}
+            totalPages={videosData?.last_page ?? 0}
             onPageChange={handlePageChange}
           />
         </div>

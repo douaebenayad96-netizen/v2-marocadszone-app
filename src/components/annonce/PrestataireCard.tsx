@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 
 import { IoTimeOutline } from "react-icons/io5";
 import { Annonce } from "../../services/types/annonce";
+import { formatTimeAgoFr } from "../../utils/timeAgo";
+
 import { Prestataire } from "../../services/types/prestataire";
 import UserInfoBox from "../account/UserInfoBox";
 
@@ -267,9 +269,8 @@ const CardHeader = ({ data }: { data?: Prestataire | Annonce }) => {
           <div className="flex items-center gap-1.5 text-gray-500 text-xs">
             <IoTimeOutline className="text-gray-500 text-xs" />
             <p className="text-gray-500 text-xs flex items-center gap-1">
-              {data?.created_at
-                ? new Date(data.created_at).toLocaleDateString()
-                : "Recently"}
+              {data?.created_at ? formatTimeAgoFr(data.created_at) : "Recently"}
+
             </p>
           </div>
         </div>

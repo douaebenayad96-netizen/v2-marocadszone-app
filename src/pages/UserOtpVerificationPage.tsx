@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import CustomToast from "../components/common/CustomToast";
@@ -38,7 +39,7 @@ export default function UserOtpVerificationPage() {
     }
   }, [canResend, resendCount]);
 
-  const otpComplete = useMemo(() => otp.length === 4, [otp]);
+  const otpComplete = useMemo(() => otp.length === 6, [otp]);
 
   const handleVerify = async () => {
     if (!email) {
@@ -46,7 +47,7 @@ export default function UserOtpVerificationPage() {
       return;
     }
     if (!otpComplete) {
-      CustomToast("Veuillez saisir le code OTP à 4 chiffres.", "error");
+      CustomToast("Veuillez saisir le code OTP à 6 chiffres.", "error");
       return;
     }
 
@@ -57,6 +58,7 @@ export default function UserOtpVerificationPage() {
 
       // Cleanup (optionnel)
       localStorage.removeItem(OTP_EMAIL_KEY);
+      navigate("/");
     } catch (e) {
       CustomToast(
         "Code OTP incorrect ou expiré. Réessayez.",

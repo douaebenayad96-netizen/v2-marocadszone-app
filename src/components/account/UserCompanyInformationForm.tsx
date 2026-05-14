@@ -117,8 +117,18 @@ const UserCompanyInformationForm = () => {
     const validUrls = formData.urls
       .slice(0, urlCount)
       .filter((url) => url.trim() !== "");
-    validUrls.forEach((url, index) => {
-      formDataToSend.append(`url[${index}]`, url);
+
+    for (const url of validUrls) {
+      try {
+        new URL(url);
+      } catch {
+        CustomToast("Veuillez saisir des URLs valides.", "error");
+        return;
+      }
+    }
+
+    validUrls.forEach((url) => {
+      formDataToSend.append("url[]", url);
     });
 
     try {

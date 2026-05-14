@@ -16,7 +16,7 @@ import {
 import { FirebaseUserData } from "../../services/firebase/authService";
 import { useAuthStore } from "../../services/store/authStore";
 import { useLoginModelStore } from "../../services/store/LoginModelStore";
-import { RegisterUser } from "../../services/types/auth";
+import { AuthResponse, RegisterUser } from "../../services/types/auth";
 import CustomToast from "../common/CustomToast";
 import FirebaseOAuthButtons from "../FirebaseOAuthButtons";
 
@@ -44,7 +44,7 @@ const RegisterForm = () => {
   const verifyOtpMutation = useVerifyOtp();
 
   const firebaseAuthMutation = useFirebaseAuth();
-  const { setIsOpen } = useLoginModelStore();
+  const { setIsOpen, setIsLoginSelected } = useLoginModelStore();
   const { signIn } = useAuthStore();
 
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -52,6 +52,7 @@ const RegisterForm = () => {
 
   const [showOtpStep, setShowOtpStep] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
+  const [registerResponse, setRegisterResponse] = useState<AuthResponse | null>(null);
   const [otp, setOtp] = useState("");
 
   const navigate = useNavigate();
@@ -64,6 +65,7 @@ const RegisterForm = () => {
 
       const emailFromResponse = res?.email || data.email;
 
+      setRegisterResponse(res);
       setRegisteredEmail(emailFromResponse);
       setShowOtpStep(true);
 
@@ -78,45 +80,61 @@ const RegisterForm = () => {
   };
 
   const handleVerifyOtp = async () => {
-    try {
-      await verifyOtpMutation.mutateAsync({
-        email: registeredEmail || getValues("email"),
-        otp,
-      });
-
-      CustomToast("Email vérifié avec succès. Vous pouvez vous connecter.", "success");
-
-      reset();
-      setOtp("");
-      setShowOtpStep(false);
-    } catch (err: any) {
-      CustomToast(err?.message || "Code OTP invalide", "error");
-    }
-  };
-
-  const handleFirebaseOAuthSuccess = async (
-  _user: User,
-  firebaseToken: string,
-  userData: FirebaseUserData
-) => {
-  const firebaseAuthData = {
-    idToken: firebaseToken,
-    email: userData.email,
-    providerId: userData.providerId || "google.com",
-  };
-
   try {
-    const firebaseResponse = await firebaseAuthMutation.mutateAsync(firebaseAuthData);
+    await verifyOtpMutation.mutateAsync({
+      email: registeredEmail || getValues("email"),
+      otp,
+    });
 
+    CustomToast("Email vérifié avec succès.", "success");
+
+    // connecter automatiquement l'utilisateur
+    if (registerResponse) {
+      await signIn(registerResponse, true);
+    }
+
+    // reset
     reset();
-    signIn(firebaseResponse, true);
+    setOtp("");
+    setRegisteredEmail("");
+    setShowOtpStep(false);
+
+    // fermer modal
     setIsOpen(false);
-    navigate("/annonces/new");
+
+    // navigation directe vers annonces/new
+    setTimeout(() => {
+      navigate("/annonces/new", { replace: true });
+    }, 200);
+
   } catch (err: any) {
-    console.error("Firebase backend auth error:", err);
-    CustomToast(err?.message || "Erreur lors de la connexion Google", "error");
+    CustomToast(err?.message || "Code OTP invalide", "error");
   }
 };
+
+  const handleFirebaseOAuthSuccess = async (
+    _user: User,
+    firebaseToken: string,
+    userData: FirebaseUserData
+  ) => {
+    const firebaseAuthData = {
+      idToken: firebaseToken,
+      email: userData.email,
+      providerId: userData.providerId || "google.com",
+    };
+
+    try {
+      const firebaseResponse = await firebaseAuthMutation.mutateAsync(firebaseAuthData);
+
+      reset();
+      signIn(firebaseResponse, true);
+      setIsOpen(false);
+      navigate("/user-account/dashboard");
+    } catch (err: any) {
+      console.error("Firebase backend auth error:", err);
+      CustomToast(err?.message || "Erreur lors de la connexion Google", "error");
+    }
+  };
 
   const handleFirebaseOAuthError = (error: string) => {
     console.error("Firebase OAuth error (register):", error);

@@ -12,6 +12,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import SEOHead from "../components/seo/SEOHead";
 import { useAnnonceById, useAnnonceBySlug } from "../services/api/fetchAnnonce";
 import { getImageUrlWithFallbacks } from "../utils/imageUtils";
+import { formatTimeAgoFr } from "../utils/timeAgo";
+
 
 const AnnonceDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -248,7 +250,7 @@ const AnnonceDetailsPage: React.FC = () => {
                     <div className="flex items-center space-x-1">
                       <FiClock className="h-4 w-4" />
                       <span>
-                        {new Date(annonce.created_at).toLocaleDateString()}
+                        {formatTimeAgoFr(annonce.created_at)}
                       </span>
                     </div>
                   </div>

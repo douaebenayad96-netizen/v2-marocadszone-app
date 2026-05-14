@@ -285,7 +285,20 @@ const Navbar = ({ forProfile, forPostJob }: NavbarProps) => {
                   {
                     path.includes('/user-account') === false && (
                       <div
-                        className="relative cursor-pointer">
+                        className="relative cursor-pointer flex items-center gap-3"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => {
+window.location.assign("/annonces/new")
+                          }}
+                          className="w-10 h-10 rounded-full bg-white border border-primary-orange text-primary-orange flex items-center justify-center text-2xl font-bold shadow-sm hover:bg-primary-orange hover:text-white transition-colors"
+                          aria-label="Publier une annonce"
+                        >
+                          +
+                        </button>
+
+
                         <div
                           onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                           onBlur={() => setIsProfileMenuOpen(false)}

@@ -390,10 +390,10 @@ const ChatBot = () => {
   const { ref: registerRef, ...registerRest } = register("message");
 
   return (
-    <div className="relative z-[9999]">
+      <div className="relative z-[2147483647]">
       {!open && (
         <div
-          className="w-16 h-16 rounded-full bg-primary-orange fixed bottom-[120px] max-sm:right-6 max-sm:bottom-[120px] right-10 bottom-8 flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity shadow-lg"
+          className="w-16 h-16 rounded-full bg-primary-orange fixed bottom-20 sm:bottom-8 right-10 flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity shadow-lg"
           onClick={() => setOpen(true)}
         >
           <AiBot className="text-white w-8 h-8" />
@@ -406,7 +406,7 @@ const ChatBot = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="w-[320px] md:w-[380px] h-[460px] md:h-[550px] fixed border bottom-[120px] max-sm:right-4 max-sm:bottom-[120px] right-8 md:bottom-12 md:right-12 bg-white rounded-lg shadow-xl z-[9999] flex flex-col"
+            className="w-[320px] md:w-[380px] h-[460px] md:h-[550px] fixed border bottom-8 right-8 md:bottom-12 md:right-12 bg-white rounded-lg shadow-xl z-[9999] flex flex-col"
           >
             {/* Header */}
             <div className="w-full rounded-t-lg flex items-center bg-primary-orange justify-between px-4 py-4 flex-shrink-0">

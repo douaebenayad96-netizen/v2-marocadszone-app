@@ -84,7 +84,12 @@ const StepsRegister = () => {
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
-  const [step, setStep] = useState<ProgressSteps>(0);
+  // Auto-skip step 0 (choix du type d'annonce) if we come from the main “Publier une annonce” button.
+  const [step, setStep] = useState<ProgressSteps>(() => {
+    const shouldSkip = new URLSearchParams(window.location.search).get("skipType") === "1";
+    return shouldSkip ? 1 : 0;
+  });
+
   const { mutateAsync: savePost, isLoading } = usePostPrestation();
   const form = useForm<FormValues>();
   const { uploadFiles, uploadSingleFile, isUploading } = useFirebaseUpload(

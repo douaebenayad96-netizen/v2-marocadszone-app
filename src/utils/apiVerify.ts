@@ -13,7 +13,7 @@ type ResendOtpPayload = {
 
 async function fetchVerifyOtp(payload: VerifyOtpPayload) {
   try {
-    const { data } = await axios.post(`/otp/verify`, payload);
+    const { data } = await axios.post(`/verify-otp`, payload);
     return data;
   } catch (error) {
     const axiosError = error as AxiosError;

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 
 import { Annonce } from '../../services/types/annonce'
 import FirebaseImage from '../common/FirebaseImage'
+import { formatTimeAgoFr } from '../../utils/timeAgo'
+
 
 interface AnnonceCardProps {
   annonce: Annonce
@@ -33,26 +35,44 @@ const AnnonceCard = ({ annonce, showDistance = false }: AnnonceCardProps) => {
   //   }
   // }
   const getAnnonceDetailBadge = () => {
-  if (annonce.announce_type === 'sale') {
-    return annonce.item_condition === 'new'
-      ? 'Neuf'
-      : annonce.item_condition === 'used'
-      ? 'Occasion'
-      : annonce.item_condition === 'good_condition'
-      ? 'Bon état'
-      : annonce.item_condition
+    if (annonce.announce_type === 'sale') {
+      return annonce.item_condition === 'new'
+        ? 'Neuf'
+        : annonce.item_condition === 'used'
+          ? 'Occasion'
+          : annonce.item_condition === 'good_condition'
+            ? 'Bon état'
+            : annonce.item_condition
+    }
+
+    if (annonce.announce_type === 'rental') {
+      return annonce.rental_period
+    }
+
+    if (annonce.announce_type === 'service') {
+      return annonce.service_pricing
+    }
+
+    return null
   }
 
-  if (annonce.announce_type === 'rental') {
-    return annonce.rental_period
+  const getAnnonceExtraLabel = () => {
+    // Vente: état already handled by getAnnonceDetailBadge
+    if (annonce.announce_type === 'rental') {
+      return annonce.rental_period
+        ? `Période: ${annonce.rental_period}`
+        : null
+    }
+
+    if (annonce.announce_type === 'service') {
+      return annonce.service_pricing
+        ? `Tarification: ${annonce.service_pricing}`
+        : null
+    }
+
+    return null
   }
 
-  if (annonce.announce_type === 'service') {
-    return annonce.service_pricing
-  }
-
-  return null
-}
   const getImageUrl = () => {
     // Handle Firebase URLs (array of strings)
     if (annonce.image_urls && Array.isArray(annonce.image_urls) && annonce.image_urls.length > 0) {
@@ -152,6 +172,12 @@ const AnnonceCard = ({ annonce, showDistance = false }: AnnonceCardProps) => {
                 {getAnnonceDetailBadge()}
               </span>
             )}
+            {getAnnonceExtraLabel() && (
+              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                {getAnnonceExtraLabel()}
+              </span>
+            )}
+
             {typeof annonce.price !== 'undefined' && annonce.price !== null && annonce.price !== '' && (
               <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
                 {Number(annonce.price).toLocaleString()} DH
@@ -206,9 +232,10 @@ const AnnonceCard = ({ annonce, showDistance = false }: AnnonceCardProps) => {
           {/* Date */}
           <div className="flex items-center justify-end mt-2">
             <span className="text-xs text-gray-500">
-              {new Date(annonce.created_at).toLocaleDateString()}
+              {formatTimeAgoFr(annonce.created_at)}
             </span>
           </div>
+
         </div>
       </div>
     </Link>

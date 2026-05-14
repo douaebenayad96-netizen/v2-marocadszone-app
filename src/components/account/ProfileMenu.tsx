@@ -67,7 +67,7 @@ const ProfileMenu = ({ currentLanguage, onClick }: ProfileMenuProps) => {
         </li>
         <li>
           <Link
-            to='/annonces/new'
+to='/annonces/new?skipType=1'
             onClick={() => {
               onClick?.()
             }}
