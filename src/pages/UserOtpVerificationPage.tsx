@@ -59,15 +59,35 @@ export default function UserOtpVerificationPage() {
       setIsSubmitting(true);
 
       const response = await verifyMutation.mutateAsync({ email, otp });
+      console.log("Full OTP response:", JSON.stringify(response));
       console.log("OTP verify response:", response);
 
-      signIn(response, false);
+      // Auth store expects { token, user } inside response.data (AuthResponse shape).
+      // `/verify-otp` may return { token, user } or a different structure.
+      // We normalize the payload before calling signIn.
+      const payload = (response as any)?.data ?? response;
+      const normalized = {
+        token: payload?.token ?? payload?.access_token ?? null,
+        user: payload?.user ?? payload?.data?.user ?? null,
+      };
+
+      // Persist into auth-storage immediately so RequireAuth won't bounce.
+      localStorage.setItem(
+        "auth-storage",
+        JSON.stringify({
+          token: normalized.token,
+          user: normalized.user,
+        })
+      );
+
+      // Also update zustand in-memory state.
+      await signIn({ data: normalized } as any, false);
 
       CustomToast(t("compte_cree_avec_succes"), "success");
+      localStorage.removeItem(OTP_EMAIL_KEY);
+      window.location.replace("/annonces/new");
 
       localStorage.removeItem(OTP_EMAIL_KEY);
-    
-      window.location.href = "/annonces/new";
     } catch (e) {
       CustomToast("Code OTP incorrect ou expiré. Réessayez.", "error");
     } finally {

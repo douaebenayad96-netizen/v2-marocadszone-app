@@ -7,8 +7,65 @@ type FixedCTABoxProps = {
   annonce?: Annonce;
 };
 
+const getAnnonceTypeAndDetailLabel = (annonce?: Annonce) => {
+  if (!annonce) return null;
+
+  const announceType = annonce.announce_type;
+  if (!announceType) return null;
+
+  const itemCondition = annonce.item_condition;
+
+  const badgeType =
+    announceType === "sale"
+      ? "Vente"
+      : announceType === "rental"
+        ? "Location"
+        : announceType === "service"
+          ? "Service"
+          : null;
+
+  if (!badgeType) return null;
+
+  const detail =
+    // sale
+    (announceType === "sale" &&
+      (itemCondition === "good_condition"
+        ? "Bon état"
+        : itemCondition === "new"
+          ? "Neuf"
+          : itemCondition === "used"
+            ? "Occasion"
+            : null)) ||
+    // rental
+    (announceType === "rental" &&
+      (itemCondition === "rental_day"
+        ? "Jour"
+        : itemCondition === "rental_week"
+          ? "Semaine"
+          : itemCondition === "rental_month"
+            ? "Mois"
+            : null)) ||
+    // service
+    (announceType === "service" &&
+      (itemCondition === "service_hour"
+        ? "Heure"
+        : itemCondition === "service_day"
+          ? "Jour"
+          : itemCondition === "service_mission"
+            ? "Mission"
+            : null)) ||
+    null;
+
+  return { badgeType, detail };
+};
+
+
 const FixedCTABox = ({ prestataire, annonce }: FixedCTABoxProps) => {
   const data = annonce || prestataire;
+  const typeAndDetail = getAnnonceTypeAndDetailLabel(annonce);
+
+
+
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-primary-white shadow-lg border-t border-primary-gray-200 z-50 p-4 font-poppins">
       <div className="app-container-max-xl flex flex-col md:flex-row items-center justify-between gap-4">
@@ -34,12 +91,26 @@ const FixedCTABox = ({ prestataire, annonce }: FixedCTABoxProps) => {
           </div>
 
           <div className="flex-1">
-            <p className="text-sm text-primary-gray-500">
-              Prix
-            </p>
-            <h3 className="text-2xl font-bold text-primary-orange">
-              {annonce?.price ? `${annonce.price.toLocaleString()} MAD` : 'Prix non disponible'}
-            </h3>
+            <p className="text-sm text-primary-gray-500">Prix</p>
+
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+              <h3 className="text-2xl font-bold text-primary-orange">
+                {annonce?.price
+                  ? `${annonce.price.toLocaleString()} MAD`
+                  : "Prix non disponible"}
+              </h3>
+
+            {typeAndDetail?.badgeType && typeAndDetail.detail && (
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-full bg-blue-100 text-blue-700 px-3 py-1 text-xs font-semibold whitespace-nowrap">
+                  {typeAndDetail.badgeType}
+                </span>
+                <span className="inline-flex items-center rounded-full bg-green-100 text-green-700 px-3 py-1 text-xs font-semibold whitespace-nowrap">
+                  {typeAndDetail.detail}
+                </span>
+              </div>
+            )}
+            </div>
           </div>
         </div>
 

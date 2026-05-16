@@ -38,7 +38,7 @@ const ShortsPage = () => {
             {/* title */}
 
             <div>
-              <h1 className="text-5xl text-primary-blue font-bold">Explorez toutes les annonces vidéos Maroc</h1>
+              <h1 className="title-h1">Explorez toutes les annonces vidéos Maroc</h1>
               <div>
                 <span className="text-base text-gray-400">
                   {videosData?.data && videosData.data.length > 0

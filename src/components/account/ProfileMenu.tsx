@@ -95,7 +95,7 @@ to='/annonces/new?skipType=1'
             onClick={onClick}
             className={`h-9 min-w-max flex items-center justify-between px-6 hover:bg-[#F8F9FA] cursor-pointer font-[400] text-md text-[#656A70]`}
           >
-            <span>{t('publier_annonce_entreprise')}</span>
+            <span>Publier dans l'Annuaire</span>
           </Link>
         </li>
         {/*<li>

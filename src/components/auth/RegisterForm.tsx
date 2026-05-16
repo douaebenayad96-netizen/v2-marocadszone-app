@@ -65,6 +65,23 @@ const RegisterForm = () => {
 
       const emailFromResponse = res?.email || data.email;
 
+      const requiresEmailVerification =
+        res?.requires_email_verification === true ||
+        res?.requiresEmailVerification === true;
+
+      if (requiresEmailVerification) {
+        localStorage.setItem("otp_email", emailFromResponse);
+        setRegisterResponse(null);
+        setRegisteredEmail(emailFromResponse);
+        setShowOtpStep(true);
+
+        CustomToast(
+          "Votre compte a été créé. Vérifiez votre email pour le code OTP.",
+          "success"
+        );
+        return;
+      }
+
       setRegisterResponse(res);
       setRegisteredEmail(emailFromResponse);
       setShowOtpStep(true);
@@ -80,37 +97,35 @@ const RegisterForm = () => {
   };
 
   const handleVerifyOtp = async () => {
-  try {
-    await verifyOtpMutation.mutateAsync({
-      email: registeredEmail || getValues("email"),
-      otp,
-    });
+    try {
+      const otpResponse: any = await verifyOtpMutation.mutateAsync({
+        email: registeredEmail || getValues("email"),
+        otp,
+      });
 
-    CustomToast("Email vérifié avec succès.", "success");
+      console.log("Full OTP response:", JSON.stringify(otpResponse));
 
-    // connecter automatiquement l'utilisateur
-    if (registerResponse) {
-      await signIn(registerResponse, true);
+      // Sign in with OTP response (contains token + user)
+      if (otpResponse) {
+        await signIn(otpResponse, true);
+      }
+
+      CustomToast("Email vérifié avec succès.", "success");
+
+      reset();
+      setOtp("");
+      setRegisteredEmail("");
+      setShowOtpStep(false);
+      setIsOpen(false);
+
+      setTimeout(() => {
+        window.location.replace("/annonces/new");
+      }, 300);
+
+    } catch (err: any) {
+      CustomToast(err?.message || "Code OTP invalide", "error");
     }
-
-    // reset
-    reset();
-    setOtp("");
-    setRegisteredEmail("");
-    setShowOtpStep(false);
-
-    // fermer modal
-    setIsOpen(false);
-
-    // navigation directe vers annonces/new
-    setTimeout(() => {
-      navigate("/annonces/new", { replace: true });
-    }, 200);
-
-  } catch (err: any) {
-    CustomToast(err?.message || "Code OTP invalide", "error");
-  }
-};
+  };
 
   const handleFirebaseOAuthSuccess = async (
     _user: User,

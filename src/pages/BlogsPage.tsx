@@ -39,8 +39,8 @@ const BlogsPage = () => {
   const { data: cities, isLoading: isLoadingCities } = useFetchCity();
 
   useEffect(() => {
-    if (jobOffersData?.meta?.last_page) {
-      setTotalPages(jobOffersData.meta.last_page);
+    if (jobOffersData?.data?.pagination?.last_page) {
+      setTotalPages(jobOffersData.data.pagination.last_page);
     }
   }, [jobOffersData]);
 
@@ -302,13 +302,13 @@ const BlogsPage = () => {
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 <p className="text-gray-700 font-medium">
                   <span className="font-bold text-green-600">
-                    {jobOffersData?.meta?.last_page || 0}
+                    {jobOffersData?.data?.pagination?.total || 0}
                   </span>
                   <span className="text-gray-600 ml-1">
                     offre
-                    {(jobOffersData?.meta?.last_page || 0) > 1 ? "s" : ""}{" "}
+                    {(jobOffersData?.data?.pagination?.total || 0) > 1 ? "s" : ""}{" "}
                     d'emploi trouvée
-                    {(jobOffersData?.meta?.last_page || 0) > 1 ? "s" : ""}
+                    {(jobOffersData?.data?.pagination?.total || 0) > 1 ? "s" : ""}
                   </span>
                 </p>
               </div>
@@ -332,10 +332,10 @@ const BlogsPage = () => {
             ? Array.from(Array(12).keys()).map((n) => (
                 <JobsSkeletonCard key={n} />
               ))
-            : Array.isArray(jobOffersData?.data) &&
-  jobOffersData.data.map((jobOffer) => (
-      <JobOfferBlogCard key={jobOffer.id} jobOffer={jobOffer} />
-  ))}
+            : Array.isArray(jobOffersData?.data?.items) &&
+              jobOffersData.data.items.map((jobOffer) => (
+                <JobOfferBlogCard key={jobOffer.id} jobOffer={jobOffer} />
+              ))}
         </section>
         <div className="mt-8 bg-orange-50 rounded-lg p-6">
           <h3 className="text-center text-sm font-semibold text-gray-700 mb-4 flex items-center justify-center gap-2">

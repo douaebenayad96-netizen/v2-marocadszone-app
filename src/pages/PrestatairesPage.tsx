@@ -309,7 +309,7 @@ const PrestatairesPage = () => {
           <PageHeader>
             {/* title */}
             <div>
-              <h1 className="text-5xl text-primary-blue font-bold">
+              <h1 className="title-h1">
                 {annoncesSEO.h1 || t("prestationsFilter.explore")}
               </h1>
               <div>

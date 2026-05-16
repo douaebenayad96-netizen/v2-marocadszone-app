@@ -8,7 +8,7 @@ const AboutHeroSection = () => {
           {/* title */}
           <div>
             <h1
-              className="text-5xl text-primary-blue font-bold"
+              className="text-3xl text-primary-blue font-bold"
             >
               À propos de nous
             </h1>
