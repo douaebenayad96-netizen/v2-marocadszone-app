@@ -9,7 +9,7 @@ import { choosePlanApi } from "../services/api/fetchTarification";
 import { useAuthStore } from "../services/store/authStore";
 import { useLoginModelStore } from "../services/store/LoginModelStore";
 import { cn } from "../utils/helpers";
-
+import { useNavigate } from "react-router-dom";
 const Checkbox: React.FC<{
   value: boolean;
   onChange: () => void;
@@ -41,17 +41,18 @@ const BankDataModal: React.FC<BankDataModalProps> = ({
   onClose,
 }) => {
   const [isChecked, setIsChecked] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+   const navigate = useNavigate();
   const { setUser, user } = useAuthStore();
   const { openRegisterModel } = useLoginModelStore();
   const { mutate: chosePlan } = useMutation({
     mutationFn: (id: string) => choosePlanApi(id),
     onSuccess: ({ data }) => {
       setUser(data);
-      toast.success("Abonnement réussi ");
-      setOpenBank(false);
-      onClose && onClose();
+      setShowSuccessModal(true);
     },
     onError: (error: AxiosError<{ message: string }>) => {
+      console.log(error.response?.data);
       if (
         error?.response?.data?.message ===
         "User must have a company to choose a plan"
@@ -68,6 +69,7 @@ const BankDataModal: React.FC<BankDataModalProps> = ({
       }
     },
   });
+  
   const handleOpenRegister = (id: string) => {
     if (!user) {
       openRegisterModel();
@@ -75,7 +77,51 @@ const BankDataModal: React.FC<BankDataModalProps> = ({
     }
     chosePlan(id);
   };
+  if (showSuccessModal) {
+  return (
+    <div className="w-full h-full flex items-center justify-center bg-black/50 fixed top-0 left-0 z-[9999] px-4">
+      <div className="bg-white rounded-2xl p-8 w-full max-w-xl text-center shadow-2xl">
+        <div className="mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-green-100 text-5xl font-bold text-green-600">
+          ✓
+        </div>
 
+        <h2 className="mb-3 text-3xl font-bold text-green-700">
+          Merci !
+        </h2>
+
+        <p className="mb-6 text-lg font-semibold text-gray-900">
+          Votre demande a été enregistrée avec succès.
+        </p>
+
+        <div className="mb-6 rounded-xl border border-green-200 bg-green-50 p-4 text-left">
+          <p className="font-bold text-green-800">
+            Statut : En attente de paiement
+          </p>
+          <p className="mt-2 text-sm text-gray-700">
+            Veuillez effectuer le virement bancaire puis nous envoyer le reçu
+            sur WhatsApp ou par e-mail.
+          </p>
+        </div>
+
+        <p className="mb-6 text-sm text-gray-700">
+          Dès réception de votre paiement, nous procéderons à l’activation
+          de votre annonce.
+        </p>
+
+        <button
+          onClick={() => {
+            setOpenBank(false);
+            onClose && onClose();
+            navigate("/user-account/annonces");
+          }}
+          className="rounded-lg bg-primary-orange px-8 py-3 font-semibold text-white hover:bg-primary-orange-dark"
+        >
+          Voir mes annonces
+        </button>
+      </div>
+    </div>
+  );
+}
   return (
     <div
       className="w-full h-full flex items-center justify-center bg-black/50 fixed top-0 left-0 z-[9999]"

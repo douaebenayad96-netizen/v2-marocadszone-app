@@ -20,4 +20,8 @@ export const activatePlan = async () => {
   const response = await axiosConfig.patch("subscription/activate");
   return response.data;
 };
+export const getMySubscription = async () => {
+  const response = await axiosConfig.get("/subscription/me");
+  return response.data;
+};
 
