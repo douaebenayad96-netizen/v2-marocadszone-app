@@ -147,6 +147,7 @@ export function PricingPopUp({
       success: "activation avec sucess",
     });
   };
+  console.log("USER DATA FI PRICING POPUP:\n", JSON.stringify(user, null, 2));
   return (
     <section className={cn("py-8 px-4 bg-white", className)}>
       <span
@@ -257,17 +258,26 @@ export function PricingPopUp({
                       <Button variant="danger" onClick={handleCancellation}>
                         Cancel Subscription
                       </Button>
-                    ) : user?.current_active_subscription?.plan?.id ===
-                        tier.id &&
-                      user?.current_active_subscription.status ===
-                        "cancelled" ? (
+                    ) : user?.current_active_subscription?.plan?.id === tier.id &&
+                      user?.current_active_subscription.status === "cancelled" ? (
                       <Button variant="pending" onClick={handleActivation}>
                         Activer l'abonnement
                       </Button>
+                    ) : (user?.pending_subscription?.plan?.id === tier.id || user?.pending_subscription?.plan_id === tier.id) ? (
+                      /* HADI HIYA LA PARTIE LI ZDNA */
+                      <div className="space-y-4">
+                        <Button
+                          variant="pending"
+                          size="lg"
+                          disabled
+                          className="w-full mt-6 opacity-70 cursor-not-allowed"
+                        >
+                          En attente de validation
+                        </Button>
+                      </div>
                     ) : (
                       <div className="space-y-4">
                         <Button
-                          // onClick={() => handleOpenRegister(tier.id)}
                           onClick={() => {
                             setBankModal(!bankModal);
                             setCurrentId(tier.id);
@@ -289,7 +299,7 @@ export function PricingPopUp({
                           </p>
                         )}
                       </div>
-                    )}
+)}
                   </CardContent>
 
                   {(index === 0 || index === 2) && (
@@ -351,17 +361,29 @@ export function PricingPopUp({
                       <Button variant="danger" onClick={handleCancellation}>
                         Cancel Subscription
                       </Button>
-                    ) : user?.current_active_subscription?.plan?.id ===
-                        tier.id &&
-                      user?.current_active_subscription.status ===
-                        "cancelled" ? (
+                    ) : user?.current_active_subscription?.plan?.id === tier.id &&
+                      user?.current_active_subscription.status === "cancelled" ? (
                       <Button variant="pending" onClick={handleActivation}>
                         Activer l'abonnement
                       </Button>
+                    ) : (user?.pending_subscription?.plan?.id === tier.id || user?.pending_subscription?.plan_id === tier.id) ? (
+                      <div className="space-y-4">
+                        <Button
+                          variant="pending"
+                          size="lg"
+                          disabled
+                          className="w-full mt-6 opacity-70 cursor-not-allowed"
+                        >
+                          En attente de validation
+                        </Button>
+                      </div>
                     ) : (
                       <div className="space-y-4">
                         <Button
-                          onClick={() => setBankModal(!bankModal)}
+                          onClick={() => {
+                            setBankModal(!bankModal);
+                            setCurrentId(tier.id);
+                          }}
                           className="w-full mt-6"
                           variant={tier.buttonVariant}
                           size="lg"

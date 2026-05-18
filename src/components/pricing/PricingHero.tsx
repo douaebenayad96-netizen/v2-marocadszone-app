@@ -8,6 +8,7 @@ import { activatePlan, cancelPlan } from "../../services/api/fetchTarification";
 import { useAuthStore } from "../../services/store/authStore";
 import { cn } from "../../utils/helpers";
 import BankDataModal from "../BankDataModal";
+import useSubscription from "../../hooks/useSubscription";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -112,6 +113,10 @@ export function PricingHero({ className = "" }: { className?: string }) {
       : true
   );
   const planData = usePlans();
+  const { data: subscriptionResponse } = useSubscription();
+  const subscription = subscriptionResponse?.data;
+  console.log("SUBSCRIPTION RESPONSE:", subscriptionResponse);
+console.log("SUBSCRIPTION:", subscription);
 
   const { mutateAsync: cancelPlanMutate } = useMutation({
     mutationFn: () => cancelPlan(),
@@ -191,6 +196,17 @@ export function PricingHero({ className = "" }: { className?: string }) {
             </Badge>
           </div>
         </div>
+        {subscription?.status === "pending" && (
+          <div className="max-w-5xl mx-auto mb-8 rounded-lg border border-yellow-300 bg-yellow-50 p-4 text-yellow-800">
+            Votre demande d’abonnement est en attente de validation du paiement.
+          </div>
+        )}
+
+        {subscription?.status === "active" && (
+          <div className="max-w-5xl mx-auto mb-8 rounded-lg border border-green-300 bg-green-50 p-4 text-green-800">
+            Votre abonnement est actif.
+          </div>
+        )}
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -243,35 +259,44 @@ export function PricingHero({ className = "" }: { className?: string }) {
                         </li>
                       ))}
                     </ul>
-                    {user?.current_active_subscription?.plan?.id === tier.id &&
-                    user?.current_active_subscription.status === "active" ? (
-                      <Button variant="danger" onClick={handleCancellation}>
-                        Cancel Subscription
-                      </Button>
-                    ) : user?.current_active_subscription?.plan?.id ===
-                        tier.id &&
-                      user?.current_active_subscription.status ===
-                        "cancelled" ? (
-                      <Button variant="pending" onClick={handleActivation}>
-                        Activer l'abonnement
-                      </Button>
-                    ) : (
                       <div className="space-y-4">
-                        <Button
-                          onClick={() => {
-                            setBankModal(!bankModal);
-                            setCurrentId(tier.id);
-                          }}
-                          className="w-full mt-6"
-                          variant={tier.buttonVariant}
-                          size="lg"
-                        >
-                          {index === 0
-                            ? "Commencer Gratuitement"
-                            : index === 1
-                            ? "Souscrire Premium"
-                            : "Devenir Pro"}
-                        </Button>
+                        {subscription?.plan_id === tier.id &&
+                        subscription?.status === "pending" ? (
+                          <Button
+                            className="w-full mt-6"
+                            variant="pending"
+                            size="lg"
+                            disabled
+                          >
+                            En attente de paiement
+                          </Button>
+                        ) : subscription?.plan_id === tier.id &&
+                          subscription?.status === "active" ? (
+                          <Button
+                            className="w-full mt-6"
+                            variant="default"
+                            size="lg"
+                            disabled
+                          >
+                            Abonnement Actif
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={() => {
+                              setBankModal(!bankModal);
+                              setCurrentId(tier.id);
+                            }}
+                            className="w-full mt-6"
+                            variant={tier.buttonVariant}
+                            size="lg"
+                          >
+                            {index === 0
+                              ? "Commencer Gratuitement"
+                              : index === 1
+                              ? "Souscrire Premium"
+                              : "Devenir Pro"}
+                          </Button>
+                        )}
 
                         {index === 0 && (
                           <p className="text-xs text-center text-gray-600">
@@ -279,7 +304,7 @@ export function PricingHero({ className = "" }: { className?: string }) {
                           </p>
                         )}
                       </div>
-                    )}
+                    
                   </CardContent>
                   {(index === 0 || index === 2) && (
                     <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#E17A30] rounded-b-lg" />
@@ -334,35 +359,44 @@ export function PricingHero({ className = "" }: { className?: string }) {
                         </li>
                       ))}
                     </ul>
-                    {user?.current_active_subscription?.plan?.id === tier.id &&
-                    user?.current_active_subscription.status === "active" ? (
-                      <Button variant="danger" onClick={handleCancellation}>
-                        Cancel Subscription
-                      </Button>
-                    ) : user?.current_active_subscription?.plan?.id ===
-                        tier.id &&
-                      user?.current_active_subscription.status ===
-                        "cancelled" ? (
-                      <Button variant="pending" onClick={handleActivation}>
-                        Activer l'abonnement
-                      </Button>
-                    ) : (
                       <div className="space-y-4">
-                        <Button
-                          onClick={() => {
-                            setBankModal(!bankModal);
-                            setCurrentId(tier.id);
-                          }}
-                          className="w-full mt-6"
-                          variant={tier.buttonVariant}
-                          size="lg"
-                        >
-                          {index === 0
-                            ? "Commencer Gratuitement"
-                            : index === 1
-                            ? "Souscrire Premium"
-                            : "Devenir Pro"}
-                        </Button>
+                        {subscription?.plan_id === tier.id &&
+                        subscription?.status === "pending" ? (
+                          <Button
+                            className="w-full mt-6"
+                            variant="pending"
+                            size="lg"
+                            disabled
+                          >
+                            En attente de paiement
+                          </Button>
+                        ) : subscription?.plan_id === tier.id &&
+                          subscription?.status === "active" ? (
+                          <Button
+                            className="w-full mt-6"
+                            variant="default"
+                            size="lg"
+                            disabled
+                          >
+                            Abonnement Actif
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={() => {
+                              setBankModal(!bankModal);
+                              setCurrentId(tier.id);
+                            }}
+                            className="w-full mt-6"
+                            variant={tier.buttonVariant}
+                            size="lg"
+                          >
+                            {index === 0
+                              ? "Commencer Gratuitement"
+                              : index === 1
+                              ? "Souscrire Premium"
+                              : "Devenir Pro"}
+                          </Button>
+                        )}
 
                         {index === 0 && (
                           <p className="text-xs text-center text-gray-600">
@@ -370,7 +404,7 @@ export function PricingHero({ className = "" }: { className?: string }) {
                           </p>
                         )}
                       </div>
-                    )}
+                    
                   </CardContent>
 
                   {(index === 0 || index === 2) && (
