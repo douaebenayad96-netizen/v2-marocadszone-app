@@ -17,6 +17,7 @@ import { FirebaseUserData } from "../../services/firebase/authService";
 import { useAuthStore } from "../../services/store/authStore";
 import { useLoginModelStore } from "../../services/store/LoginModelStore";
 import { AuthResponse, RegisterUser } from "../../services/types/auth";
+import { getAuthErrorMessage, getOtpErrorMessage } from "../../utils/apiMessages";
 import CustomToast from "../common/CustomToast";
 import FirebaseOAuthButtons from "../FirebaseOAuthButtons";
 
@@ -92,7 +93,7 @@ const RegisterForm = () => {
       );
     } catch (err: any) {
       console.log("❌ Registration error:", err);
-      CustomToast(err?.message || t("erreur_lors_de_l_inscription"), "error");
+      CustomToast(getAuthErrorMessage(err), "error");
     }
   };
 
@@ -123,7 +124,7 @@ const RegisterForm = () => {
       }, 300);
 
     } catch (err: any) {
-      CustomToast(err?.message || "Code OTP invalide", "error");
+      CustomToast(getOtpErrorMessage(err), "error");
     }
   };
 
@@ -147,7 +148,7 @@ const RegisterForm = () => {
       navigate("/user-account/dashboard");
     } catch (err: any) {
       console.error("Firebase backend auth error:", err);
-      CustomToast(err?.message || "Erreur lors de la connexion Google", "error");
+      CustomToast(getAuthErrorMessage(err), "error");
     }
   };
 

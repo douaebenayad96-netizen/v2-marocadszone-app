@@ -84,7 +84,7 @@ const BankDataModal: React.FC<BankDataModalProps> = ({
       }}
     >
       <div
-        className="space-y-4 bg-white p-8 w-[50%]"
+        className="space-y-4 bg-white p-8 w-full max-w-[720px] md:w-[50%] max-h-[90vh] overflow-y-auto overflow-x-hidden"
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -95,7 +95,7 @@ const BankDataModal: React.FC<BankDataModalProps> = ({
             className="cursor-pointer"
           />
         </div>
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col sm:flex-row justify-between items-start">
           <div className="space-y-4 flex-1">
             <p className="text-sm">Cher(e) client(e),</p>
             <p className="text-sm">
@@ -125,7 +125,7 @@ const BankDataModal: React.FC<BankDataModalProps> = ({
             </div>
           </div>
 
-          <div className="w-32 h-32 bg-gray-100 flex items-center justify-center rounded">
+          <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gray-100 flex items-center justify-center rounded shrink-0">
             <img
               src={qr_code}
               alt="QR Code"

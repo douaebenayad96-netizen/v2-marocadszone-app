@@ -9,6 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import z from "zod";
 import { sendReset } from "../../services/api/fetchAuth";
+import { getPasswordResetErrorMessage } from "../../utils/apiMessages";
 
 const ForgetPassword = () => {
   const { t } = useTranslation();
@@ -40,17 +41,7 @@ const ForgetPassword = () => {
       reset();
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      if (
-        error.response?.data.message ===
-        "Le champ E-mail sélectionné est invalide."
-      ) {
-        toast.error("Email est pas valide");
-      }
-      if (error.response?.status === 429) {
-        toast.error(
-          "Vous avez atteint votre limite. Réessayez dans une heure."
-        );
-      }
+      toast.error(getPasswordResetErrorMessage(error));
     },
   });
 

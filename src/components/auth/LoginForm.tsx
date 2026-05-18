@@ -7,12 +7,12 @@ import { GoEye, GoEyeClosed } from "react-icons/go";
 
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useFirebaseAuth, useLoginAuth } from "../../services/api/fetchAuth";
 import { FirebaseUserData } from "../../services/firebase/authService";
 import { useAuthStore } from "../../services/store/authStore";
 import { useLoginModelStore } from "../../services/store/LoginModelStore";
 import { AuthResponse, LoginUser } from "../../services/types/auth";
+import { getAuthErrorMessage } from "../../utils/apiMessages";
 import CustomToast from "../common/CustomToast";
 import FirebaseOAuthButtons from "../FirebaseOAuthButtons";
 
@@ -51,11 +51,7 @@ const LoginForm = () => {
         window.location.href = ACCOUNT_DASHBOARD_PATH;
       })
       .catch((err: AxiosError<{ message: string }>) => {
-        if (err.message === "Invalid input data") {
-          toast.error("Email ou password incorrect");
-          return;
-        }
-        CustomToast("Erreur. Veuillez réessayer plus tard.", "error");
+        CustomToast(getAuthErrorMessage(err), "error");
       });
   };
 

@@ -1,7 +1,6 @@
 import { PhoneNumberUtil } from "google-libphonenumber";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { BiLoaderAlt, BiMinus, BiPlus } from "react-icons/bi";
 import PhoneInput from "react-phone-input-2";
 import {
@@ -11,6 +10,7 @@ import {
 } from "../../services/api/fetchCompany";
 import { useAuthStore } from "../../services/store/authStore";
 import { Company } from "../../services/types/company";
+import { getCompanyErrorMessage } from "../../utils/apiMessages";
 import { getLastRouteInUrl } from "../../utils/helpers";
 import CustomToast from "../common/CustomToast";
 import ModalLayout from "../layouts/ModalLayout";
@@ -26,8 +26,10 @@ type FormValues = {
   urls: string[];
 };
 
+const MAX_LOGO_SIZE = 5 * 1024 * 1024;
+const VALID_LOGO_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
 const UserCompanyInformationForm = () => {
-  const { t } = useTranslation();
   const token = useAuthStore((state) => state.token);
   const [urlCount, setUrlCount] = useState(1);
   const [isNewCompany, setIsNewCompany] = useState(true);
@@ -83,10 +85,7 @@ const UserCompanyInformationForm = () => {
 
   const onSubmit = async (formData: FormValues) => {
     if (!token) {
-      CustomToast(
-        t("Authentication required") || "Authentication required",
-        "error"
-      );
+      CustomToast("Your session expired. Sign in and try again.", "error");
       return;
     }
 
@@ -94,7 +93,22 @@ const UserCompanyInformationForm = () => {
 
     // Add logo file if provided
     if (formData.companyLogo?.[0]) {
-      formDataToSend.append("logo", formData.companyLogo[0]);
+      const logo = formData.companyLogo[0];
+
+      if (!VALID_LOGO_TYPES.includes(logo.type)) {
+        CustomToast(
+          "Invalid image. Please use a JPG, PNG, or WebP file.",
+          "error"
+        );
+        return;
+      }
+
+      if (logo.size > MAX_LOGO_SIZE) {
+        CustomToast("Image is too large. Maximum size: 5MB.", "error");
+        return;
+      }
+
+      formDataToSend.append("logo", logo);
     }
 
     // Add company details
@@ -122,7 +136,7 @@ const UserCompanyInformationForm = () => {
       try {
         new URL(url);
       } catch {
-        CustomToast("Veuillez saisir des URLs valides.", "error");
+        CustomToast("Invalid URL. Example: https://example.com", "error");
         return;
       }
     }
@@ -132,50 +146,32 @@ const UserCompanyInformationForm = () => {
     });
 
     try {
-      let response;
       if (isNewCompany || !companyData) {
         console.log("🏢 Creating new company...");
-        response = await createCompany({ companyData: formDataToSend, token });
-        CustomToast(
-          t("Company profile created successfully!") ||
-            "Company profile created successfully!",
-          "success"
-        );
+        await createCompany({ companyData: formDataToSend, token });
+        CustomToast("Company profile created successfully.", "success");
         setIsNewCompany(false);
         setShowPricing(true); // Show pricing modal after creating a new company
       } else {
         console.log("🏢 Updating existing company...");
-        response = await updateCompany({ companyData: formDataToSend, token });
-        CustomToast(
-          t("Company profile updated successfully!") ||
-            "Company profile updated successfully!",
-          "success"
-        );
+        await updateCompany({ companyData: formDataToSend, token });
+        CustomToast("Company profile updated successfully.", "success");
       }
 
       refetch(); // Refresh the data
     } catch (error) {
       console.error("🏢 Error:", error);
 
-      if (error instanceof Error) {
-        if (error.message === "Company already exists") {
-          CustomToast(
-            "Company profile already exists. Try updating instead.",
-            "warning"
-          );
-          setIsNewCompany(false);
-        } else if (error.message === "Authentication failed") {
-          CustomToast("Authentication failed. Please login again.", "error");
-        } else if (
-          error.message === "Validation failed - please check your input"
-        ) {
-          CustomToast("Please check your input and try again.", "error");
-        } else {
-          CustomToast("An error occurred. Please try again.", "error");
-        }
-      } else {
-        CustomToast("An unexpected error occurred.", "error");
+      const message = getCompanyErrorMessage(error);
+
+      if (message.includes("company profile already exists")) {
+        setIsNewCompany(false);
       }
+
+      CustomToast(
+        message,
+        message.includes("already exists") ? "warning" : "error"
+      );
     }
   };
 

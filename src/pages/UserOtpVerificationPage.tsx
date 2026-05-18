@@ -6,6 +6,7 @@ import CustomToast from "../components/common/CustomToast";
 import OtpInput4 from "../components/auth/OtpInput4";
 import { useResendOtp, useVerifyOtp } from "../utils/apiVerify";
 import { useAuthStore } from "../services/store/authStore";
+import { getOtpErrorMessage } from "../utils/apiMessages";
 
 const OTP_EMAIL_KEY = "otp_email";
 
@@ -89,7 +90,7 @@ export default function UserOtpVerificationPage() {
 
       localStorage.removeItem(OTP_EMAIL_KEY);
     } catch (e) {
-      CustomToast("Code OTP incorrect ou expiré. Réessayez.", "error");
+      CustomToast(getOtpErrorMessage(e), "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -104,8 +105,8 @@ export default function UserOtpVerificationPage() {
       setResendCount((c) => c + 1);
       setTimer(30);
       CustomToast("Nouveau code envoyé.", "success");
-    } catch {
-      CustomToast("Impossible de renvoyer le code OTP.", "error");
+    } catch (error) {
+      CustomToast(getOtpErrorMessage(error), "error");
     }
   };
 

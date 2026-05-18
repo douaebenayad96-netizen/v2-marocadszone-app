@@ -254,10 +254,15 @@ const VideoUploadPage: React.FC = () => {
   >([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { uploadSingleFile, isUploading } = useFirebaseUpload(
-    STORAGE_FOLDERS.ANNONCE_VIDEOS
-  );
+  const { uploadSingleFile } = useFirebaseUpload(STORAGE_FOLDERS.ANNONCE_VIDEOS);
+
+  const [uploadPercent, setUploadPercent] = useState<number>(0);
+  const [uploadStatus, setUploadStatus] = useState<
+    "idle" | "uploading" | "success" | "error"
+  >("idle");
+
   const { mutateAsync: saveVideoAnnounce } = usePostVideoAnnounce();
+
   const { mutateAsync: deleteVideoAnnounce } = useDeleteVideoAnnounce();
 
   const {
@@ -390,46 +395,87 @@ const VideoUploadPage: React.FC = () => {
 
     try {
       setIsSubmitting(true);
+      setUploadStatus("uploading");
+      setUploadPercent(0);
 
-      // Upload video to Firebase
-      const videoResult = await uploadSingleFile(
-        data.video,
-        STORAGE_FOLDERS.ANNONCE_VIDEOS
-      );
+      // Fake incremental progress so UI matches YouTube-like behavior even
+      // when Firebase upload doesn't expose byte-level progress.
+      // Real-time progress requires axios upload with onUploadProgress.
+      let raf: number | null = null;
+      let stopped = false;
+      const start = () => {
+        const tick = () => {
+          if (stopped) return;
+          setUploadPercent((p) => {
+            // accelerate but never reach 95% until the real upload completes
+            const next = Math.min(95, Math.max(p + (p < 30 ? 4 : p < 70 ? 3 : 2), p + 1));
+            return next;
+          });
+          raf = window.setTimeout(tick, 180);
+        };
+        tick();
+      };
+      start();
 
-      // Prepare form data
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("video_url", videoResult.url);
+      try {
+        // Upload video to Firebase
+        const videoResult = await uploadSingleFile(
+          data.video,
+          STORAGE_FOLDERS.ANNONCE_VIDEOS
+        );
 
-      // Add thumbnail directly to FormData (not uploading to Firebase)
-      if (data.thumbnail) {
-        formData.append("thumbnail", data.thumbnail);
+        stopped = true;
+        if (raf) window.clearTimeout(raf);
+
+        setUploadPercent(100);
+        setUploadStatus("success");
+
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("video_url", videoResult.url);
+
+        // Add thumbnail directly to FormData (not uploading to Firebase)
+        if (data.thumbnail) {
+          formData.append("thumbnail", data.thumbnail);
+        }
+
+        if (data.contactType === "phone") {
+          formData.append("contact_type", "phone");
+          formData.append("phone_number", data.phoneNumber);
+        } else if (data.contactType === "url") {
+          formData.append("contact_type", "url");
+          formData.append("url", data.url);
+        }
+
+        // Submit to API
+        await saveVideoAnnounce(formData);
+
+        // Reset form and hide it
+        reset();
+        setShowForm(false);
+
+        setUploadPercent(0);
+        setUploadStatus("idle");
+
+
+        CustomToast("Annonce vidéo publiée avec succès", "success");
+
+        // Refresh the video announcements list
+        await loadVideoAnnouncements();
+      } catch (e) {
+        stopped = true;
+        if (raf) window.clearTimeout(raf);
+        throw e;
       }
 
-      if (data.contactType === "phone") {
-        formData.append("contact_type", "phone");
-        formData.append("phone_number", data.phoneNumber);
-      } else if (data.contactType === "url") {
-        formData.append("contact_type", "url");
-        formData.append("url", data.url);
-      }
-
-      // Submit to API
-      await saveVideoAnnounce(formData);
-
-      // Reset form and hide it
-      reset();
-      setShowForm(false);
-
-      CustomToast("Annonce vidéo publiée avec succès", "success");
-
-      // Refresh the video announcements list
-      await loadVideoAnnouncements();
     } catch (error) {
       console.error("Error submitting video announcement:", error);
 
+      setUploadStatus("error");
+
       let message = "Une erreur est survenue lors de la publication";
+
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
           response?: { data?: any; status?: number; statusText?: string };
@@ -648,18 +694,50 @@ const VideoUploadPage: React.FC = () => {
               </div>
             )}
 
+            {/* Upload progress UI */}
+            {(uploadStatus === "uploading" || uploadStatus === "success" || uploadStatus === "error") && (
+              <div className="mb-5">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-semibold text-primary-orange">
+                    {uploadStatus === "uploading"
+                      ? "Téléchargement en cours..."
+                      : uploadStatus === "success"
+                      ? "Téléversement terminé"
+                      : "Échec du chargement"}
+
+                  </p>
+                  <p className="text-xs text-gray-600 font-medium tabular-nums">
+                    {uploadPercent}%
+                  </p>
+                </div>
+                <div className="mt-2 h-2.5 w-full bg-orange-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary-orange rounded-full transition-all duration-150"
+                    style={{ width: `${uploadPercent}%` }}
+                  />
+                  {/* subtle youtube-like moving shine */}
+                  {uploadStatus === "uploading" && (
+                    <div className="relative -mt-[2px]">
+                      <div className="absolute top-0 left-0 h-[6px] w-[40%] bg-white/30 rounded-full animate-[shine_1.2s_ease-in-out_infinite]" />
+                    </div>
+                  )}
+                </div>
+                <style>{`@keyframes shine { 0%{ transform: translateX(-60%);} 60%{ transform: translateX(160%);} 100%{ transform: translateX(160%);} }`}</style>
+              </div>
+            )}
+
             {/* Submit Button */}
             <div className="mt-6">
               <button
                 type="submit"
-                disabled={isSubmitting || isUploading}
+                disabled={isSubmitting || uploadStatus === "uploading"}
                 className={cn(
                   "w-full py-2 px-4 bg-primary-orange hover:bg-primary-orange-dark text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
-                  (isSubmitting || isUploading) &&
+                  (isSubmitting || uploadStatus === "uploading") &&
                     "opacity-70 cursor-not-allowed"
                 )}
               >
-                {isSubmitting || isUploading ? (
+                {isSubmitting || uploadStatus === "uploading" ? (
                   <span className="flex items-center justify-center">
                     <AiOutlineLoading3Quarters className="animate-spin mr-2" />
                     Publication en cours...
@@ -669,6 +747,7 @@ const VideoUploadPage: React.FC = () => {
                 )}
               </button>
             </div>
+
           </form>
         </div>
       )}

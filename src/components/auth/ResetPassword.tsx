@@ -9,6 +9,7 @@ import { CloseEye } from "../../assets/icons/CloseEye";
 import { Eye } from "../../assets/icons/IconEye";
 import { resetPassword } from "../../services/api/fetchAuth";
 import { PasswordReset } from "../../services/types/resetPassword";
+import { getPasswordResetErrorMessage } from "../../utils/apiMessages";
 
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -58,6 +59,9 @@ const ResetPassword = () => {
       toast.success("Le mot de passe a été changé avec succès.");
       reset();
       navigate("/");
+    },
+    onError: (error) => {
+      toast.error(getPasswordResetErrorMessage(error));
     },
   });
 

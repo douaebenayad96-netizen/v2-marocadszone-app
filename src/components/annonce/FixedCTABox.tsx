@@ -39,20 +39,20 @@ const getAnnonceTypeAndDetailLabel = (annonce?: Annonce) => {
     // rental
     (announceType === "rental" &&
       (itemCondition === "rental_day"
-        ? "Jour"
+        ? "Par jour"
         : itemCondition === "rental_week"
-          ? "Semaine"
+          ? "Par semaine"
           : itemCondition === "rental_month"
-            ? "Mois"
+            ? "Par mois"
             : null)) ||
     // service
     (announceType === "service" &&
       (itemCondition === "service_hour"
-        ? "Heure"
+        ? "Par heure"
         : itemCondition === "service_day"
-          ? "Jour"
+          ? "Par jour"
           : itemCondition === "service_mission"
-            ? "Mission"
+            ? "Par mission"
             : null)) ||
     null;
 
