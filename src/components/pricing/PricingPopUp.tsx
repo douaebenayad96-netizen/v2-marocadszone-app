@@ -1,9 +1,9 @@
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { BiCheck } from "react-icons/bi";
 import { useMutation } from "react-query";
 import { toast } from "react-toastify";
-import { useTranslation } from "react-i18next";
 import { Close } from "../../assets/icons/Close";
 import usePlans from "../../hooks/usePlans";
 import { activatePlan, cancelPlan } from "../../services/api/fetchTarification";
@@ -38,6 +38,7 @@ const Button = ({
 }: ButtonProps) => {
   const baseStyles =
     "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-white";
+
   const variants = {
     default: "bg-[#E17A30] text-white hover:bg-[#C86A28]",
     secondary:
@@ -45,6 +46,7 @@ const Button = ({
     danger: "border border-red-500 bg-red-50 text-red-500",
     pending: "border border-yellow-500 bg-yellow-50 text-yellow-500",
   };
+
   const sizes = {
     default: "h-10 py-2 px-4",
     lg: "h-11 px-8",
@@ -111,9 +113,17 @@ export function PricingPopUp({
   onClose: () => void;
 }) {
   const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
   const { user, setUser } = useAuthStore();
   const [bankModal, setBankModal] = useState(false);
   const [currentId, setCurrentId] = useState<number>(0);
+  const [pendingPlanId, setPendingPlanId] = useState<number | null>(
+    user?.pending_subscription?.plan_id ??
+      user?.pending_subscription?.plan?.id ??
+      null
+  );
+
   const [isYearly, setIsYearly] = useState<boolean>(
     user?.current_active_subscription?.plan?.billing_period === "monthly"
       ? false
@@ -121,12 +131,12 @@ export function PricingPopUp({
   );
 
   const planData = usePlans();
-  const isRTL = i18n.language === "ar";
+  const plans = isYearly ? planData["yearly"] : planData["monthly"];
 
   const { mutateAsync: cancelPlanMutate } = useMutation({
     mutationFn: () => cancelPlan(),
-    onSuccess: ({ data }) => {
-      setUser(data);
+    onSuccess: (response) => {
+      setUser(response.data ?? response.user ?? response);
     },
   });
 
@@ -140,8 +150,8 @@ export function PricingPopUp({
 
   const { mutateAsync: activatePlanMutate } = useMutation({
     mutationFn: () => activatePlan(),
-    onSuccess: ({ data }) => {
-      setUser(data);
+    onSuccess: (response) => {
+      setUser(response.data ?? response.user ?? response);
     },
   });
 
@@ -153,16 +163,34 @@ export function PricingPopUp({
     });
   };
 
+  const isPendingPlan = (tierId: number) =>
+    pendingPlanId === tierId ||
+    user?.pending_subscription?.plan?.id === tierId ||
+    user?.pending_subscription?.plan_id === tierId;
+
+  const isActivePlan = (tierId: number) =>
+    user?.current_active_subscription?.plan?.id === tierId &&
+    user?.current_active_subscription?.status === "active";
+
+  const isCancelledPlan = (tierId: number) =>
+    user?.current_active_subscription?.plan?.id === tierId &&
+    user?.current_active_subscription?.status === "cancelled";
+
+  const isFreePlan = (tier: any) =>
+    Number(tier.price) === 0 || tier.id === 1 || tier.id === 4;
+
   return (
-    <section className={cn("py-8 px-4 bg-white", className, isRTL ? "rtl" : "")}>
+    <section
+      className={cn("py-8 px-4 bg-white", className, isRTL ? "rtl" : "")}
+    >
       <span
         className="flex justify-end cursor-pointer hover:text-gray-700"
         onClick={() => onClose()}
       >
         <Close />
       </span>
+
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-16 max-w-5xl mx-auto">
           <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-6 text-balance max-w-3xl mx-auto">
             {t("pricing.main_title")}
@@ -172,8 +200,11 @@ export function PricingPopUp({
           </p>
         </div>
 
-        {/* Billing Toggle */}
-        <div className={`flex items-center justify-center gap-4 mb-12 ${isRTL ? "flex-row-reverse" : ""}`}>
+        <div
+          className={`flex items-center justify-center gap-4 mb-12 ${
+            isRTL ? "flex-row-reverse" : ""
+          }`}
+        >
           <span
             className={`text-sm ${
               !isYearly ? "text-gray-900 font-medium" : "text-gray-600"
@@ -181,6 +212,7 @@ export function PricingPopUp({
           >
             {t("pricing.monthly")}
           </span>
+
           <button
             onClick={() => setIsYearly(!isYearly)}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
@@ -193,7 +225,12 @@ export function PricingPopUp({
               }`}
             />
           </button>
-          <div className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
+
+          <div
+            className={`flex items-center gap-2 ${
+              isRTL ? "flex-row-reverse" : ""
+            }`}
+          >
             <span
               className={`text-sm ${
                 isYearly ? "text-gray-900 font-medium" : "text-gray-600"
@@ -201,15 +238,15 @@ export function PricingPopUp({
             >
               {t("pricing.yearly")}
             </span>
+
             <Badge variant="secondary" className="bg-orange-100 text-[#E17A30]">
               {t("pricing.save_20")}
             </Badge>
           </div>
         </div>
 
-        {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {(isYearly ? planData["yearly"] : planData["monthly"]).map((tier, index) => (
+          {plans.map((tier, index) => (
             <Card
               key={tier.name}
               className={`flex flex-col justify-between relative ${
@@ -231,12 +268,16 @@ export function PricingPopUp({
                       {tier.name}
                     </h3>
                   </div>
+
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-gray-900">
                       {tier.price}
                     </span>
-                    <span className="text-gray-600">{t("pricing.per_month")}</span>
+                    <span className="text-gray-600">
+                      {t("pricing.per_month")}
+                    </span>
                   </div>
+
                   <p className="text-sm text-gray-600">
                     {tier.transactionFee}
                   </p>
@@ -248,25 +289,20 @@ export function PricingPopUp({
                   {tier.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-center gap-3">
                       <BiCheck className="h-4 w-4 text-[#E17A30] flex-shrink-0" />
-                      <span className="text-sm text-gray-900">
-                        {feature}
-                      </span>
+                      <span className="text-sm text-gray-900">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
-                {user?.current_active_subscription?.plan?.id === tier.id &&
-                user?.current_active_subscription.status === "active" ? (
+                {isActivePlan(tier.id) ? (
                   <Button variant="danger" onClick={handleCancellation}>
                     {t("pricing.cancel_subscription")}
                   </Button>
-                ) : user?.current_active_subscription?.plan?.id === tier.id &&
-                  user?.current_active_subscription.status === "cancelled" ? (
+                ) : isCancelledPlan(tier.id) ? (
                   <Button variant="pending" onClick={handleActivation}>
                     {t("pricing.activate_subscription")}
                   </Button>
-                ) : (user?.pending_subscription?.plan?.id === tier.id || 
-                     user?.pending_subscription?.plan_id === tier.id) ? (
+                ) : isPendingPlan(tier.id) ? (
                   <div className="space-y-4">
                     <Button
                       variant="pending"
@@ -281,8 +317,13 @@ export function PricingPopUp({
                   <div className="space-y-4">
                     <Button
                       onClick={() => {
-                        setBankModal(!bankModal);
+                        if (isFreePlan(tier)) {
+                          onClose();
+                          return;
+                        }
+
                         setCurrentId(tier.id);
+                        setBankModal(true);
                       }}
                       className="w-full mt-6"
                       variant={tier.buttonVariant}
@@ -311,12 +352,14 @@ export function PricingPopUp({
           ))}
         </div>
       </div>
+
       <AnimatePresence>
         {bankModal && (
           <BankDataModal
             setOpenBank={setBankModal}
             planId={currentId}
             onClose={() => onClose()}
+            onPlanChosen={(id) => setPendingPlanId(id)}
           />
         )}
       </AnimatePresence>
