@@ -24,9 +24,13 @@ const getToken = () => {
 const authInterceptor = (config: any) => {
   const token = getToken();
 
+  console.log("TOKEN SENT:", token);
+  console.log("API URL:", config.baseURL, config.url);
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 };
 

@@ -42,23 +42,11 @@ export type FormValues = {
   longitude: string;
   adresse: string;
   password: string;
-  city: {
-    value: string;
-    label: string;
-  };
-  country: {
-    value: string;
-    label: string;
-  };
+  city: { value: string; label: string };
+  country: { value: string; label: string };
   zio: string;
-  category: {
-    label: string;
-    value: string;
-  };
-  subCategory: {
-    label: string;
-    value: string;
-  };
+  category: { label: string; value: string };
+  subCategory: { label: string; value: string };
   isStepValid: boolean;
   title: string;
   description: string;
@@ -68,14 +56,6 @@ export type FormValues = {
   price: string;
   video: File | undefined;
 };
-export type category = {
-  label: string;
-  value: string;
-};
-export type metier = {
-  label: string;
-  value: string;
-};
 
 const LAST_STEP: ProgressSteps = 4;
 
@@ -84,14 +64,18 @@ const StepsRegister = () => {
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
-  // Auto-skip step 0 (choix du type d'annonce) if we come from the main “Publier une annonce” button.
+
+  const [companyRequired, setCompanyRequired] = useState(false);
+
   const [step, setStep] = useState<ProgressSteps>(() => {
-    const shouldSkip = new URLSearchParams(window.location.search).get("skipType") === "1";
+    const shouldSkip =
+      new URLSearchParams(window.location.search).get("skipType") === "1";
     return shouldSkip ? 1 : 0;
   });
 
   const { mutateAsync: savePost, isLoading } = usePostPrestation();
   const form = useForm<FormValues>();
+
   const { uploadFiles, uploadSingleFile, isUploading } = useFirebaseUpload(
     STORAGE_FOLDERS.ANNONCE_IMAGES
   );
@@ -102,130 +86,126 @@ const StepsRegister = () => {
   }, [user, form]);
 
   const handleSubmit = async () => {
-    if (step === 4 && form.getValues("email") && form.getValues("phone")) {
-      if (isLoading) return;
+    if (step !== LAST_STEP) return;
 
-      if (!user || (!user.id && !user.email)) {
-        CustomToast(
-          t(
-            "Vous devez être connecté pour publier une annonce",
-            "You must be logged in to publish an annonce"
-          ),
-          "error"
-        );
-        navigate("/login"); // Redirect to login page
-        return;
-      }
+    if (!form.getValues("email") || !form.getValues("phone")) return;
 
-      if (!token) {
-        CustomToast(
-          t(
-            "Session expirée. Veuillez vous reconnecter.",
-            "Session expired. Please login again."
-          ),
-          "error"
-        );
+    if (isLoading || isUploading) return;
 
-        navigate("/login");
+    if (!user || (!user.id && !user.email)) {
+      CustomToast(
+        t(
+          "Vous devez être connecté pour publier une annonce",
+          "You must be logged in to publish an annonce"
+        ),
+        "error"
+      );
+      navigate("/login");
+      return;
+    }
 
-        return;
-      }
+    if (!token) {
+      CustomToast(
+        t(
+          "Session expirée. Veuillez vous reconnecter.",
+          "Session expired. Please login again."
+        ),
+        "error"
+      );
+      navigate("/login");
+      return;
+    }
 
-      // Check if token looks like a Firebase token (should not be used for Laravel API)
-      if (token.startsWith("eyJ") && token.split(".").length === 3) {
-        CustomToast(
-          t(
-            "Votre session doit être mise à jour. Reconnexion automatique...",
-            "Your session needs to be updated. Automatic reconnection..."
-          ),
-          "info"
-        );
+    if (token.startsWith("eyJ") && token.split(".").length === 3) {
+      CustomToast(
+        t(
+          "Votre session doit être mise à jour. Reconnexion automatique...",
+          "Your session needs to be updated. Automatic reconnection..."
+        ),
+        "info"
+      );
 
-        // Clear the invalid token and redirect to login
-        const { logout } = useAuthStore.getState();
-        logout();
+      const { logout } = useAuthStore.getState();
+      logout();
 
-        // Small delay to show the message, then redirect
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
-        return;
-      }
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
 
-      const formValues = form.getValues();
+      return;
+    }
 
-      const formData = new FormData();
+    const formValues = form.getValues();
 
-      const requiredFields = {
-        title: formValues.title,
-        description: formValues.description,
-        email: formValues.email,
-        phone: `+${formValues.phone}`,
-        category_id: formValues.category?.value,
-        subcategory_id: formValues.subCategory?.value,
-        country_id: formValues.country?.value,
-        city_id: formValues.city?.value,
-        announcementType: formValues.announcementType,
-        condition: formValues.condition,
-        price: formValues.price,
-      };
+    const requiredFields = {
+      title: formValues.title,
+      description: formValues.description,
+      email: formValues.email,
+      phone: formValues.phone,
+      category_id: formValues.category?.value,
+      subcategory_id: formValues.subCategory?.value,
+      country_id: formValues.country?.value,
+      city_id: formValues.city?.value,
+      announcementType: formValues.announcementType,
+      condition: formValues.condition,
+      price: formValues.price,
+    };
 
-      const missingFields = Object.entries(requiredFields)
-        .filter(([, value]) => !value)
-        .map(([key]) => key);
+    const missingFields = Object.entries(requiredFields)
+      .filter(([, value]) => !value)
+      .map(([key]) => key);
 
-      if (missingFields.length > 0) {
-        CustomToast(
-          t(
-            `Champs requis manquants: ${missingFields.join(", ")}`,
-            `Missing required fields: ${missingFields.join(", ")}`
-          ),
-          "error"
-        );
+    if (missingFields.length > 0) {
+      CustomToast(
+        t(
+          `Champs requis manquants: ${missingFields.join(", ")}`,
+          `Missing required fields: ${missingFields.join(", ")}`
+        ),
+        "error"
+      );
+      return;
+    }
 
-        return;
-      }
+    const formData = new FormData();
 
-      // Required fields for /announces endpoint
-      formData.append("title", formValues.title || "");
-      formData.append("description", formValues.description || "");
-      formData.append("email", formValues.email || "");
-      formData.append("phone_number", `+${formValues.phone}` || "");
+    formData.append("title", formValues.title || "");
+    formData.append("description", formValues.description || "");
+    formData.append("email", formValues.email || "");
+    formData.append("phone_number", `+${formValues.phone}` || "");
 
-      // Category and subcategory IDs (both required)
-      if (formValues.category?.value) {
-        formData.append("category_id", formValues.category.value);
-      }
-      if (formValues.subCategory?.value) {
-        formData.append("subcategory_id", formValues.subCategory.value);
-      }
+    if (formValues.category?.value) {
+      formData.append("category_id", formValues.category.value);
+    }
 
-      // Location data
-      if (formValues.country?.value) {
-        formData.append("country_id", formValues.country.value);
-      }
-      if (formValues.city?.value) {
-        formData.append("city_id", formValues.city.value);
-      }
+    if (formValues.subCategory?.value) {
+      formData.append("subcategory_id", formValues.subCategory.value);
+    }
 
-      if (formValues.announcementType) {
-        formData.append("announce_type", formValues.announcementType);
-      }
+    if (formValues.country?.value) {
+      formData.append("country_id", formValues.country.value);
+    }
 
-      // Backend: item_condition n'existe que pour les annonces de type sale (new/used/good_condition)
-      // Pour rental et service, on ne doit PAS envoyer item_condition.
-      
+    if (formValues.city?.value) {
+      formData.append("city_id", formValues.city.value);
+    }
 
+    if (formValues.announcementType) {
+      formData.append("announce_type", formValues.announcementType);
+    }
 
-      // Price
-      if (formValues.price) {
-        formData.append("price", formValues.price);
-      }
+    if (formValues.condition) {
+      formData.append("item_condition", formValues.condition);
+    }
 
-      // Upload files to Firebase Storage
+    if (formValues.price) {
+      formData.append("price", formValues.price);
+    }
+
+    try {
       if (formValues.photos && formValues.photos.length > 0) {
         const imageResults = await uploadFiles(formValues.photos);
         const imageUrls = imageResults.map((result) => result.url);
+
         imageUrls.forEach((url, index) => {
           formData.append(`image_urls[${index}]`, url);
         });
@@ -239,119 +219,99 @@ const StepsRegister = () => {
         formData.append("video_url", videoResult.url);
       }
 
-      try {
-        console.log("FORM VALUES:", formValues);
-        console.log("condition:", formValues.condition);
-        console.log("announcementType:", formValues.announcementType);
-        if (formValues.condition) {
-          formData.set("item_condition", formValues.condition);
-        }
+      await savePost(formData);
 
-        console.log("BEFORE SEND item_condition:", formData.get("item_condition"));
-        await savePost(formData);
+      CustomToast(
+        t("annonce_creee_avec_succes", "Annonce créée avec succès!"),
+        "success"
+      );
+
+      navigate("/user-account/annonces");
+    } catch (error) {
+      console.error("🚀 [StepsRegister] Post job error:", error);
+
+      const response =
+        error && typeof error === "object" && "response" in error
+          ? (error as {
+              response?: {
+                status?: number;
+                data?: {
+                  message?: string;
+                  error?: string;
+                  error_code?: string;
+                };
+              };
+            }).response
+          : undefined;
+
+      const errorData = response?.data;
+
+      if (response?.status === 401) {
         CustomToast(
-          t("annonce_creee_avec_succes", "Annonce créée avec succès!"),
-          "success"
+          t(
+            "Session expirée. Veuillez vous reconnecter.",
+            "Session expired. Please login again."
+          ),
+          "error"
+        );
+        navigate("/login");
+        return;
+      }
+
+      if (errorData?.error_code === "COMPANY_REQUIRED") {
+        setCompanyRequired(true);
+        window.scrollTo(0, 0);
+        return;
+      }
+
+      if (errorData?.error_code === "UPGRADE_REQUIRED") {
+        CustomToast(
+          t(
+            "Vous avez atteint votre limite d’annonces. Veuillez choisir un abonnement.",
+            "You have reached your announcement limit. Please choose a subscription."
+          ),
+          "info"
         );
 
-        navigate("/user-account/annonces");
-      } catch (error) {
-        console.error("🚀 [StepsRegister] Post job error:", error);
+        setTimeout(() => {
+          navigate("/tarification");
+        }, 1500);
 
-        // Extract error message first
-        let errorMessage = t("erreur_lors_de_la_creation_de_la_demande");
-
-        // Check for specific authentication errors
-        if (error && typeof error === "object" && "response" in error) {
-          const axiosError = error as {
-            response?: {
-              status?: number;
-              data?: { message?: string; error?: string };
-            };
-          };
-
-          if (axiosError.response?.status === 401) {
-            CustomToast(
-              t(
-                "Session expirée. Veuillez vous reconnecter.",
-                "Session expired. Please login again."
-              ),
-              "error"
-            );
-            navigate("/login");
-            return;
-          }
-
-          // Extract error message from API response
-          errorMessage =
-            axiosError.response?.data?.message ||
-            axiosError.response?.data?.error ||
-            t("erreur_lors_de_la_creation_de_la_demande");
-        }
-
-        // Check if the error is about reaching the annonce limit
-        const limitErrorMessage =
-          "Error icon Vous avez atteint la limite de 3 annonces. Veuillez créer une entreprise pour publier plus d'annonces.";
-
-        if (
-          errorMessage.includes("Vous avez atteint la limite de 3 annonces") ||
-          errorMessage.includes("limite de 3 annonces") ||
-          errorMessage === limitErrorMessage
-        ) {
-          // Show info toast with redirect message
-          CustomToast(
-            t(
-              "You have reached the limit of 3 announcements. Redirecting to company creation...",
-              "Vous avez atteint la limite de 3 annonces. Redirection vers la création d'entreprise..."
-            ),
-            "info"
-          );
-
-          // Redirect to company creation page after 3 seconds
-          setTimeout(() => {
-            navigate("/user-account/company");
-          }, 3000);
-        } else {
-          // Show regular error toast for other errors
-          CustomToast(errorMessage, "error");
-        }
+        return;
       }
+
+      CustomToast(
+        errorData?.message ||
+          errorData?.error ||
+          t("erreur_lors_de_la_creation_de_la_demande"),
+        "error"
+      );
     }
   };
 
   const handleStepValidation = (newStep: ProgressSteps) => {
-    // handle back
     if (newStep < step) {
       setStep(newStep);
       window.scrollTo(0, 0);
       return;
     }
 
-    // In handleStepValidation function:
     if (step === 0) {
       const formValues = form.getValues();
 
-      if (!formValues.annonceType) {
-        // Changed from announcementType
-        return;
-      }
+      if (!formValues.annonceType) return;
 
-      if (formValues.annonceType == "video") {
+      if (formValues.annonceType === "video") {
         navigate("/user-account/annonces-video?add=true");
         return;
       }
 
-      // If user selected "entreprise", redirect to company page
-      if (formValues.annonceType == "entreprise") {
-        navigate('/user-account/company');
+      if (formValues.annonceType === "entreprise") {
+        navigate("/user-account/company");
         return;
       }
 
-
-      // Trigger validation for all required fields in step 0
-      const validationResult = form.trigger(["annonceType"]); // Changed from announcementType
-
-      validationResult.then((isValid) => {
+      form.trigger(["annonceType"]).then((isValid) => {
         if (isValid) {
           setStep(newStep);
           window.scrollTo(0, 0);
@@ -360,16 +320,7 @@ const StepsRegister = () => {
     }
 
     if (step === 1) {
-      // Trigger validation for all required fields in step 0
-      const validationResult = form.trigger([
-        "category",
-        "subCategory",
-        "country",
-        "city",
-      ]);
-
-      // Wait for validation to complete before checking isValid
-      validationResult.then((isValid) => {
+      form.trigger(["category", "subCategory", "country", "city"]).then((isValid) => {
         if (isValid) {
           setStep(newStep);
           window.scrollTo(0, 0);
@@ -378,37 +329,18 @@ const StepsRegister = () => {
     }
 
     if (step === 2) {
-      const formValues = form.getValues();
-
-      // Check if announcement type and condition are properly set
-      if (!formValues.announcementType) {
-        console.error("🚀 [StepsRegister] Announcement type is missing!");
-      }
-      if (!formValues.condition) {
-        console.error("🚀 [StepsRegister] Condition is missing!");
-      }
-      if (!formValues.price) {
-        console.error("🚀 [StepsRegister] Price is missing!");
-      }
-
-      const validationResult = form.trigger([
-        "title",
-        "description",
-        "announcementType",
-        "condition",
-        "price",
-      ]);
-      validationResult.then((isValid) => {
-        if (isValid) {
-          setStep(newStep);
-          window.scrollTo(0, 0);
-        }
-      });
+      form
+        .trigger(["title", "description", "announcementType", "condition", "price"])
+        .then((isValid) => {
+          if (isValid) {
+            setStep(newStep);
+            window.scrollTo(0, 0);
+          }
+        });
     }
 
     if (step === 3) {
-      const validationResult = form.trigger(["photos", "video"]);
-      validationResult.then((isValid) => {
+      form.trigger(["photos", "video"]).then((isValid) => {
         if (isValid) {
           setStep(newStep);
           window.scrollTo(0, 0);
@@ -417,8 +349,7 @@ const StepsRegister = () => {
     }
 
     if (step === 4) {
-      const validationResult = form.trigger(["email", "phone"]);
-      validationResult.then((isValid) => {
+      form.trigger(["email", "phone"]).then((isValid) => {
         if (isValid) {
           setStep(newStep);
           window.scrollTo(0, 0);
@@ -430,68 +361,94 @@ const StepsRegister = () => {
   return (
     <div className="min-h-screen pt-nav pb-24">
       <h1 className="sr-only">Publier une annonce gratuite au Maroc</h1>
-      {/* steps content */}
+
       <div className="container-post-page">
-        <AnimatePresence
-          mode="wait"
-          initial={false}
-          onExitComplete={() => (document.body.style.overflow = "auto")}
-        >
-          {step === 0 && <TypeAnnonceStep form={form} key="typeAnnonceStep" />}
+        {companyRequired && (
+          <div className="mb-8 rounded-2xl border border-orange-200 bg-orange-50 p-8 text-center shadow-sm">
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">
+              Créez votre entreprise pour continuer
+            </h3>
 
-          {step === 1 && <NoUserStep key="noUserStep" form={form} />}
+            <p className="text-slate-600 max-w-xl mx-auto mb-6">
+              Vous avez utilisé vos annonces gratuites. Pour publier plus
+              d’annonces, veuillez créer votre page entreprise.
+            </p>
 
-          {step === 2 && <InfoFormStep key="infoForm" form={form} />}
-
-          {step === 3 && <PhotosSelectStep key="photosSelect" form={form} />}
-
-          {step === 4 && <ContactStep key="emailPhoneStep" form={form} />}
-        </AnimatePresence>
-      </div>
-
-      {/* steps next & back - fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 p-4 z-[10000]">
-        <div className="container-post-page">
-          <div className="flex justify-between font-semibold">
             <button
-              onClick={() => {
-                if (step > 0) {
-                  setStep((step - 1) as ProgressSteps);
-                }
-              }}
-              className={`px-4 py-3 border rounded-md ${
-                step === 0
-                  ? "cursor-not-allowed text-gray-500 border-gray-200"
-                  : "text-primary-blue-all-800 border-gray-400"
-              }`}
+              type="button"
+              onClick={() => navigate("/user-account/company")}
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-xl transition"
             >
-              {t("previous")}
-            </button>
-            <button
-              onClick={() => {
-                handleSubmit();
-                if (step < LAST_STEP) {
-                  handleStepValidation((step + 1) as ProgressSteps);
-                }
-              }}
-              disabled={isLoading || isUploading}
-              className={cn(
-                "px-4 py-3 btn-primary text-white rounded-md",
-                (isLoading || isUploading) && "notAllowed"
-              )}
-            >
-              {isUploading
-                ? t("Uploading...", "Téléchargement...")
-                : step === LAST_STEP
-                ? t("publish")
-                : t("next")}
-              {(isLoading || isUploading) && (
-                <AiOutlineLoading3Quarters className="animate-spin inline-block ml-2" />
-              )}
+              Créer mon entreprise
             </button>
           </div>
-        </div>
+        )}
+
+        {!companyRequired && (
+          <AnimatePresence
+            mode="wait"
+            initial={false}
+            onExitComplete={() => {
+              document.body.style.overflow = "auto";
+            }}
+          >
+            {step === 0 && <TypeAnnonceStep form={form} key="typeAnnonceStep" />}
+            {step === 1 && <NoUserStep key="noUserStep" form={form} />}
+            {step === 2 && <InfoFormStep key="infoForm" form={form} />}
+            {step === 3 && <PhotosSelectStep key="photosSelect" form={form} />}
+            {step === 4 && <ContactStep key="emailPhoneStep" form={form} />}
+          </AnimatePresence>
+        )}
       </div>
+
+      {!companyRequired && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 p-4 z-[10000]">
+          <div className="container-post-page">
+            <div className="flex justify-between font-semibold">
+              <button
+                onClick={() => {
+                  if (step > 0) {
+                    setStep((step - 1) as ProgressSteps);
+                  }
+                }}
+                className={`px-4 py-3 border rounded-md ${
+                  step === 0
+                    ? "cursor-not-allowed text-gray-500 border-gray-200"
+                    : "text-primary-blue-all-800 border-gray-400"
+                }`}
+              >
+                {t("previous")}
+              </button>
+
+              <button
+                onClick={() => {
+                  if (step < LAST_STEP) {
+                    handleStepValidation((step + 1) as ProgressSteps);
+                    return;
+                  }
+
+                  handleSubmit();
+                }}
+                disabled={isLoading || isUploading}
+                className={cn(
+                  "px-4 py-3 btn-primary text-white rounded-md",
+                  (isLoading || isUploading) && "notAllowed"
+                )}
+              >
+                {isUploading
+                  ? t("Uploading...", "Téléchargement...")
+                  : step === LAST_STEP
+                  ? t("publish")
+                  : t("next")}
+
+                {(isLoading || isUploading) && (
+                  <AiOutlineLoading3Quarters className="animate-spin inline-block ml-2" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

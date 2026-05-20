@@ -34,41 +34,56 @@ interface BankDataModalProps {
   setOpenBank: (open: boolean) => void;
   planId: number;
   onClose?: () => void;
+  onPlanChosen?: (id: number) => void;
 }
 const BankDataModal: React.FC<BankDataModalProps> = ({
   setOpenBank,
   planId,
   onClose,
+  onPlanChosen,
 }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [updatedUserAfterChoice, setUpdatedUserAfterChoice] = useState<any>(null);
    const navigate = useNavigate();
   const { setUser, user } = useAuthStore();
   const { openRegisterModel } = useLoginModelStore();
   const { mutate: chosePlan } = useMutation({
-    mutationFn: (id: string) => choosePlanApi(id),
-    onSuccess: ({ data }) => {
-      setUser(data);
-      setShowSuccessModal(true);
-    },
-    onError: (error: AxiosError<{ message: string }>) => {
-      console.log(error.response?.data);
-      if (
-        error?.response?.data?.message ===
-        "User must have a company to choose a plan"
-      ) {
-        toast.info(
-          "L'utilisateur doit avoir une entreprise pour choisir un plan"
-        );
-      }
-      if (
-        error.response?.data?.message ===
-        "User already has a plan or subscription."
-      ) {
-        toast.info("Utilisateur deja a une abonnement");
-      }
-    },
-  });
+  mutationFn: (id: string) => choosePlanApi(id),
+
+  onSuccess: (response) => {
+  const updatedUser =
+    response.user ?? response.data?.user ?? response.data ?? response;
+
+  setUpdatedUserAfterChoice(updatedUser);
+  onPlanChosen?.(planId);
+  setShowSuccessModal(true);
+},
+
+  onError: (error: AxiosError<{ message: string }>) => {
+    console.log("CHOOSE PLAN ERROR:", error.response?.data);
+
+    if (
+      error?.response?.data?.message ===
+      "User must have a company to choose a plan"
+    ) {
+      toast.info("L'utilisateur doit avoir une entreprise pour choisir un plan");
+      return;
+    }
+
+    if (
+      error.response?.data?.message ===
+      "User already has a plan or subscription."
+    ) {
+      toast.info("Utilisateur deja a une abonnement");
+      return;
+    }
+
+    toast.error(
+      error.response?.data?.message || "Erreur lors du choix du plan"
+    );
+  },
+});
   
   const handleOpenRegister = (id: string) => {
     if (!user) {
@@ -110,10 +125,14 @@ const BankDataModal: React.FC<BankDataModalProps> = ({
 
         <button
           onClick={() => {
-            setOpenBank(false);
-            onClose && onClose();
-            navigate("/user-account/annonces");
-          }}
+  if (updatedUserAfterChoice) {
+    setUser(updatedUserAfterChoice);
+  }
+
+  setOpenBank(false);
+  onClose && onClose();
+  navigate("/user-account/subscription-management");
+}}
           className="rounded-lg bg-primary-orange px-8 py-3 font-semibold text-white hover:bg-primary-orange-dark"
         >
           Voir mes annonces

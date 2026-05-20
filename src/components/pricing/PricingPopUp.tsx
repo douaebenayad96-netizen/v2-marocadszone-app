@@ -117,6 +117,9 @@ export function PricingPopUp({
       ? false
       : true
   );
+  const [pendingPlanId, setPendingPlanId] = useState<number | null>(
+    user?.pending_subscription?.plan_id ?? user?.pending_subscription?.plan?.id ?? null
+  );
 
   const planData = usePlans();
 
@@ -263,7 +266,9 @@ export function PricingPopUp({
                       <Button variant="pending" onClick={handleActivation}>
                         Activer l'abonnement
                       </Button>
-                    ) : (user?.pending_subscription?.plan?.id === tier.id || user?.pending_subscription?.plan_id === tier.id) ? (
+                    ) : (pendingPlanId === tier.id ||
+  user?.pending_subscription?.plan?.id === tier.id ||
+user?.pending_subscription?.plan_id === tier.id) ? (
                       /* HADI HIYA LA PARTIE LI ZDNA */
                       <div className="space-y-4">
                         <Button
@@ -279,7 +284,12 @@ export function PricingPopUp({
                       <div className="space-y-4">
                         <Button
                           onClick={() => {
-                            setBankModal(!bankModal);
+                            if (tier.price === 0 || tier.id === 1 || tier.id === 4) {
+                              onClose();
+                              return;
+                            }
+
+                            setBankModal(true);
                             setCurrentId(tier.id);
                           }}
                           className="w-full mt-6"
@@ -366,7 +376,9 @@ export function PricingPopUp({
                       <Button variant="pending" onClick={handleActivation}>
                         Activer l'abonnement
                       </Button>
-                    ) : (user?.pending_subscription?.plan?.id === tier.id || user?.pending_subscription?.plan_id === tier.id) ? (
+                    ) : (pendingPlanId === tier.id ||
+  user?.pending_subscription?.plan?.id === tier.id ||
+  user?.pending_subscription?.plan_id === tier.id) ? (
                       <div className="space-y-4">
                         <Button
                           variant="pending"
@@ -381,7 +393,12 @@ export function PricingPopUp({
                       <div className="space-y-4">
                         <Button
                           onClick={() => {
-                            setBankModal(!bankModal);
+                            if (tier.price === 0 || tier.id === 1 || tier.id === 4) {
+                              onClose();
+                              return;
+                            }
+
+                            setBankModal(true);
                             setCurrentId(tier.id);
                           }}
                           className="w-full mt-6"
@@ -417,6 +434,7 @@ export function PricingPopUp({
             setOpenBank={setBankModal}
             planId={currentId}
             onClose={() => onClose()}
+            onPlanChosen={(id) => setPendingPlanId(id)}
           />
         )}
       </AnimatePresence>
