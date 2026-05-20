@@ -2,6 +2,7 @@ import { PhoneNumberUtil } from "google-libphonenumber";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { BiLoaderAlt, BiMinus, BiPlus } from "react-icons/bi";
+import { useTranslation } from "react-i18next";
 import PhoneInput from "react-phone-input-2";
 import {
   useCreateCompany,
@@ -30,6 +31,7 @@ const MAX_LOGO_SIZE = 5 * 1024 * 1024;
 const VALID_LOGO_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 const UserCompanyInformationForm = () => {
+  const { t } = useTranslation();
   const token = useAuthStore((state) => state.token);
   const [urlCount, setUrlCount] = useState(1);
   const [isNewCompany, setIsNewCompany] = useState(true);
@@ -48,7 +50,6 @@ const UserCompanyInformationForm = () => {
     },
   });
 
-  // API hooks
   const { data: company, refetch } = useGetCompany(
     token as string,
     undefined,
@@ -61,9 +62,7 @@ const UserCompanyInformationForm = () => {
   const [showPricing, setShowPricing] = useState(false);
 
   const companyData = company as Company | undefined;
-
   const isLoading = isCreating || isUpdating;
-  // const { data, refetch, isLoading: isLoadingData } = useGetCompanyInfo(token as string)
 
   useEffect(() => {
     if (token && companyData) {
@@ -85,33 +84,28 @@ const UserCompanyInformationForm = () => {
 
   const onSubmit = async (formData: FormValues) => {
     if (!token) {
-      CustomToast("Your session expired. Sign in and try again.", "error");
+      CustomToast(t("company_form.session_expired"), "error");
       return;
     }
 
     const formDataToSend = new FormData();
 
-    // Add logo file if provided
     if (formData.companyLogo?.[0]) {
       const logo = formData.companyLogo[0];
 
       if (!VALID_LOGO_TYPES.includes(logo.type)) {
-        CustomToast(
-          "Invalid image. Please use a JPG, PNG, or WebP file.",
-          "error"
-        );
+        CustomToast(t("company_form.invalid_image"), "error");
         return;
       }
 
       if (logo.size > MAX_LOGO_SIZE) {
-        CustomToast("Image is too large. Maximum size: 5MB.", "error");
+        CustomToast(t("company_form.image_too_large"), "error");
         return;
       }
 
       formDataToSend.append("logo", logo);
     }
 
-    // Add company details
     formDataToSend.append("name", formData.companyName);
     formDataToSend.append("description", formData.description);
 
@@ -127,7 +121,6 @@ const UserCompanyInformationForm = () => {
       formDataToSend.append("email", formData.email);
     }
 
-    // Add URLs (filter out empty ones)
     const validUrls = formData.urls
       .slice(0, urlCount)
       .filter((url) => url.trim() !== "");
@@ -136,7 +129,7 @@ const UserCompanyInformationForm = () => {
       try {
         new URL(url);
       } catch {
-        CustomToast("Invalid URL. Example: https://example.com", "error");
+        CustomToast(t("company_form.invalid_url"), "error");
         return;
       }
     }
@@ -147,21 +140,17 @@ const UserCompanyInformationForm = () => {
 
     try {
       if (isNewCompany || !companyData) {
-        console.log("🏢 Creating new company...");
         await createCompany({ companyData: formDataToSend, token });
-        CustomToast("Company profile created successfully.", "success");
+        CustomToast(t("company_form.create_success"), "success");
         setIsNewCompany(false);
-        setShowPricing(true); // Show pricing modal after creating a new company
+        setShowPricing(true);
       } else {
-        console.log("🏢 Updating existing company...");
         await updateCompany({ companyData: formDataToSend, token });
-        CustomToast("Company profile updated successfully.", "success");
+        CustomToast(t("company_form.update_success"), "success");
       }
 
-      refetch(); // Refresh the data
+      refetch();
     } catch (error) {
-      console.error("🏢 Error:", error);
-
       const message = getCompanyErrorMessage(error);
 
       if (message.includes("company profile already exists")) {
@@ -169,7 +158,9 @@ const UserCompanyInformationForm = () => {
       }
 
       CustomToast(
-        message,
+        message === "company profile already exists" 
+          ? t("company_form.already_exists") 
+          : message,
         message.includes("already exists") ? "warning" : "error"
       );
     }
@@ -194,14 +185,6 @@ const UserCompanyInformationForm = () => {
     }
   };
 
-  // if (isLoadingData) {
-  //   return (
-  //     <div className="flex justify-center items-center py-10">
-  //       <BiLoaderAlt className="animate-spin text-primary-blue text-4xl" />
-  //     </div>
-  //   )
-  // }
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -210,7 +193,7 @@ const UserCompanyInformationForm = () => {
             <div className="grid grid-cols-1 gap-2 md:gap-4">
               <div>
                 <label htmlFor="companyLogo" className="label">
-                  Logo de l'entreprise
+                  {t("company_form.logo_label")}
                 </label>
                 <div className="relative">
                   <input
@@ -224,15 +207,15 @@ const UserCompanyInformationForm = () => {
                     <span className="text-gray-500 truncate mr-2">
                       {watch("companyLogo")?.[0]?.name ? (
                         <p className="text-xs text-gray-500">
-                          Fichier sélectionné:{" "}
+                          {t("company_form.file_selected")}:{" "}
                           {watch("companyLogo")?.[0]?.name || companyData?.logo
                             ? getLastRouteInUrl(companyData?.logo || "")
-                            : "Aucun fichier sélectionné"}
+                            : t("company_form.no_file_selected")}
                         </p>
                       ) : companyData?.logo ? (
                         getLastRouteInUrl(companyData?.logo)
                       ) : (
-                        "Aucun fichier sélectionné"
+                        t("company_form.no_file_selected")
                       )}
                     </span>
                     <div className="flex-shrink-0 text-gray-400">
@@ -260,30 +243,30 @@ const UserCompanyInformationForm = () => {
 
             <div>
               <label htmlFor="address" className="label">
-                Adresse
+                {t("company_form.address_label")}
               </label>
               <input
                 type="text"
                 id="address"
                 className={`input ${errors.address ? "error" : ""}`}
-                placeholder="Adresse de l'entreprise"
-                {...register("address", { required: true })}
+                placeholder={t("company_form.address_placeholder")}
+                {...register("address", { required: t("company_form.field_required") })}
               />
             </div>
 
             <div>
               <div className="flex items-center gap-1">
                 <label htmlFor="description" className="label">
-                  Description
+                  {t("company_form.description_label")}
                 </label>
                 <span className="text-red-500">*</span>
               </div>
               <textarea
                 id="description"
                 className={`input ${errors.description ? "error" : ""}`}
-                placeholder="Description de l'entreprise"
+                placeholder={t("company_form.description_placeholder")}
                 rows={5}
-                {...register("description", { required: true })}
+                {...register("description", { required: t("company_form.field_required") })}
               />
             </div>
           </div>
@@ -292,7 +275,7 @@ const UserCompanyInformationForm = () => {
             <div>
               <div className="flex gap-1">
                 <label htmlFor="companyName" className="label">
-                  Nom de l'entreprise
+                  {t("company_form.company_name_label")}
                 </label>
                 <span className="text-sm text-red-500">*</span>
               </div>
@@ -300,15 +283,15 @@ const UserCompanyInformationForm = () => {
                 type="text"
                 id="companyName"
                 className={`input ${errors.companyName ? "error" : ""}`}
-                placeholder="Entrez le nom de l'entreprise"
-                {...register("companyName", { required: true })}
+                placeholder={t("company_form.company_name_placeholder")}
+                {...register("companyName", { required: t("company_form.field_required") })}
               />
             </div>
 
             <div>
               <div className="flex gap-1">
                 <label htmlFor="phone" className="label">
-                  Téléphone
+                  {t("company_form.phone_label")}
                 </label>
                 <span className="text-sm text-red-500">*</span>
               </div>
@@ -317,11 +300,10 @@ const UserCompanyInformationForm = () => {
                   control={control}
                   name="phone"
                   rules={{
-                    required: "Ce champ est requis",
+                    required: t("company_form.phone_required"),
                     minLength: {
                       value: 10,
-                      message:
-                        "Le numéro de téléphone doit comporter au moins 10 chiffres",
+                      message: t("company_form.phone_min_length"),
                     },
                     validate: (value) => {
                       const phoneUtil = PhoneNumberUtil.getInstance();
@@ -329,16 +311,15 @@ const UserCompanyInformationForm = () => {
                         phoneUtil.parse(`+${value}`)
                       );
                       if (!isValidPhone) {
-                        return "Numéro de téléphone invalide";
-                      } else {
-                        return true;
+                        return t("company_form.phone_invalid");
                       }
+                      return true;
                     },
                   }}
                   render={({ field }) => (
                     <PhoneInput
                       country={"ma"}
-                      placeholder="+212 123 456 789"
+                      placeholder={t("company_form.phone_placeholder")}
                       value={field.value as string}
                       onChange={(e) => {
                         field.onChange(e);
@@ -355,21 +336,20 @@ const UserCompanyInformationForm = () => {
             <div>
               <div className="flex gap-1">
                 <label htmlFor="email" className="label">
-                  Email de l'entreprise
+                  {t("company_form.email_label")}
                 </label>
                 <span className="text-sm text-red-500">*</span>
               </div>
-
               <input
                 type="email"
                 id="email"
                 className={`input ${errors.email ? "error" : ""}`}
-                placeholder="contact@entreprise.com"
+                placeholder={t("company_form.email_placeholder")}
                 {...register("email", {
-                  required: "L'email est requis",
+                  required: t("company_form.email_required"),
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Format d'email invalide",
+                    message: t("company_form.email_invalid"),
                   },
                 })}
               />
@@ -382,7 +362,9 @@ const UserCompanyInformationForm = () => {
 
             <div>
               <div className="flex justify-between items-center">
-                <label className="label">URLs du site web (max 3)</label>
+                <label className="label">
+                  {t("company_form.website_urls_label")}
+                </label>
                 <div className="flex gap-1">
                   {urlCount > 1 && (
                     <button
@@ -410,7 +392,7 @@ const UserCompanyInformationForm = () => {
                   <input
                     type="url"
                     className="input"
-                    placeholder={`https://exemple.com/${index + 1}`}
+                    placeholder={`${t("company_form.url_placeholder")}/${index + 1}`}
                     value={watch("urls")?.[index] || ""}
                     onChange={(e) => handleUrlChange(index, e.target.value)}
                   />
@@ -429,19 +411,20 @@ const UserCompanyInformationForm = () => {
               <div className="flex justify-center items-center">
                 <BiLoaderAlt className="animate-spin text-white text-xl" />
                 <span className="ml-2">
-                  {isNewCompany ? "Création..." : "Mise à jour..."}
+                  {isNewCompany ? t("company_form.creating") : t("company_form.updating")}
                 </span>
               </div>
             ) : (
               <span>
                 {isNewCompany
-                  ? "Créer mon entreprise"
-                  : "Mettre à jour mon entreprise"}
+                  ? t("company_form.create_button")
+                  : t("company_form.update_button")}
               </span>
             )}
           </button>
         </div>
       </form>
+      
       <ModalLayout isOpen={showPricing} setIsOpen={() => {}}>
         <div className="p-4 lg:p-12 bg-white overflow-y-auto rounded-lg max-h-[95vh] sm:max-h-[90vh] mx-4">
           <PricingPopUp

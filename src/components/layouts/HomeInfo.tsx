@@ -2,15 +2,17 @@ import { FaBalanceScale, FaPhoneAlt, FaUserPlus } from 'react-icons/fa'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import SectionHeader from './SectionHeader'
 import { RiEmotionHappyLine } from 'react-icons/ri'
+import { useTranslation } from 'react-i18next'
 
 const HomeInfo = () => {
+  const { t } = useTranslation()
   return (
     <section className="bg-primary-white text-primary-blue section-py">
       <div className="app-container">
         {/* header */}
         <SectionHeader
-          title="Comment ça marche ?"
-          subtitle="Découvrez comment utiliser notre plateforme pour trouver rapidement ce dont vous avez besoin."
+          title={t('home.info.h2')}
+          subtitle={t('home.info.p')}
         />
         {/* cards */}
         <Swiper
@@ -35,9 +37,9 @@ const HomeInfo = () => {
                 <FaUserPlus className="text-primary-orange text-4xl block z-10 relative" />
                 <div className="absolute z-0 top-[10px] left-[10px] w-[40px] h-[40px] flex items-center justify-center rounded-full bg-orange-300 bg-opacity-20"></div>
               </div>
-              <h3 className="text-lg sm:text-2xl font-bold mb-3">Publiez Facilement</h3>
+              <h3 className="text-lg sm:text-2xl font-bold mb-3">{t('home.info.cards.card1.h3')}</h3>
               <p className="text-sm sm:text-base">
-                Déposez vos annonces en quelques clics et atteignez un large public.
+                {t('home.info.cards.card1.p')}
               </p>
             </div>
           </SwiperSlide>
@@ -47,9 +49,9 @@ const HomeInfo = () => {
                 <FaBalanceScale className="text-primary-orange text-4xl block z-10 relative" />
                 <div className="absolute z-0 top-[10px] left-[10px] w-[40px] h-[40px] flex items-center justify-center rounded-full bg-orange-300 bg-opacity-20"></div>
               </div>
-              <h3 className="text-lg sm:text-2xl font-bold mb-3">Annonces Fiables</h3>
+              <h3 className="text-lg sm:text-2xl font-bold mb-3">{t('home.info.cards.card2.h3')}</h3>
               <p className="text-sm sm:text-base">
-                Consultez des annonces vérifiées pour trouver ce dont vous avez besoin.
+                {t('home.info.cards.card2.p')}
               </p>
             </div>
           </SwiperSlide>
@@ -59,9 +61,9 @@ const HomeInfo = () => {
                 <FaPhoneAlt className="text-primary-orange text-4xl block z-10 relative" />
                 <div className="absolute z-0 top-[10px] left-[10px] w-[40px] h-[40px] flex items-center justify-center rounded-full bg-orange-300 bg-opacity-20"></div>
               </div>
-              <h3 className="text-lg sm:text-2xl font-bold mb-3">Support 24/7</h3>
+              <h3 className="text-lg sm:text-2xl font-bold mb-3">{t('home.info.cards.card3.h3')}</h3>
               <p className="text-sm sm:text-base">
-                Notre équipe est disponible pour répondre à vos questions à tout moment.
+                {t('home.info.cards.card3.p')}
               </p>
             </div>
           </SwiperSlide>
@@ -71,9 +73,9 @@ const HomeInfo = () => {
                 <RiEmotionHappyLine className="text-primary-orange text-4xl block z-10 relative" />
                 <div className="absolute z-0 top-[10px] left-[10px] w-[40px] h-[40px] flex items-center justify-center rounded-full bg-orange-300 bg-opacity-20"></div>
               </div>
-              <h3 className="text-lg sm:text-2xl font-bold mb-3">Utilisateurs Satisfaits</h3>
+              <h3 className="text-lg sm:text-2xl font-bold mb-3">{t('home.info.cards.card4.h3')}</h3>
               <p className="text-sm sm:text-base">
-                Des milliers d'utilisateurs satisfaits à travers tout le Maroc.
+                {t('home.info.cards.card4.p')}
               </p>
             </div>
           </SwiperSlide>

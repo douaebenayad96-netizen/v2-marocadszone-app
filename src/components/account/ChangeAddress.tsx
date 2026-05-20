@@ -13,6 +13,7 @@ import ModalLayout from "../layouts/ModalLayout"
 import { handleStylesWithErrors } from "../../utils/style"
 import CustomToast from "../common/CustomToast"
 import { UpdateUserInfo } from "../../services/types/auth"
+import getLocalized from '../../utils/getLocalized'
 
 
 
@@ -60,10 +61,10 @@ const ChangeAddress = ({ setHaveAddress, haveAddress, state }: ChangeAddressProp
   }, [refetch, token])
 
   useEffect(() => {
-    setHaveAddress(`${state?.demande?.adresse}, ${state?.demande?.ville?.label}`)
+    setHaveAddress(`${state?.demande?.adresse}, ${getLocalized(state?.demande?.ville, 'label')}`)
     reset({
       adresse: state?.demande?.adresse,
-      city: state?.demande?.ville ? { value: state?.demande?.ville?.id, label: state?.demande?.ville?.label } : null,
+      city: state?.demande?.ville ? { value: state?.demande?.ville?.id, label: getLocalized(state?.demande?.ville, 'label') || state?.demande?.ville?.label } : null,
     })
   }, [state, reset, setHaveAddress])
 
@@ -196,7 +197,7 @@ const ChangeAddress = ({ setHaveAddress, haveAddress, state }: ChangeAddressProp
                 <Select
                   {...field}
                   placeholder={t('votre_ville')}
-                  options={citiesDataList?.map((city) => ({ value: city.id, label: city.label }))}
+                  options={citiesDataList?.map((city) => ({ value: city.id, label: getLocalized(city, 'label') || city.label }))}
                   isLoading={isLoadingCities}
                   {...handleStylesWithErrors(errors.city ? true : false)}
                 />

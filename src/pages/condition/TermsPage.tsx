@@ -1,487 +1,435 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import PageHeader from "../../components/layouts/PageHeader"
+import { Link } from "react-router-dom"
 
 const TermsPage = () => {
-  const [activeSection, setActiveSection] = useState('general')
+  const { t } = useTranslation("terms")
+  const [activeSection, setActiveSection] = useState("general")
+
+  const navItems = [
+    { key: "general", label: t("terms.navigation.general") },
+    { key: "privacy", label: t("terms.navigation.privacy") },
+    { key: "cookies", label: t("terms.navigation.cookies") },
+    { key: "mentions", label: t("terms.navigation.mentions") },
+  ]
 
   return (
     <div className="pt-nav">
       <div className="min-h-screen page-py page-pt-sm">
         <div className="app-container">
-          {/* page header */}
           <PageHeader>
-            {/* title */}
             <div>
-              <h1
-                className="text-5xl text-primary-blue font-bold"
-              >
-                CONDITIONS GÉNÉRALES
+              <h1 className="text-5xl text-primary-blue font-bold">
+                {t("terms.title")}
               </h1>
               <div>
-                <span
-                  className="text-base text-gray-400"
-                >
-                  MarocAdsZone - Date de dernière mise à jour : 3 juillet 2025
+                <span className="text-base text-gray-400">
+                  {t("terms.updated_at")}
                 </span>
               </div>
             </div>
           </PageHeader>
-          
+
           {/* Navigation */}
           <div className="bg-white rounded-lg shadow-sm p-4 mt-6">
-            <nav className="flex space-x-8">
-              <button
-                onClick={() => setActiveSection('general')}
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                  activeSection === 'general'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                }`}
-              >
-                Conditions générales
-              </button>
-              <button
-                onClick={() => setActiveSection('privacy')}
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                  activeSection === 'privacy'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                }`}
-              >
-                Politique de confidentialité
-              </button>
-              <button
-                onClick={() => setActiveSection('cookies')}
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                  activeSection === 'cookies'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                }`}
-              >
-                Politique de cookies
-              </button>
-              <button
-                onClick={() => setActiveSection('mentions')}
-                className={`px-4 py-2 rounded-md font-medium transition-colors ${
-                  activeSection === 'mentions'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                }`}
-              >
-                Mentions Légales
-              </button>
+            <nav className="flex flex-wrap gap-4">
+              {navItems.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveSection(key)}
+                  className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                    activeSection === key
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </nav>
           </div>
         </div>
+
         <div className="section-py app-container prose max-w-none">
           <div className="bg-white rounded-lg shadow-sm p-6 lg:p-8">
-            
-            {/* General Conditions Section */}
-            {activeSection === 'general' && (
-              <div className="whitespace-pre-line">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">CONDITIONS GÉNÉRALES D'UTILISATION</h2>
-                <p className="text-gray-700 mb-4">MarocAdsZone</p>
-                <p className="text-gray-700 mb-4">Date de dernière mise à jour : 3 juillet 2025</p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Préambule</h3>
-                <p className="text-gray-700 mb-4">
-                  Les présentes Conditions Générales d'Utilisation (ci-après "CGU") définissent le cadre
-                  juridique des modalités d'accès et d'utilisation du site MarocAdsZone et des services
-                  proposés, ainsi que les droits et obligations des Utilisateurs.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 1 : Informations légales</h3>
-                <p className="text-gray-700 mb-4">
-                  Le site MarocAdsZone est édité par :
-                  Raison sociale : DEVTI GROUP SARL
-                  Email : support@devtigroup.com
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 2 : Définitions</h3>
-                <ul className="list-disc pl-6 text-gray-700 mb-4 space-y-2">
-                  <li><strong>Site :</strong> désigne le site web MarocAdsZone accessible à l'adresse [www.marocadszone.com].</li>
-                  <li><strong>Utilisateur :</strong> toute personne physique ou morale utilisant le Site.</li>
-                  <li><strong>Services :</strong> ensemble des fonctionnalités offertes sur le Site (publication et consultation d'annonces, messagerie interne, création de compte, etc.).</li>
-                  <li><strong>Annonceur :</strong> Utilisateur publiant une annonce sur le Site.</li>
-                  <li><strong>Contenu :</strong> informations publiées par MarocAdsZone ou les Utilisateurs sur le Site.</li>
-                </ul>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 3 : Accès au Site</h3>
-                <p className="text-gray-700 mb-4">
-                  L'accès au Site est gratuit pour tout Utilisateur disposant d'une connexion Internet. Tous les
-                  frais nécessaires pour l'accès au Site (matériel, connexion, etc.) sont à la charge de
-                  l'Utilisateur.
-                  Certaines fonctionnalités peuvent nécessiter la création d'un compte.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 4 : Inscription et compte utilisateur</h3>
-                <p className="text-gray-700 mb-4">
-                  Pour publier des annonces ou accéder à certaines fonctionnalités, l'Utilisateur doit créer un
-                  compte en fournissant des informations exactes et à jour.
-                  L'Utilisateur est responsable de la confidentialité de ses identifiants et de toute activité
-                  réalisée sur le Site via son compte.
-                  MarocAdsZone se réserve le droit de suspendre ou supprimer un compte en cas de violation
-                  des présentes CGU.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 5 : Publication d'annonces</h3>
-                <p className="text-gray-700 mb-4">
-                  Les Annonceurs s'engagent à publier des annonces conformes à la législation marocaine en
-                  vigueur. MarocAdsZone se réserve le droit de refuser ou supprimer toute annonce jugée
-                  contraire à l'ordre public, aux bonnes mœurs ou aux présentes CGU.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 6 : Propriété intellectuelle</h3>
-                <p className="text-gray-700 mb-4">
-                  Tous les contenus présents sur le Site (textes, images, logos, vidéos) sont protégés par le droit
-                  d'auteur et restent la propriété de leurs auteurs ou de MarocAdsZone. Toute reproduction
-                  totale ou partielle sans autorisation préalable est interdite.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 7 : Responsabilité</h3>
-                <p className="text-gray-700 mb-4">
-                  Les informations diffusées sur le Site sont données à titre indicatif. MarocAdsZone ne garantit
-                  pas l'exactitude ou l'exhaustivité des informations mises en ligne.
-                  MarocAdsZone ne peut être tenu responsable des dommages directs ou indirects résultant de
-                  l'utilisation du Site, ni du contenu publié par les Utilisateurs.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 8 : Obligations des utilisateurs</h3>
-                <p className="text-gray-700 mb-2">En utilisant le Site, l'Utilisateur s'engage à :</p>
-                <ul className="list-disc pl-6 text-gray-700 mb-4 space-y-1">
-                  <li>Ne pas publier de contenu illicite, diffamatoire ou contraire aux bonnes mœurs ;</li>
-                  <li>Ne pas porter atteinte aux droits des tiers ;</li>
-                  <li>Ne pas diffuser de contenu publicitaire sans autorisation ;</li>
-                  <li>Ne pas utiliser le Site à des fins frauduleuses ou malveillantes ;</li>
-                  <li>Respecter les présentes CGU.</li>
-                </ul>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 9 : Liens hypertextes</h3>
-                <p className="text-gray-700 mb-4">
-                  Le Site peut contenir des liens vers d'autres sites. MarocAdsZone n'exerce aucun contrôle sur
-                  ces sites et décline toute responsabilité quant à leur contenu.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 10 : Cookies</h3>
-                <p className="text-gray-700 mb-4">
-                  Le Site utilise des cookies pour améliorer l'expérience utilisateur et analyser l'audience. Pour
-                  en savoir plus, veuillez consulter notre [Politique de Cookies].
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 11 : Protection des données personnelles</h3>
-                <p className="text-gray-700 mb-4">
-                  Les données collectées sur le Site sont traitées conformément aux lois marocaines sur la
-                  protection des données personnelles. Pour plus d'informations, consultez notre [Politique de
-                  Confidentialité].
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 12 : Droit applicable et juridiction compétente</h3>
-                <p className="text-gray-700 mb-4">
-                  Les présentes CGU sont régies par le droit marocain. En cas de litige, les tribunaux de
-                  Casablanca seront compétents.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Article 13 : Modification des CGU</h3>
-                <p className="text-gray-700 mb-4">
-                  MarocAdsZone se réserve le droit de modifier les présentes CGU à tout moment. L'Utilisateur
-                  est invité à consulter régulièrement la version mise à jour des CGU sur le Site.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Contact</h3>
-                <p className="text-gray-700 mb-4">
-                  Pour toute question relative à l'application des présentes CGU, vous pouvez contacter
-                  MarocAdsZone par email à : contact@marocadszone.com.
-                </p>
+
+            {/* ==================== SECTION CONDITIONS GÉNÉRALES ==================== */}
+            {activeSection === "general" && (
+              <div className="space-y-8">
+                <section>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-4">{t("terms.title")}</h1>
+                  <p className="text-gray-700 leading-relaxed">{t("terms.updated_at")}</p>
+                </section>
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("preamble.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("preamble.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article1.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article1.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article2.title")}</h2>
+                  <ul className="list-disc list-inside ml-4 text-gray-700 space-y-2">
+                    <li>{t("article2.site")}</li>
+                    <li>{t("article2.user")}</li>
+                    <li>{t("article2.services")}</li>
+                    <li>{t("article2.advertiser")}</li>
+                    <li>{t("article2.content")}</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article3.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article3.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article4.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article4.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article5.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article5.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article6.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article6.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article7.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article7.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article8.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed mb-3">{t("article8.intro")}</p>
+                  <ul className="list-disc list-inside ml-4 text-gray-700 space-y-2">
+                    <li>{t("article8.item0")}</li>
+                    <li>{t("article8.item1")}</li>
+                    <li>{t("article8.item2")}</li>
+                    <li>{t("article8.item3")}</li>
+                    <li>{t("article8.item4")}</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article9.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article9.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article10.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article10.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article11.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article11.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article12.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article12.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("article13.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("article13.content")}</p>
+                </section>
+
+                <div className="border-t border-gray-200 pt-6">
+                  <section>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("contact.title")}</h2>
+                    <p className="text-gray-700 leading-relaxed">{t("contact.content")}</p>
+                  </section>
+                </div>
               </div>
             )}
 
-            {/* Privacy Policy Section */}
-            {activeSection === 'privacy' && (
-              <div className="whitespace-pre-line">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">POLITIQUE DE CONFIDENTIALITÉ</h2>
-                <p className="text-gray-700 mb-4">MarocAdsZone</p>
-                <p className="text-gray-700 mb-4">Date de dernière mise à jour : 3 juillet 2025</p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Introduction</h3>
-                <p className="text-gray-700 mb-4">
-                  La protection de vos données personnelles est une priorité pour MarocAdsZone. La présente
-                  Politique de Confidentialité a pour objet de vous informer sur la manière dont nous collectons,
-                  utilisons et protégeons vos données lorsque vous utilisez notre plateforme de petites annonces.
-                  En utilisant notre site, vous acceptez les pratiques décrites dans cette politique. Nous vous
-                  invitons à la lire attentivement.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">1. Responsable du traitement</h3>
-                <p className="text-gray-700 mb-4">
-                  DEVTI GROUP SARL
-                  Email : support@devtigroup.com
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">2. Types de données collectées</h3>
-                <p className="text-gray-700 mb-2">Dans le cadre de l'utilisation de MarocAdsZone, nous pouvons collecter les données suivantes :</p>
-                
-                <div className="mb-3">
-                  <h4 className="font-semibold text-gray-800 mb-1">Pour les annonceurs :</h4>
-                  <ul className="list-disc pl-6 text-gray-700 space-y-1">
-                    <li>Données d'identification (nom, prénom, téléphone, adresse email)</li>
-                    <li>Informations sur l'annonce (titre, description, images)</li>
-                    <li>Données de connexion et de navigation</li>
+            {/* ==================== SECTION POLITIQUE DE CONFIDENTIALITÉ ==================== */}
+{activeSection === "privacy" && (
+  <div className="space-y-8">
+    <h1 className="text-3xl font-bold text-gray-900">{t("privacy.title")}</h1>
+    <p className="text-gray-700 leading-relaxed">{t("privacy.subtitle")} - {t("privacy.updated_at")}</p>
+
+    {/* Introduction */}
+    <section>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("privacy.intro.title")}</h2>
+      <p className="text-gray-700 leading-relaxed">{t("privacy.intro.content")}</p>
+    </section>
+
+    {/* Article 1 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article1.title")}</h2>
+      <p className="text-gray-700 leading-relaxed">{t("privacy.article1.content")}</p>
+    </section>
+
+    {/* Article 2 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article2.title")}</h2>
+      <p className="text-gray-700 leading-relaxed mb-3">{t("privacy.article2.content")}</p>
+      
+      <h4 className="text-lg font-semibold text-gray-800 mb-2">{t("privacy.article2.advertisers")}</h4>
+      <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1 mb-4">
+        {t("privacy.article2.advertisers_list", { returnObjects: true }).map((item: string, idx: number) => (
+          <li key={idx}>{item}</li>
+        ))}
+      </ul>
+      
+      <h4 className="text-lg font-semibold text-gray-800 mb-2">{t("privacy.article2.visitors")}</h4>
+      <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1">
+        {t("privacy.article2.visitors_list", { returnObjects: true }).map((item: string, idx: number) => (
+          <li key={idx}>{item}</li>
+        ))}
+      </ul>
+    </section>
+
+    {/* Article 3 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article3.title")}</h2>
+      <p className="text-gray-700 leading-relaxed mb-3">{t("privacy.article3.content")}</p>
+      <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1">
+        {t("privacy.article3.list", { returnObjects: true }).map((item: string, idx: number) => (
+          <li key={idx}>{item}</li>
+        ))}
+      </ul>
+    </section>
+
+    {/* Article 4 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article4.title")}</h2>
+      <p className="text-gray-700 leading-relaxed mb-3">{t("privacy.article4.content")}</p>
+      <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1">
+        {t("privacy.article4.list", { returnObjects: true }).map((item: string, idx: number) => (
+          <li key={idx}>{item}</li>
+        ))}
+      </ul>
+    </section>
+
+    {/* Article 5 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article5.title")}</h2>
+      <p className="text-gray-700 leading-relaxed mb-2">{t("privacy.article5.account")}</p>
+      <p className="text-gray-700 leading-relaxed mb-2">{t("privacy.article5.ads")}</p>
+      <p className="text-gray-700 leading-relaxed mb-2">{t("privacy.article5.billing")}</p>
+      <p className="text-gray-700 leading-relaxed mb-2">{t("privacy.article5.navigation")}</p>
+      <p className="text-gray-700 leading-relaxed">{t("privacy.article5.after")}</p>
+    </section>
+
+    {/* Article 6 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article6.title")}</h2>
+      <p className="text-gray-700 leading-relaxed mb-3">{t("privacy.article6.content")}</p>
+      <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1">
+        {t("privacy.article6.list", { returnObjects: true }).map((item: string, idx: number) => (
+          <li key={idx}>{item}</li>
+        ))}
+      </ul>
+    </section>
+
+    {/* Article 7 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article7.title")}</h2>
+      <p className="text-gray-700 leading-relaxed">{t("privacy.article7.content")}</p>
+    </section>
+
+    {/* Article 8 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article8.title")}</h2>
+      <p className="text-gray-700 leading-relaxed mb-3">{t("privacy.article8.content")}</p>
+      <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1 mb-4">
+        {t("privacy.article8.list", { returnObjects: true }).map((item: string, idx: number) => (
+          <li key={idx}>{item}</li>
+        ))}
+      </ul>
+      <p className="text-gray-700 leading-relaxed">{t("privacy.article8.contact")}</p>
+    </section>
+
+    {/* Article 9 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article9.title")}</h2>
+      <p className="text-gray-700 leading-relaxed mb-3">{t("privacy.article9.content")}</p>
+      <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1">
+        {t("privacy.article9.list", { returnObjects: true }).map((item: string, idx: number) => (
+          <li key={idx}>{item}</li>
+        ))}
+      </ul>
+    </section>
+
+    {/* Article 10 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article10.title")}</h2>
+      <p className="text-gray-700 leading-relaxed">{t("privacy.article10.content")}</p>
+    </section>
+
+    {/* Article 11 */}
+    <section>
+      <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.article11.title")}</h2>
+      <p className="text-gray-700 leading-relaxed">{t("privacy.article11.content")}</p>
+    </section>
+
+    {/* Contact */}
+    <div className="border-t border-gray-200 pt-6">
+      <section>
+        <h2 className="text-xl font-bold text-gray-900 mb-3">{t("privacy.contact.title")}</h2>
+        <p className="text-gray-700 leading-relaxed">{t("privacy.contact.content")}</p>
+      </section>
+    </div>
+  </div>
+)}
+
+            {/* ==================== SECTION POLITIQUE DE COOKIES ==================== */}
+            {activeSection === "cookies" && (
+              <div className="space-y-8">
+                    <h1 className="text-3xl font-bold text-gray-900">{t("cookies:page.title")}</h1>
+
+                <p className="text-gray-700 leading-relaxed">{t("cookies:page.updated_at")}</p>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("cookies:what_is_cookie.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("cookies:what_is_cookie.content")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("cookies:cookies_we_use.title")}</h2>
+                  
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">{t("cookies:cookies_we_use.necessary.title")}</h3>
+                    <p className="text-gray-700 leading-relaxed mb-3">{t("cookies:cookies_we_use.necessary.description")}</p>
+                    <p className="text-gray-700 font-medium mb-2">{t("cookies:cookies_we_use.necessary.examples_title")}</p>
+                    <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1">
+                      {t("cookies:cookies_we_use.necessary.examples", { returnObjects: true }).map((item: string, idx: number) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">{t("cookies:cookies_we_use.performance.title")}</h3>
+                    <p className="text-gray-700 leading-relaxed mb-3">{t("cookies:cookies_we_use.performance.description")}</p>
+                    <p className="text-gray-700 font-medium mb-2">{t("cookies:cookies_we_use.performance.examples_title")}</p>
+                    <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1">
+                      {t("cookies:cookies_we_use.performance.examples", { returnObjects: true }).map((item: string, idx: number) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">{t("cookies:cookies_we_use.functional.title")}</h3>
+                    <p className="text-gray-700 leading-relaxed mb-3">{t("cookies:cookies_we_use.functional.description")}</p>
+                    <p className="text-gray-700 font-medium mb-2">{t("cookies:cookies_we_use.functional.examples_title")}</p>
+                    <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1">
+                      {t("cookies:cookies_we_use.functional.examples", { returnObjects: true }).map((item: string, idx: number) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">{t("cookies:cookies_we_use.advertising.title")}</h3>
+                    <p className="text-gray-700 leading-relaxed mb-3">{t("cookies:cookies_we_use.advertising.description")}</p>
+                    <p className="text-gray-700 font-medium mb-2">{t("cookies:cookies_we_use.advertising.examples_title")}</p>
+                    <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1">
+                      {t("cookies:cookies_we_use.advertising.examples", { returnObjects: true }).map((item: string, idx: number) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("cookies:management.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed mb-3">{t("cookies:management.description")}</p>
+                  <ul className="list-disc list-inside ml-4 text-gray-700 space-y-1 mb-3">
+                    {t("cookies:management.items", { returnObjects: true }).map((item: string, idx: number) => (
+                      <li key={idx}>{item}</li>
+                    ))}
                   </ul>
+                  <p className="text-red-600 font-medium">{t("cookies:management.warning")}</p>
+                </section>
+
+                <section>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("cookies:duration.title")}</h2>
+                  <p className="text-gray-700 leading-relaxed">{t("cookies:duration.content")}</p>
+                </section>
+
+                <div className="border-t border-gray-200 pt-6">
+                  <section>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("cookies:contact.title")}</h2>
+                    <p className="text-gray-700 leading-relaxed">
+                      {t("cookies:contact.content")}
+                      <br />📧 <a href="mailto:contact@marocadszone.com" className="text-blue-600 hover:underline">contact@marocadszone.com</a>
+                    </p>
+                  </section>
                 </div>
-                
-                <div className="mb-2">
-                  <h4 className="font-semibold text-gray-800 mb-1">Pour les visiteurs :</h4>
-                  <ul className="list-disc pl-6 text-gray-700 space-y-1">
-                    <li>Données de navigation et cookies</li>
-                    <li>Données fournies via les formulaires de contact</li>
-                  </ul>
-                </div>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">3. Finalités du traitement</h3>
-                <p className="text-gray-700 mb-2">Nous collectons vos données personnelles pour les finalités suivantes :</p>
-                <ul className="list-disc pl-6 text-gray-700 mb-4 space-y-1">
-                  <li>Création et gestion de votre compte utilisateur</li>
-                  <li>Publication et gestion des annonces</li>
-                  <li>Mise en relation entre annonceurs et visiteurs</li>
-                  <li>Amélioration de nos services et analyse des performances</li>
-                  <li>Envoi de communications liées à votre compte ou vos annonces</li>
-                  <li>Respect des obligations légales et lutte contre la fraude</li>
-                </ul>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">4. Base légale du traitement</h3>
-                <p className="text-gray-700 mb-2">Le traitement de vos données est basé sur :</p>
-                <ul className="list-disc pl-6 text-gray-700 mb-4 space-y-1">
-                  <li>L'exécution du contrat lors de l'utilisation de nos services</li>
-                  <li>Votre consentement, notamment pour l'envoi d'offres promotionnelles</li>
-                  <li>Nos intérêts légitimes à améliorer nos services</li>
-                  <li>Le respect de nos obligations légales</li>
-                </ul>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">5. Durée de conservation des données</h3>
-                <ul className="list-disc pl-6 text-gray-700 mb-2 space-y-1">
-                  <li>Données de compte : pendant toute la durée de votre inscription et jusqu'à 3 ans après la dernière activité</li>
-                  <li>Données d'annonces : pendant la durée de publication et jusqu'à 3 ans après la suppression</li>
-                  <li>Données de facturation : selon les délais légaux de conservation</li>
-                  <li>Données de navigation : jusqu'à 13 mois</li>
-                </ul>
-                <p className="text-gray-700 mb-4">Après ces délais, vos données sont supprimées ou anonymisées</p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">6. Destinataires des données</h3>
-                <p className="text-gray-700 mb-2">Vos données peuvent être partagées avec :</p>
-                <ul className="list-disc pl-6 text-gray-700 mb-4 space-y-1">
-                  <li>Le personnel habilité de MarocAdsZone</li>
-                  <li>Nos sous-traitants techniques (hébergement, maintenance)</li>
-                  <li>Les visiteurs du site pour les données liées aux annonces</li>
-                  <li>Les autorités administratives et judiciaires si requis par la loi</li>
-                </ul>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">7. Transferts de données hors du Maroc</h3>
-                <p className="text-gray-700 mb-4">
-                  Certaines données peuvent être transférées hors du Maroc (par exemple via nos prestataires
-                  d'hébergement). Nous veillons à ce que ces transferts soient sécurisés et conformes à la
-                  réglementation en vigueur.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">8. Vos droits</h3>
-                <p className="text-gray-700 mb-2">Conformément à la réglementation applicable, vous disposez des droits suivants :</p>
-                <ul className="list-disc pl-6 text-gray-700 mb-2 space-y-1">
-                  <li>Droit d'accès : obtenir une copie de vos données</li>
-                  <li>Droit de rectification : corriger des données inexactes</li>
-                  <li>Droit à l'effacement : demander la suppression de vos données</li>
-                  <li>Droit d'opposition : vous opposer à certains traitements</li>
-                  <li>Droit à la limitation : restreindre le traitement de vos données</li>
-                  <li>Droit à la portabilité : recevoir vos données dans un format lisible</li>
-                  <li>Droit de retirer votre consentement à tout moment</li>
-                </ul>
-                <p className="text-gray-700 mb-4">Pour exercer vos droits, contactez-nous par email à : contact@marocadszone.com</p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">9. Sécurité des données</h3>
-                <p className="text-gray-700 mb-2">Nous mettons en place des mesures techniques et organisationnelles pour protéger vos données, notamment :</p>
-                <ul className="list-disc pl-6 text-gray-700 mb-4 space-y-1">
-                  <li>Chiffrement des données sensibles</li>
-                  <li>Contrôle des accès aux données</li>
-                  <li>Sauvegardes régulières</li>
-                  <li>Sensibilisation du personnel à la confidentialité</li>
-                </ul>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">10. Cookies</h3>
-                <p className="text-gray-700 mb-4">
-                  Pour plus d'informations sur l'utilisation des cookies, consultez notre Politique de Cookies.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">11. Modification de la politique</h3>
-                <p className="text-gray-700 mb-4">
-                  Nous nous réservons le droit de modifier la présente politique à tout moment. Les
-                  modifications seront publiées sur cette page et entreront en vigueur immédiatement.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">12. Contact</h3>
-                <p className="text-gray-700 mb-4">
-                  Pour toute question relative à cette politique ou à vos données personnelles, vous pouvez nous
-                  contacter à :
-                  Email : support@devtigroup.com
-                </p>
-              </div>
-            )}
-            
-            {/* Cookies Policy Section */}
-            {activeSection === 'cookies' && (
-              <div className="whitespace-pre-line">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">POLITIQUE DE COOKIES</h2>
-                <p className="text-gray-700 mb-4">MarocAdsZone</p>
-                <p className="text-gray-700 mb-4">Date de dernière mise à jour : 3 juillet 2025</p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Qu'est-ce qu'un cookie ?</h3>
-                <p className="text-gray-700 mb-4">
-                  Un cookie est un petit fichier texte déposé sur votre terminal (ordinateur, smartphone,
-                  tablette) lorsque vous visitez le site MarocAdsZone. Ces cookies permettent de vous
-                  reconnaître lors de vos visites, de vous proposer une navigation personnalisée et d'analyser le
-                  trafic pour améliorer nos services.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Les cookies que nous utilisons</h3>
-                <div className="space-y-4 text-gray-700 mb-4">
-                  <div>
-                    <h4 className="font-bold">Cookies strictement nécessaires</h4>
-                    <p className="mb-2">Ces cookies sont essentiels au fonctionnement du site et à l'utilisation de ses fonctionnalités de base (connexion, sécurité, préférences). Sans ces cookies, certaines fonctionnalités du site peuvent ne pas fonctionner correctement.</p>
-                    
-                    <p className="mb-1">Exemples :</p>
-                    <ul className="list-disc pl-6 space-y-1">
-                      <li>Cookies de session pour gérer la connexion des utilisateurs</li>
-                      <li>Cookies de sécurité pour protéger les comptes</li>
-                      <li>Cookies liés aux préférences de confidentialité</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-bold">Cookies de performance</h4>
-                    <p className="mb-2">Ces cookies nous permettent de mesurer l'audience et d'améliorer les performances de MarocAdsZone en analysant l'utilisation que vous faites du site (pages visitées, temps passé, erreurs rencontrées). Les données collectées sont agrégées et anonymisées.</p>
-                    
-                    <p className="mb-1">Exemples :</p>
-                    <ul className="list-disc pl-6 space-y-1">
-                      <li>Google Analytics</li>
-                      <li>Matomo</li>
-                      <li>Outils de suivi des performances du site</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-bold">Cookies de fonctionnalité</h4>
-                    <p className="mb-2">Ces cookies permettent de mémoriser vos choix et préférences sur le site pour vous offrir une expérience personnalisée (langue, préférences d'affichage, filtres de recherche).</p>
-                    
-                    <p className="mb-1">Exemples :</p>
-                    <ul className="list-disc pl-6 space-y-1">
-                      <li>Cookies de langue et de localisation</li>
-                      <li>Cookies de mémorisation des recherches récentes</li>
-                      <li>Cookies de personnalisation des annonces consultées</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-bold">Cookies de ciblage et publicitaires</h4>
-                    <p className="mb-2">Ces cookies peuvent être placés sur notre site par nos partenaires publicitaires afin de vous proposer des publicités pertinentes en fonction de vos centres d'intérêt. Ces cookies permettent également de mesurer l'efficacité des campagnes publicitaires.</p>
-                    
-                    <p className="mb-1">Exemples :</p>
-                    <ul className="list-disc pl-6 space-y-1">
-                      <li>Google Ads</li>
-                      <li>Facebook Pixel</li>
-                      <li>Cookies des réseaux sociaux</li>
-                    </ul>
-                  </div>
-                </div>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Gestion des cookies</h3>
-                <p className="text-gray-700 mb-2">Lors de votre première visite sur MarocAdsZone, un bandeau cookies vous permet de gérer vos préférences. Vous pouvez à tout moment :</p>
-                <ul className="list-disc pl-6 text-gray-700 mb-2 space-y-1">
-                  <li>Accepter ou refuser tout ou partie des cookies</li>
-                  <li>Modifier vos choix via les paramètres de votre navigateur</li>
-                  <li>Supprimer les cookies déjà installés sur votre appareil</li>
-                </ul>
-                <p className="text-gray-700 mb-4">Attention : Le refus de certains cookies peut impacter le bon fonctionnement de certaines fonctionnalités du site.</p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Durée de conservation des cookies</h3>
-                <p className="text-gray-700 mb-4">
-                  Les cookies sont conservés pour une durée maximale de 13 mois après leur dépôt sur votre
-                  terminal.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Contact</h3>
-                <p className="text-gray-700 mb-4">
-                  Pour toute question concernant cette Politique de Cookies ou pour exercer vos droits relatifs à
-                  vos données personnelles, vous pouvez nous contacter à :
-                  📧 support@devtigroup.com
-                </p>
               </div>
             )}
 
-            {/* Legal Mentions Section */}
-            {activeSection === 'mentions' && (
-              <div className="whitespace-pre-line">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">MENTIONS LÉGALES</h2>
-                <p className="text-gray-700 mb-4">MarocAdsZone</p>
-                <p className="text-gray-700 mb-4">Date de dernière mise à jour : 3 juillet 2025</p>
-                
-                <p className="text-gray-700 mb-4">
-                  Conformément aux dispositions des articles 6-III et 19 de la Loi n° 04-09 relative aux
-                  échanges électroniques de données juridiques au Maroc, nous vous présentons les
-                  informations légales concernant notre site MarocAdsZone.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Éditeur du site</h3>
-                <p className="text-gray-700 mb-4">
-                  Raison sociale : DEVTI GROUP SARL
-                  Forme juridique : Société à Responsabilité Limitée
-                  Capital social : 100 000,00 MAD
-                  Email : support@devtigroup.com
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Propriété intellectuelle</h3>
-                <p className="text-gray-700 mb-4">
-                  Le site MarocAdsZone, comprenant sa structure, ses textes, images, photographies, logos,
-                  codes informatiques, illustrations et graphismes, est la propriété exclusive de MarocAdsZone
-                  SARL.
-                  
-                  Toute reproduction, représentation, modification ou adaptation de tout ou partie des éléments
-                  du site, quel que soit le moyen utilisé, est interdite sans l'autorisation écrite préalable de
-                  MarocAdsZone.
-                  
-                  Toute utilisation non autorisée du site ou de l'un de ses éléments sera considérée comme
-                  constitutive d'une contrefaçon et pourra être poursuivie conformément aux dispositions du
-                  Code de la propriété intellectuelle.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Liens hypertextes</h3>
-                <p className="text-gray-700 mb-4">
-                  Le site MarocAdsZone peut contenir des liens vers d'autres sites ou ressources disponibles sur
-                  Internet. MarocAdsZone n'exerce aucun contrôle sur ces sites externes et décline toute
-                  responsabilité quant à leur contenu ou leur disponibilité
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Responsabilité</h3>
-                <p className="text-gray-700 mb-4">
-                  Les informations présentes sur le site MarocAdsZone sont réputées fiables mais ne
-                  garantissent pas qu'elles soient exemptes d'erreurs, d'omissions ou d'inexactitudes.
-                  
-                  Le site est régulièrement mis à jour, cependant des erreurs peuvent survenir. Les utilisateurs
-                  sont invités à signaler tout contenu inexact à : contact@marocadszone.com.
-                  
-                  MarocAdsZone ne peut être tenue responsable des dommages directs ou indirects liés à
-                  l'utilisation du site.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Loi applicable et juridiction compétente</h3>
-                <p className="text-gray-700 mb-4">
-                  Les présentes mentions légales sont régies par le droit marocain. En cas de litige, les
-                  tribunaux de Casablanca seront seuls compétents.
-                </p>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Contact</h3>
-                <p className="text-gray-700 mb-4">
-                  Pour toute question relative à ces mentions légales, vous pouvez nous contacter par email :
-                  support@devtigroup.com
-                </p>
-              </div>
-            )}
+           {/* ==================== SECTION MENTIONS LÉGALES ==================== */}
+{activeSection === "mentions" && (
+  <div className="space-y-8">
+    <h1 className="text-3xl font-bold text-gray-900">{t("mentions:page.title")}</h1>
+    <p className="text-gray-700 leading-relaxed">{t("mentions:page.updated_at")}</p>
+
+    <section>
+      <p className="text-gray-700 leading-relaxed">{t("mentions:intro.description")}</p>
+    </section>
+
+    <section>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("mentions:publisher.title")}</h2>
+      <div className="text-gray-700 space-y-2">
+        <p><strong>{t("mentions:publisher.company")} :</strong> DEVTI GROUP SARL</p>
+        <p><strong>{t("mentions:publisher.legal_form")} :</strong> Société à Responsabilité Limitée</p>
+        <p><strong>{t("mentions:publisher.capital")} :</strong> 100 000,00 MAD</p>
+        <p><strong>Email :</strong> support@devtigroup.com</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("mentions:property.title")}</h2>
+      <div className="text-gray-700 space-y-3">
+        <p>{t("mentions:property.paragraph1")}</p>
+        <p>{t("mentions:property.paragraph2")}</p>
+        <p>{t("mentions:property.paragraph3")}</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("mentions:links.title")}</h2>
+      <p className="text-gray-700">{t("mentions:links.description")}</p>
+    </section>
+
+    <section>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("mentions:responsibility.title")}</h2>
+      <div className="text-gray-700 space-y-3">
+        <p>{t("mentions:responsibility.paragraph1")}</p>
+        <p>{t("mentions:responsibility.paragraph2")}</p>
+        <p>{t("mentions:responsibility.paragraph3")}</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("mentions:law.title")}</h2>
+      <p className="text-gray-700">{t("mentions:law.description")}</p>
+    </section>
+
+    <div className="border-t border-gray-200 pt-6">
+      <section>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("mentions:contact.title")}</h2>
+        <p className="text-gray-700">{t("mentions:contact.description")}</p>
+      </section>
+    </div>
+  </div>
+)}
+
           </div>
         </div>
       </div>

@@ -1,18 +1,19 @@
 import { RiArrowRightLine, RiShareLine } from "react-icons/ri";
-//import { Link } from "react-router-dom";
-import { Annonce } from "../../services/types/annonce";
+import { useTranslation } from "react-i18next";
 import Skeleton from "react-loading-skeleton";
 import UserPic from "../../assets/img/user_pic.png";
 import CompanyPic from "../../assets/img/company_logo.png";
+import { Annonce } from "../../services/types/annonce";
 
 interface ShortCardProps {
   video?: Annonce;
 }
 
 const ShortCard = ({ video }: ShortCardProps) => {
-  // Fallback image if no video provided
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
   const getVideoThumbnail = () => {
-    // Handle Firebase image URLs
     if (
       video?.image_urls &&
       Array.isArray(video.image_urls) &&
@@ -20,7 +21,6 @@ const ShortCard = ({ video }: ShortCardProps) => {
     ) {
       return video.image_urls[0];
     }
-    // Fallback to old Spatie Media format
     if (video?.images && video.images.length > 0) {
       return (
         video.images[0]?.original_url ||
@@ -28,7 +28,7 @@ const ShortCard = ({ video }: ShortCardProps) => {
         video.images[0]?.preview_url
       );
     }
-    return null; // No image found
+    return null;
   };
 
   const getUserAvatar = () => {
@@ -43,26 +43,21 @@ const ShortCard = ({ video }: ShortCardProps) => {
     if (video?.user?.first_name && video?.user?.last_name) {
       return `@${video.user.first_name} ${video.user.last_name}`;
     }
-    return "@utilisateur";
+    return t("short_card.default_username");
   };
 
   const getVideoTitle = () => {
-    return video?.title || "Regardez cette vidéo incroyable ! 🔥 #tendance";
+    return video?.title || t("short_card.default_title");
   };
 
-  //const getVideoLink = () => {
-    //return video?.slug ? `/videos/${video.slug}` : "/404";
-  //};
-  // see video
-  const ctaText = "Voir video";
-  // video?.video_source_type === "phone" ? "Contacter" : "Voir plus details";
+  const ctaText = t("short_card.watch_video");
 
   return (
     <a
       href={video?.video_url || video?.video?.url || "#"}
       target="_blank"
       rel="noopener noreferrer"
-      className="relative rounded-xl overflow-hidden aspect-[9/16] bg-gray-100 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+      className={`relative rounded-xl overflow-hidden aspect-[9/16] bg-gray-100 shadow-md hover:shadow-lg transition-shadow cursor-pointer ${isRTL ? "rtl" : ""}`}
     >
       {/* Vidéo / Miniature */}
       <div className="absolute inset-0">
@@ -72,7 +67,7 @@ const ShortCard = ({ video }: ShortCardProps) => {
             return (
               <img
                 src={thumb}
-                alt="Vidéo courte"
+                alt={t("short_card.video_thumbnail")}
                 className="w-full h-full object-cover"
               />
             );
@@ -90,7 +85,7 @@ const ShortCard = ({ video }: ShortCardProps) => {
             return (
               <img
                 src="https://images.unsplash.com/photo-1654277041042-8927699fcfd2?q=80&w=2062&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Vidéo courte"
+                alt={t("short_card.video_thumbnail")}
                 className="w-full h-full object-cover"
               />
             );
@@ -102,30 +97,31 @@ const ShortCard = ({ video }: ShortCardProps) => {
 
       {/* Informations vidéo */}
       <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-        <div className="flex items-center mb-3">
-          <div className="w-10 h-10 rounded-full border-2 border-white mr-3 overflow-hidden">
+        <div className={`flex items-center mb-3 ${isRTL ? "flex-row-reverse" : ""}`}>
+          <div className={`w-10 h-10 rounded-full border-2 border-white overflow-hidden ${isRTL ? "ml-3" : "mr-3"}`}>
             <img
               src={getUserAvatar()}
-              alt="Profil"
+              alt={t("short_card.profile_alt")}
               className="w-full h-full object-cover"
             />
           </div>
           <span className="font-semibold text-sm">{getUserName()}</span>
         </div>
-        <h3 className="text-sm mb-4 line-clamp-1">{getVideoTitle()}</h3>
+        <h3 className={`text-sm mb-4 line-clamp-1 ${isRTL ? "text-right" : "text-left"}`}>
+          {getVideoTitle()}
+        </h3>
 
         {/* Bouton CTA */}
         <button className="px-4 py-2 w-full bg-orange-500 hover:bg-orange-600 relative text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-md">
           {ctaText}
-          <div className="absolute right-2 top-1/2 transform -translate-y-1/2 transition-transform duration-200">
-            <RiArrowRightLine className="inline-block text-lg -mt-0.5 -rotate-45" />
+          <div className={`absolute top-1/2 transform -translate-y-1/2 transition-transform duration-200 ${isRTL ? "left-2" : "right-2"}`}>
+            <RiArrowRightLine className={`inline-block text-lg -mt-0.5 ${isRTL ? "rotate-180" : "-rotate-45"}`} />
           </div>
         </button>
       </div>
 
       {/* Boutons d'interaction (côté droit) */}
-      <div className="absolute right-3 bottom-24 flex flex-col items-center space-y-4">
-        {/* Bouton Partage */}
+      <div className={`absolute ${isRTL ? "left-3" : "right-3"} bottom-24 flex flex-col items-center space-y-4`}>
         <div className="flex flex-col items-center">
           <button className="p-2 bg-black/30 rounded-full hover:bg-black/50 transition-colors">
             <span className="text-white text-xl">
@@ -139,14 +135,14 @@ const ShortCard = ({ video }: ShortCardProps) => {
 };
 
 const ShortCardLoading = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="relative rounded-xl overflow-hidden aspect-[9/16] bg-gray-50">
-      {/* Video/Thumbnail Skeleton */}
       <div className="absolute inset-0">
         <Skeleton className="w-full h-full scale-110" />
       </div>
 
-      {/* Video Info Skeleton */}
       <div className="absolute bottom-0 left-0 right-0 p-4">
         <div className="flex items-center mb-3">
           <div className="w-10 h-10 rounded-full border-2 border-white mr-3 overflow-hidden">
@@ -156,13 +152,11 @@ const ShortCardLoading = () => {
         </div>
         <Skeleton count={2} height={12} className="mb-4" />
 
-        {/* CTA Button Skeleton */}
         <div className="px-4 py-2 w-full bg-gray-200 rounded-lg">
           <Skeleton width={80} height={16} />
         </div>
       </div>
 
-      {/* Interaction Buttons Skeleton (right side) */}
       <div className="absolute right-3 bottom-24 flex flex-col items-center space-y-4">
         <div className="flex flex-col items-center">
           <div className="p-2 bg-gray-200 rounded-full">

@@ -1,0 +1,49 @@
+{
+  "page": {
+    "title": "Annonces",
+    "explore": "Explorez toutes les annonces gratuites",
+    "annonces_count": "Annonces disponibles"
+  },
+  "search": {
+    "placeholder": "Rechercher une annonce",
+    "button": "Rechercher"
+  },
+  "filter": {
+    "filtrer": "Filtrer",
+    "reinitialiser": "Réinitialiser",
+    "tous_les_filtres": "Tous les filtres",
+    "appliquer": "Appliquer",
+    "trier_par": "Trier par"
+  },
+  "annonce_filters": {
+    "title": "Filtres Annonces",
+    "subtitle": "Filtres spécifiques pour les annonces",
+    "categorie": "Catégorie",
+    "select_categorie": "Sélectionnez une catégorie",
+    "sous_categorie": "Sous-catégorie",
+    "select_sous_categorie": "Sélectionnez une sous-catégorie",
+    "select_category_first": "Sélectionnez d'abord une catégorie",
+    "loading_subcategories": "Chargement des sous-catégories...",
+    "no_subcategories": "Aucune sous-catégorie disponible",
+    "pays": "Pays",
+    "select_pays": "Sélectionnez un pays",
+    "ville": "Ville",
+    "select_ville": "Sélectionnez une ville",
+    "select_country_first": "Sélectionnez d'abord un pays",
+    "no_cities": "Aucune ville disponible",
+    "subcategory_count_one": "sous-catégorie",
+    "subcategory_count_other": "sous-catégories",
+    "city_count_one": "ville",
+    "city_count_other": "villes"
+  },
+  "sort": {
+    "newest": "Nouveaux",
+    "most_reviews": "Plus d'avis",
+    "highest_rating": "Meilleure note"
+  },
+  "no_results": {
+    "title": "Aucune annonce trouvée",
+    "description": "Aucune annonce ne correspond à vos critères de recherche.",
+    "try_again": "Essayez de modifier vos filtres"
+  }
+}

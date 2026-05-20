@@ -1,0 +1,37 @@
+{
+  "dashboard": {
+    "title": "Tableau de bord"
+  },
+  "profile": {
+    "title": "Profil",
+    "description": "Gérer vos informations personnelles",
+    "welcome": "Bienvenue",
+    "edit_profile": "Modifier le profil",
+    "login_info": "Gérer vos informations de connexion",
+    "logout": "Se déconnecter"
+  },
+  "company": {
+    "title": "Entreprise",
+    "description": "Gérer les informations commerciales de votre entreprise"
+  },
+  "ads": {
+    "title": "Annonces",
+    "description": "Gérer vos annonces publiées"
+  },
+  "video_ads": {
+    "title": "Annonces Vidéo",
+    "description": "Gérer vos annonces vidéo"
+  },
+  "subscription": {
+    "title": "Voir Abonnement",
+    "description": "Consulter et gérer votre abonnement"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "description": "Besoin d'aide ? Contactez notre équipe"
+  },
+  "logout": {
+    "title": "Se déconnecter",
+    "description": "Quitter votre compte"
+  }
+}

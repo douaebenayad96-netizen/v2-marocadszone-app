@@ -1,11 +1,6 @@
-- [ ] Gather current implementation for /user-account/annonces-video?add=true (VideoUploadPage)
-- [ ] Create modern orange YouTube-like upload progress bar (real-time)
-- [ ] Implement Axios upload with onUploadProgress (disable publish button during upload)
+# TODO - Traduction Page Accueil
 
-- [ ] Show uploading status + success/error messages
-- [ ] Ensure responsive UI + disable form interactions during upload
-- [x] Replace existing Firebase-only upload for the video with Axios-based upload to backend (thumbnail kept as-is in multipart)
-
-- [ ] Wire progress bar into the submit flow
-- [ ] Final cleanup: remove dead state, ensure typings, and run typecheck/lint
+- [ ] Remplacer les textes en dur dans les sections Home : HomeHero, HomePrestatairesCat, HomeShorts, HomePaginatedAnnonces, HomeJobOffers, HomeInfo par des clés `t()`.
+- [ ] Vérifier/compléter les clés i18n pour EN/AR dans `src/assets/locales/en/translation.json` et `src/assets/locales/ar/translation.json` (et FR si besoin).
+- [ ] Lancer `npm run build` (ou `npm test` si dispo) pour valider la compilation.
 

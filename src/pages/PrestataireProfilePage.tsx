@@ -15,11 +15,12 @@ import GalleryWindows from "../components/common/GalleryWindows";
 import ModalLayout from "../components/layouts/ModalLayout";
 import SectionHeader from "../components/layouts/SectionHeader";
 import { useAnnonceBySlug } from "../services/api/fetchAnnonce";
+import getLocalized from '../utils/getLocalized';
 
 const PrestataireProfilePage = () => {
-  const { t } = useTranslation();
-  const [showReservationMobileModal, setShowReservationMobileModal] =
-    useState(false);
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+  const [showReservationMobileModal, setShowReservationMobileModal] = useState(false);
   const { slug } = useParams();
   const navigate = useNavigate();
   const {
@@ -46,37 +47,26 @@ const PrestataireProfilePage = () => {
   console.log(annonce);
 
   return (
-    <div className="pt-nav">
+    <div className={`pt-nav ${isRTL ? "rtl" : ""}`}>
       <Helmet>
         <title>
-          {annonce?.title} à vendre à {annonce.city?.label} -{" "}
-          {annonce.subcategory?.label} - MarocAdsZone
+          {annonce?.title} à vendre à {getLocalized(annonce.city, 'label') || annonce.city?.label} -{" "}
+          {getLocalized(annonce.subcategory, 'label') || annonce.subcategory?.label} - MarocAdsZone
         </title>
         <meta
           name="description"
-          content={`${annonce.title}, en bon état, à vendre à ${annonce.city?.label}. Prix compétitif. Consultez l’annonce sur MarocAdsZone.`}
+          content={`${annonce.title}, en bon état, à vendre à ${getLocalized(annonce.city, 'label') || annonce.city?.label}. Prix compétitif. Consultez l’annonce sur MarocAdsZone.`}
         />
 
-        {/* facebook, linkedin and twitter meta */}
-        <meta
-          property="og:title"
-          content={`${annonce?.title} - MarocAdsZone`}
-        />
+        <meta property="og:title" content={`${annonce?.title} - MarocAdsZone`} />
         <meta property="og:description" content={annonce?.description} />
         <meta property="og:image" content={annonce?.image_urls?.[0]} />
-        <meta
-          property="og:url"
-          content={`https://marocadszone.com/annonce/${annonce?.slug}`}
-        />
+        <meta property="og:url" content={`https://marocadszone.com/annonce/${annonce?.slug}`} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content={`${annonce?.title} - MarocAdsZone`}
-        />
+        <meta name="twitter:title" content={`${annonce?.title} - MarocAdsZone`} />
         <meta name="twitter:description" content={annonce?.description} />
         <meta name="twitter:image" content={annonce?.image_urls?.[0]} />
-        {/* this for google */}
         <meta itemProp="name" content={annonce?.title} />
         <meta itemProp="description" content={annonce?.description} />
         <meta itemProp="image" content={annonce?.image_urls?.[0]} />
@@ -101,7 +91,7 @@ const PrestataireProfilePage = () => {
       </Helmet>
       <img
         src={annonce?.image_urls?.[0]}
-        alt={`${annonce?.title} à vendre à ${annonce.city?.label} - ${annonce.subcategory?.label}`}
+        alt={`${annonce?.title} à vendre à ${getLocalized(annonce.city, 'label') || annonce.city?.label} - ${getLocalized(annonce.subcategory, 'label') || annonce.subcategory?.label}`}
         width={1200}
         height={630}
         style={{ display: "none" }}
@@ -114,13 +104,13 @@ const PrestataireProfilePage = () => {
 
         {/* Breadcrumb Navigation */}
         <div className="app-container-max-xl pt-4">
-          <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-4">
+          <nav className={`flex items-center space-x-2 text-sm text-gray-600 mb-4 ${isRTL ? "flex-row-reverse space-x-reverse" : ""}`}>
             <span className="font-medium text-gray-900">
-              {annonce?.subcategory?.label}
+              {getLocalized(annonce?.subcategory, 'label') || annonce?.subcategory?.label}
             </span>
             <span>/</span>
             <span className="font-medium text-gray-900">
-              {annonce?.subcategory?.label}
+              {getLocalized(annonce?.subcategory, 'label') || annonce?.subcategory?.label}
             </span>
             <span>/</span>
             <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
@@ -130,49 +120,35 @@ const PrestataireProfilePage = () => {
         </div>
 
         <GalleryWindows annonce={annonce} />
+        
         <div className="app-container-max-xl pt-6 page-pb flex justify-between flex-col lg:flex-row gap-5 lg:gap-8 xl:gap-28">
           <div className="flex-1">
             <PrestataireAboutSection annonce={annonce} />
             <FixedCTABox annonce={annonce} />
           </div>
           <aside className="min-w-[320px] h-fit flex flex-col gap-4 bg-white sticky top-[88px]">
-            {/* banner */}
             <Banner300X250 />
             <Banner300X600 />
           </aside>
         </div>
+        
         {/* similar prestataires */}
         <div className="bg-gray-50 page-pb">
           <div className="app-container-max-xl py-10 flex flex-col gap-10">
             <SectionHeader
-              title={"Similaire Annonces a " + annonce?.title}
-              subtitle={t("similaire_prestataires.subtitle")}
+              title={t("similar_announces.title", { name: annonce?.title })}
+              subtitle={t("similar_announces.subtitle")}
             />
-            {/* services list */}
             <SimilarPrestateursList annonce={annonce} />
           </div>
         </div>
+        
         {/* banner */}
         <div className="w-full flex justify-center items-center py-4">
           <Banner970X90 />
         </div>
       </div>
-      {/* mobile Reservation
-      <div
-        className="lg:hidden fixed bottom-0 left-0 right-0 bg-white bg-opacity-90 p-4 shadow-md backdrop:blur-md z-10"
-      >
-        <button
-          onClick={() => setShowReservationMobileModal(true)}
-          className="btn-primary w-full"
-        >
-          {/* {
-            t('demander_un_rendez_vous')
-          } */}
-      {/*
-            t('voire_les_disponibilites')
-       
-        </button>
-      </div>*/}
+      
       <ModalLayout
         isOpen={showReservationMobileModal}
         setIsOpen={setShowReservationMobileModal}

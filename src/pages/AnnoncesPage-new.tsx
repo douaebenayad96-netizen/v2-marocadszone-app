@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { AnnonceFilter } from '../services/types/annonce'
 import { useAnnoncesWithFilter } from '../services/api/fetchAnnonce'
 import { PrestataireCardV2 } from '../components/annonce/PrestataireCard'
 import Pagination from '../components/ui/Pagination'
 
 const AnnoncesPage = () => {
+  const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const page = Number(searchParams.get("page")) || 1
   
@@ -46,7 +48,7 @@ const AnnoncesPage = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          Toutes les Annonces
+          {t('annonces_page.title')}
         </h1>
 
         {/* Annonces Grid */}
@@ -68,12 +70,13 @@ const AnnoncesPage = () => {
             ))
           ) : isError ? (
             <div className="col-span-full text-center py-8">
-              <p className="text-red-500">Une erreur s'est produite lors du chargement des annonces</p>
+              <p className="text-red-500">{t('annonces_page.error_loading')}</p>
             </div>
           ) : annoncesData?.data?.length === 0 ? (
             <div className="col-span-full text-center py-8">
-              <p className="text-gray-500">Aucune annonce disponible pour le moment</p>
+              <p className="text-gray-500">{t('annonces_page.no_annonces')}</p>
             </div>
+
           ) : (
             // Display announcements
             annoncesData?.data?.map((annonce) => (

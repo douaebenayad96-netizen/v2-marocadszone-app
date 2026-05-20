@@ -1,0 +1,189 @@
+{
+  "terms": {
+    "title": "General Terms of Use",
+    "updated_at": "MarocAdsZone - Last updated: July 3, 2025",
+    "navigation": {
+      "general": "General Terms",
+      "privacy": "Privacy Policy",
+      "cookies": "Cookie Policy",
+      "mentions": "Legal Notice"
+    }
+  },
+  "preamble": {
+    "title": "Preamble",
+    "content": "These General Terms of Use (hereinafter \"GTU\") define the legal framework for the terms of access to and use of the MarocAdsZone website and the services offered, as well as the rights and obligations of Users."
+  },
+  "article1": {
+    "title": "Article 1: Legal Information",
+    "content": "The MarocAdsZone website is published by: Company name: DEVTI GROUP SARL Email: support@devtigroup.com"
+  },
+  "article2": {
+    "title": "Article 2: Definitions",
+    "site": "Site: refers to the MarocAdsZone website accessible at www.marocadszone.com.",
+    "user": "User: any natural or legal person using the Site.",
+    "services": "Services: all features offered on the Site (posting and viewing listings, internal messaging, account creation, etc.).",
+    "advertiser": "Advertiser: User publishing a listing on the Site.",
+    "content": "Content: information published by MarocAdsZone or Users on the Site."
+  },
+  "article3": {
+    "title": "Article 3: Access to the Site",
+    "content": "Access to the Site is free for any User with an Internet connection. All costs necessary to access the Site (hardware, connection, etc.) are the responsibility of the User. Some features may require the creation of an account."
+  },
+  "article4": {
+    "title": "Article 4: Registration and User Account",
+    "content": "To post listings or access certain features, the User must create an account by providing accurate and up-to-date information. The User is responsible for the confidentiality of their login credentials and for all activities carried out on the Site via their account. MarocAdsZone reserves the right to suspend or delete an account in the event of a violation of these GTU."
+  },
+  "article5": {
+    "title": "Article 5: Posting Listings",
+    "content": "Advertisers agree to post listings that comply with applicable Moroccan legislation. MarocAdsZone reserves the right to refuse or remove any listing deemed contrary to public order, public morality, or these GTU."
+  },
+  "article6": {
+    "title": "Article 6: Intellectual Property",
+    "content": "All content on the Site (texts, images, logos, videos) is protected by copyright and remains the property of their authors or MarocAdsZone. Any total or partial reproduction without prior authorization is prohibited."
+  },
+  "article7": {
+    "title": "Article 7: Liability",
+    "content": "The information published on the Site is provided for informational purposes only. MarocAdsZone does not guarantee the accuracy or completeness of the information posted online. MarocAdsZone cannot be held liable for direct or indirect damages resulting from the use of the Site or content published by Users."
+  },
+  "article8": {
+    "title": "Article 8: User Obligations",
+    "intro": "By using the Site, the User agrees to:",
+    "item0": "Not publish any unlawful, defamatory or indecent content;",
+    "item1": "Not infringe the rights of third parties;",
+    "item2": "Not distribute advertising content without authorization;",
+    "item3": "Not use the Site for fraudulent or malicious purposes;",
+    "item4": "Comply with these GTU."
+  },
+  "article9": {
+    "title": "Article 9: Hyperlinks",
+    "content": "The Site may contain links to other websites. MarocAdsZone has no control over these sites and disclaims all responsibility for their content."
+  },
+  "article10": {
+    "title": "Article 10: Cookies",
+    "content": "The Site uses cookies to improve the user experience and analyze traffic. To find out more, please consult our Cookie Policy."
+  },
+  "article11": {
+    "title": "Article 11: Personal Data Protection",
+    "content": "Data collected on the Site is processed in accordance with Moroccan laws on personal data protection. For more information, please consult our Privacy Policy."
+  },
+  "article12": {
+    "title": "Article 12: Applicable Law and Jurisdiction",
+    "content": "These GTU are governed by Moroccan law. In the event of a dispute, the courts of Casablanca shall have jurisdiction."
+  },
+  "article13": {
+    "title": "Article 13: Modification of the GTU",
+    "content": "MarocAdsZone reserves the right to modify these GTU at any time. Users are invited to regularly consult the updated version of the GTU on the Site."
+  },
+  "contact": {
+    "title": "Contact",
+    "content": "For any questions regarding the application of these GTU, you can contact MarocAdsZone by email at: contact@marocadszone.com"
+  },
+  "privacy": {
+    "title": "PRIVACY POLICY",
+    "subtitle": "MarocAdsZone",
+    "updated_at": "Last updated: July 3, 2025",
+    "intro": {
+      "title": "Introduction",
+      "content": "Protecting your personal data is a priority for MarocAdsZone. This Privacy Policy is intended to inform you about how we collect, use and protect your data when you use our classifieds platform. By using our site, you agree to the practices described in this policy. We invite you to read it carefully."
+    },
+    "article1": {
+      "title": "1. Data Controller",
+      "content": "DEVTI GROUP SARL Email: support@devtigroup.com"
+    },
+    "article2": {
+      "title": "2. Types of data collected",
+      "content": "When using MarocAdsZone, we may collect the following data:",
+      "advertisers": "For advertisers:",
+      "advertisers_list": [
+        "Identification data (name, first name, phone number, email address)",
+        "Ad information (title, description, images)",
+        "Login and browsing data"
+      ],
+      "visitors": "For visitors:",
+      "visitors_list": [
+        "Browsing data and cookies",
+        "Data provided via contact forms"
+      ]
+    },
+    "article3": {
+      "title": "3. Purposes of processing",
+      "content": "We collect your personal data for the following purposes:",
+      "list": [
+        "Creation and management of your user account",
+        "Publication and management of ads",
+        "Connecting advertisers and visitors",
+        "Improving our services and performance analysis",
+        "Sending communications related to your account or ads",
+        "Compliance with legal obligations and fraud prevention"
+      ]
+    },
+    "article4": {
+      "title": "4. Legal basis for processing",
+      "content": "The processing of your data is based on:",
+      "list": [
+        "Execution of the contract when using our services",
+        "Your consent, particularly for sending promotional offers",
+        "Our legitimate interests in improving our services",
+        "Compliance with our legal obligations"
+      ]
+    },
+    "article5": {
+      "title": "5. Data retention period",
+      "account": "Account data: for the duration of your registration and up to 3 years after last activity",
+      "ads": "Ad data: during publication and up to 3 years after deletion",
+      "billing": "Billing data: according to legal retention periods",
+      "navigation": "Browsing data: up to 13 months",
+      "after": "After these periods, your data is deleted or anonymized"
+    },
+    "article6": {
+      "title": "6. Data recipients",
+      "content": "Your data may be shared with:",
+      "list": [
+        "Authorized MarocAdsZone staff",
+        "Our technical subcontractors (hosting, maintenance)",
+        "Site visitors for ad-related data",
+        "Administrative and judicial authorities if required by law"
+      ]
+    },
+    "article7": {
+      "title": "7. Data transfers outside Morocco",
+      "content": "Some data may be transferred outside Morocco (for example via our hosting providers). We ensure that these transfers are secure and comply with applicable regulations."
+    },
+    "article8": {
+      "title": "8. Your rights",
+      "content": "In accordance with applicable regulations, you have the following rights:",
+      "list": [
+        "Right of access: obtain a copy of your data",
+        "Right of rectification: correct inaccurate data",
+        "Right to erasure: request deletion of your data",
+        "Right to object: object to certain processing",
+        "Right to restriction: restrict the processing of your data",
+        "Right to portability: receive your data in a readable format",
+        "Right to withdraw your consent at any time"
+      ],
+      "contact": "To exercise your rights, contact us by email at: contact@marocadszone.com"
+    },
+    "article9": {
+      "title": "9. Data security",
+      "content": "We implement technical and organizational measures to protect your data, including:",
+      "list": [
+        "Encryption of sensitive data",
+        "Data access control",
+        "Regular backups",
+        "Staff awareness of confidentiality"
+      ]
+    },
+    "article10": {
+      "title": "10. Cookies",
+      "content": "For more information on the use of cookies, see our Cookie Policy."
+    },
+    "article11": {
+      "title": "11. Policy changes",
+      "content": "We reserve the right to modify this policy at any time. Changes will be published on this page and will take effect immediately."
+    },
+    "contact": {
+      "title": "12. Contact",
+      "content": "For any questions regarding this policy or your personal data, you can contact us at: Email: support@devtigroup.com"
+    }
+  }
+}

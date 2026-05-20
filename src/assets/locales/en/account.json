@@ -1,0 +1,37 @@
+{
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "Manage your personal information",
+    "welcome": "Welcome",
+    "edit_profile": "Edit profile",
+    "login_info": "Manage your login information",
+    "logout": "Logout"
+  },
+  "company": {
+    "title": "Company",
+    "description": "Manage your company's business information"
+  },
+  "ads": {
+    "title": "Ads",
+    "description": "Manage your published ads"
+  },
+  "video_ads": {
+    "title": "Video Ads",
+    "description": "Manage your video ads"
+  },
+  "subscription": {
+    "title": "View Subscription",
+    "description": "View and manage your subscription"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "description": "Need help? Contact our team"
+  },
+  "logout": {
+    "title": "Logout",
+    "description": "Exit your account"
+  }
+}

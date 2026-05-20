@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { RiCheckLine } from "react-icons/ri";
 import { useMutation } from "react-query";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 import { Close } from "../assets/icons/Close";
 import qr_code from "../assets/img/qr-code.jpg";
 import { choosePlanApi } from "../services/api/fetchTarification";
@@ -10,6 +11,7 @@ import { useAuthStore } from "../services/store/authStore";
 import { useLoginModelStore } from "../services/store/LoginModelStore";
 import { cn } from "../utils/helpers";
 import { useNavigate } from "react-router-dom";
+
 const Checkbox: React.FC<{
   value: boolean;
   onChange: () => void;
@@ -35,16 +37,20 @@ interface BankDataModalProps {
   planId: number;
   onClose?: () => void;
 }
+
 const BankDataModal: React.FC<BankDataModalProps> = ({
   setOpenBank,
   planId,
   onClose,
 }) => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const [isChecked, setIsChecked] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const { setUser, user } = useAuthStore();
   const { openRegisterModel } = useLoginModelStore();
+
   const { mutate: chosePlan } = useMutation({
     mutationFn: (id: string) => choosePlanApi(id),
     onSuccess: ({ data }) => {
@@ -57,19 +63,17 @@ const BankDataModal: React.FC<BankDataModalProps> = ({
         error?.response?.data?.message ===
         "User must have a company to choose a plan"
       ) {
-        toast.info(
-          "L'utilisateur doit avoir une entreprise pour choisir un plan"
-        );
+        toast.info(t("bank_modal.company_required"));
       }
       if (
         error.response?.data?.message ===
         "User already has a plan or subscription."
       ) {
-        toast.info("Utilisateur deja a une abonnement");
+        toast.info(t("bank_modal.already_subscribed"));
       }
     },
   });
-  
+
   const handleOpenRegister = (id: string) => {
     if (!user) {
       openRegisterModel();
@@ -77,138 +81,129 @@ const BankDataModal: React.FC<BankDataModalProps> = ({
     }
     chosePlan(id);
   };
+
+  // Success Modal
   if (showSuccessModal) {
-  return (
-    <div className="w-full h-full flex items-center justify-center bg-black/50 fixed top-0 left-0 z-[9999] px-4">
-      <div className="bg-white rounded-2xl p-8 w-full max-w-xl text-center shadow-2xl">
-        <div className="mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-green-100 text-5xl font-bold text-green-600">
-          ✓
-        </div>
-
-        <h2 className="mb-3 text-3xl font-bold text-green-700">
-          Merci !
-        </h2>
-
-        <p className="mb-6 text-lg font-semibold text-gray-900">
-          Votre demande a été enregistrée avec succès.
-        </p>
-
-        <div className="mb-6 rounded-xl border border-green-200 bg-green-50 p-4 text-left">
-          <p className="font-bold text-green-800">
-            Statut : En attente de paiement
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-black/50 fixed top-0 left-0 z-[9999] px-4">
+        <div className="bg-white rounded-2xl p-8 w-full max-w-xl text-center shadow-2xl">
+          <div className="mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-full bg-green-100 text-5xl font-bold text-green-600">
+            ✓
+          </div>
+          <h2 className="mb-3 text-3xl font-bold text-green-700">
+            {t("bank_modal.thank_you")}
+          </h2>
+          <p className="mb-6 text-lg font-semibold text-gray-900">
+            {t("bank_modal.request_success")}
           </p>
-          <p className="mt-2 text-sm text-gray-700">
-            Veuillez effectuer le virement bancaire puis nous envoyer le reçu
-            sur WhatsApp ou par e-mail.
+          <div className="mb-6 rounded-xl border border-green-200 bg-green-50 p-4 text-left">
+            <p className="font-bold text-green-800">
+              {t("bank_modal.status_pending")}
+            </p>
+            <p className="mt-2 text-sm text-gray-700">
+              {t("bank_modal.payment_instructions")}
+            </p>
+          </div>
+          <p className="mb-6 text-sm text-gray-700">
+            {t("bank_modal.activation_message")}
           </p>
+          <button
+            onClick={() => {
+              setOpenBank(false);
+              onClose && onClose();
+              navigate("/user-account/annonces");
+            }}
+            className="rounded-lg bg-primary-orange px-8 py-3 font-semibold text-white hover:bg-primary-orange-dark"
+          >
+            {t("bank_modal.view_my_ads")}
+          </button>
         </div>
-
-        <p className="mb-6 text-sm text-gray-700">
-          Dès réception de votre paiement, nous procéderons à l’activation
-          de votre annonce.
-        </p>
-
-        <button
-          onClick={() => {
-            setOpenBank(false);
-            onClose && onClose();
-            navigate("/user-account/annonces");
-          }}
-          className="rounded-lg bg-primary-orange px-8 py-3 font-semibold text-white hover:bg-primary-orange-dark"
-        >
-          Voir mes annonces
-        </button>
       </div>
-    </div>
-  );
-}
+    );
+  }
+
+  // Main Modal
   return (
     <div
       className="w-full h-full flex items-center justify-center bg-black/50 fixed top-0 left-0 z-[9999]"
-      onClick={() => {
-        setOpenBank(false);
-      }}
+      onClick={() => setOpenBank(false)}
     >
       <div
-        className="space-y-4 bg-white p-8 w-full max-w-[720px] md:w-[50%] max-h-[90vh] overflow-y-auto overflow-x-hidden"
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
+        className={`space-y-4 bg-white p-8 w-full max-w-[720px] md:w-[50%] max-h-[90vh] overflow-y-auto overflow-x-hidden ${isRTL ? "rtl" : ""}`}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="w-full flex justify-end">
-          <Close
-            onClick={() => setOpenBank(false)}
-            className="cursor-pointer"
-          />
+          <Close onClick={() => setOpenBank(false)} className="cursor-pointer" />
         </div>
+
         <div className="flex flex-col sm:flex-row justify-between items-start">
           <div className="space-y-4 flex-1">
-            <p className="text-sm">Cher(e) client(e),</p>
+            <p className="text-sm">{t("bank_modal.dear_customer")}</p>
             <p className="text-sm">
-              Nous vous remercions d'avoir choisi le pack d'abonnement{" "}
-              <span className="font-semibold">MarocAdsZone</span> et vous
-              invitons à effectuer un
-              <span className="font-semibold"> Virement ou Versement</span> sur
-              notre compte bancaire suivant :
+              {t("bank_modal.thank_you_message")}{" "}
+              <span className="font-semibold">MarocAdsZone</span>{" "}
+              {t("bank_modal.invitation_to_pay")}
+              <span className="font-semibold"> {t("bank_modal.transfer")}</span>
             </p>
 
             <div className="space-y-2">
               <p className="text-sm">
-                <span className="font-semibold">Nom du Bénéficiaire : </span>
+                <span className="font-semibold">
+                  {t("bank_modal.beneficiary_name")} :{" "}
+                </span>
                 DEVTI TECHNOLOGIE
               </p>
               <p className="text-sm">
-                <span className="font-semibold">RIB : </span>230 640
-                4567404221016900 42
+                <span className="font-semibold">{t("bank_modal.rib")} : </span>
+                230 640 4567404221016900 42
               </p>
               <p className="text-sm">
-                <span className="font-semibold">IBAN : </span>MA64 2306 4045
-                6740 4221 0169 0042
+                <span className="font-semibold">{t("bank_modal.iban")} : </span>
+                MA64 2306 4045 6740 4221 0169 0042
               </p>
               <p className="text-sm">
-                <span className="font-semibold">Code SWIFT : </span>CIHMMAMC
+                <span className="font-semibold">
+                  {t("bank_modal.swift_code")} :{" "}
+                </span>
+                CIHMMAMC
               </p>
             </div>
           </div>
 
           <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gray-100 flex items-center justify-center rounded shrink-0">
-            <img
-              src={qr_code}
-              alt="QR Code"
-              className="w-full h-full object-contain"
-            />
+            <img src={qr_code} alt="QR Code" className="w-full h-full object-contain" />
           </div>
         </div>
+
         <p className="text-sm">
-          Une fois le paiement effectué, veuillez nous transmettre par WhatsApp
-          ou e-mail l'avis de virement ou versement aux :
+          {t("bank_modal.after_payment")}
           <span className="font-semibold">
             {" "}
-            WhatsApp : +212 6 60 10 46 65 - E-mail : info@marocadszone.com
+            {t("bank_modal.contact_whatsapp_email")}
           </span>
-          .
         </p>
+
         <p className="text-sm">
-          Dès réception de votre paiement, nous procéderons à l'activation de
-          votre annonce sur la plateforme{" "}
-          <span className="font-semibold">https://marocadszone.com/</span>.
+          {t("bank_modal.activation_confirmation")}{" "}
+          <span className="font-semibold">https://marocadszone.com/</span>
         </p>
+
         <p className="text-sm">
-          Pour plus d'information merci de nous contacter par
+          {t("bank_modal.more_info")}
           <span className="font-semibold">
             {" "}
-            WhatsApp : +212 6 60 10 46 65 ou E-mail : info@marocadszone.com
+            {t("bank_modal.contact_whatsapp_email")}
           </span>
-          .
         </p>
-        <div className="flex items-center justify-between pt-4">
-          <div className="flex items-center space-x-2">
+
+        <div className={`flex items-center justify-between pt-4 ${isRTL ? "flex-row-reverse" : ""}`}>
+          <div className={`flex items-center space-x-2 ${isRTL ? "flex-row-reverse space-x-reverse" : ""}`}>
             <Checkbox
               value={isChecked}
               onChange={() => setIsChecked(!isChecked)}
               name="payment_confirmation"
             />
-            <span className="text-sm">Cocher si vous avez pris une note</span>
+            <span className="text-sm">{t("bank_modal.checkbox_label")}</span>
           </div>
           <button
             className={cn(
@@ -220,7 +215,7 @@ const BankDataModal: React.FC<BankDataModalProps> = ({
             disabled={!isChecked}
             onClick={() => handleOpenRegister(String(planId))}
           >
-            Confirmé
+            {t("bank_modal.confirm")}
           </button>
         </div>
       </div>

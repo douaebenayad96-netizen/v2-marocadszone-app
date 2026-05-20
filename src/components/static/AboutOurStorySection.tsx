@@ -1,43 +1,32 @@
+import { useTranslation } from "react-i18next"
 import image1 from '../../assets/img/about/image1.jpg'
 
 const AboutOurStorySection = () => {
+  const { t } = useTranslation()
+
   return (
     <div className="section-py app-container grid grid-cols-1 md:grid-cols-2 gap-8">
       <div>
         <small
           className="text-primary-blue font-bold bg-primary-blue bg-opacity-10 px-2 py-1 rounded-lg inline-block mb-2"
         >
-          #Notre Histoire
+          {t("story.pill", { ns: "about" })}
         </small>
-        <h2
-          className="title-h2 text-blue-950 font-bold mb-4"
-        >
-          Fondée avec une vision simple mais ambitieuse
-        </h2>
-        <p
-          className="text-gray-500 text-base"
-        >
-          MarocAdsZone est devenue la plateforme d'annonces en ligne de référence au Maroc, offrant un espace sécurisé et efficace pour vendre, acheter et promouvoir des services en toute confiance.
-        </p>
-        <p
-          className="text-gray-500 text-base mt-2"
-        >
-          Depuis nos débuts, nous nous engageons à :
-        </p>
+        <h2 className="title-h2 text-blue-950 font-bold mb-4">{t("story.title", { ns: "about" })}</h2>
+        <p className="text-gray-500 text-base">{t("story.p1", { ns: "about" })}</p>
+        <p className="text-gray-500 text-base mt-2">{t("story.p2", { ns: "about" })}</p>
         <ul className="list-disc pl-5 text-gray-500 text-base mt-2">
-          <li>Simplifier le processus de vente et d'achat pour les particuliers et professionnels.</li>
-          <li>Créer un pont entre les vendeurs et les acheteurs, sans barrières ni complexités inutiles.</li>
-          <li>Offrir un canal fiable permettant à chaque annonce de générer de la visibilité et des opportunités réelles.</li>
+          <li>{t("story.li1", { ns: "about" })}</li>
+          <li>{t("story.li2", { ns: "about" })}</li>
+          <li>{t("story.li3", { ns: "about" })}</li>
         </ul>
       </div>
-      <div
-        className="rounded-lg overflow-hidden aspect-video"
-      >
-        <img
-          src={image1}
-          alt="Notre Histoire"
-          className="object-cover w-full h-full"
-        />
+      <div className="rounded-lg overflow-hidden aspect-video">
+          <img
+            src={image1}
+            alt={t("story.pill", { ns: "about" })}
+            className="object-cover w-full h-full"
+          />
       </div>
     </div>
   )

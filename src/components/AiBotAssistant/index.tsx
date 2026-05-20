@@ -43,9 +43,7 @@ const ChatBot = () => {
   const [pendingMessageId, setPendingMessageId] = useState<string | null>(null);
 
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [recordedAudio, setRecordedAudio] = useState<RecordedAudio | null>(
-    null
-  );
+  const [recordedAudio, setRecordedAudio] = useState<RecordedAudio | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [recordingTime, setRecordingTime] = useState<number>(0);
   const [audioMode, setAudioMode] = useState<boolean>(false);
@@ -55,20 +53,19 @@ const ChatBot = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const queryClient = useQueryClient();
 
-  const { register, handleSubmit, reset, watch, setValue } =
-    useForm<FormValues>({
-      defaultValues: {
-        message: "",
-        audio: null,
-      },
-    });
+  const { register, handleSubmit, reset, watch, setValue } = useForm<FormValues>({
+    defaultValues: {
+      message: "",
+      audio: null,
+    },
+  });
 
   // Mutation
   const { mutate: SendDataToAi, isPending } = useMutation({
-    // Change: Expect a JSON object, not FormData
     mutationFn: (data: { prompts: { from: string; prompt: string }[] }) =>
       generateConversationWithAi(data),
 
@@ -76,7 +73,6 @@ const ChatBot = () => {
       const tempId = `temp-${Date.now()}`;
       setPendingMessageId(tempId);
 
-      // Change: Get message directly from the JSON array
       const lastMessage = variables.prompts[variables.prompts.length - 1];
 
       if (lastMessage && lastMessage.from === "user") {
@@ -96,16 +92,12 @@ const ChatBot = () => {
       if (response?.data && Array.isArray(response.data)) {
         const backendConversation = response.data;
 
-        console.log("🔍 Messages received:", backendConversation.length);
-
         setConversationData((prev) => {
-          // Remove temporary messages
           const existingMessages = prev.filter(
             (item) => !item.id.startsWith("temp-")
           );
 
           const newMessages = backendConversation.filter((backendMsg: any) => {
-            // Check if this message already exists in our conversation
             return !existingMessages.some(
               (existingMsg) =>
                 existingMsg.from === backendMsg.from &&
@@ -130,135 +122,68 @@ const ChatBot = () => {
 
       setPendingMessageId(null);
       reset();
-      // clearAudioRecording(); // Audio support removed
       queryClient.invalidateQueries({ queryKey: ["AllUserConversation"] });
     },
     onError: (error: Error, variables, context) => {
       console.error("❌ API Error:", error);
       setPendingMessageId(null);
 
-      // Remove temporary user message
       setConversationData((prev) =>
         prev.filter((item) => !item.id.startsWith("temp-"))
       );
 
-      toast.error("Erreur lors de l'envoi du message");
+      toast.error(t("chatbot.error_sending", "Erreur lors de l'envoi du message"));
     },
   });
-  // Submit function
+
   const onSubmit = async (data: FormValues) => {
     if (!data.message.trim()) {
-      toast.error("Veuillez entrer un message");
+      toast.error(t("chatbot.enter_message", "Veuillez entrer un message"));
       return;
     }
 
-    // Get valid messages (exclude temp ones)
     const validConversations = conversationData.filter(
       (item) => !item.id.startsWith("temp-")
     );
 
-    console.log("📤 Sending", validConversations.length, "existing messages");
-
-    // 1. Build the prompts array from existing conversation
     const prompts = validConversations.map((item) => ({
       from: item.from,
       prompt: item.prompt,
     }));
 
-    // 2. Add the new user message
     prompts.push({
       from: "user",
       prompt: data.message.trim(),
     });
 
-    console.log("📤 Sending JSON with", prompts.length, "messages");
-
-    // 3. Send as a simple object
     SendDataToAi({ prompts });
   };
 
-  // Quick question handler
   const handleClick = (question: string) => {
-    const formData = new FormData();
-
     const validConversations = conversationData.filter(
       (item) => !item.id.startsWith("temp-")
     );
 
-    validConversations.forEach((item, index) => {
-      formData.append(`prompts[${index}][from]`, item.from);
-      formData.append(`prompts[${index}][prompt]`, item.prompt);
+    const prompts = validConversations.map((item) => ({
+      from: item.from,
+      prompt: item.prompt,
+    }));
+
+    prompts.push({
+      from: "user",
+      prompt: question,
     });
 
-    const newIndex = validConversations.length;
-    formData.append(`prompts[${newIndex}][from]`, "user");
-    formData.append(`prompts[${newIndex}][prompt]`, question);
-
-    SendDataToAi(formData);
+    SendDataToAi({ prompts });
   };
 
-  // Extract user message helper
-  const extractUserMessageFromFormData = (
-    formData: FormData
-  ): { text: string; audio?: Blob } | null => {
-    try {
-      const entries = Array.from(formData.entries());
-      let lastUserPrompt = "";
-      let lastUserAudio: Blob | undefined;
-
-      for (let i = 0; i < entries.length; i++) {
-        const [key, value] = entries[i];
-
-        if (key.match(/prompts\[\d+\]\[from\]/) && value === "user") {
-          const index = key.match(/prompts\[(\d+)\]/)?.[1];
-          const promptKey = `prompts[${index}][prompt]`;
-          const audioKey = `prompts[${index}][audio]`;
-
-          const promptEntry = entries.find(([k]) => k === promptKey);
-          const audioEntry = entries.find(([k]) => k === audioKey);
-
-          if (promptEntry) {
-            lastUserPrompt = promptEntry[1] as string;
-          }
-
-          if (audioEntry && audioEntry[1] instanceof Blob) {
-            lastUserAudio = audioEntry[1] as Blob;
-          }
-        }
-      }
-
-      return lastUserPrompt || lastUserAudio
-        ? { text: lastUserPrompt, audio: lastUserAudio }
-        : null;
-    } catch (error) {
-      console.error("Error extracting message:", error);
-      return null;
-    }
-  };
-
-  // Audio functions
   const startRecording = async (e?: React.MouseEvent<HTMLButtonElement>) => {
     e?.stopPropagation();
     e?.preventDefault();
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: 44100,
-        },
-      });
-
-      let mediaRecorder: MediaRecorder;
-      try {
-        mediaRecorder = new MediaRecorder(stream, {
-          mimeType: "audio/webm;codecs=opus",
-        });
-      } catch {
-        mediaRecorder = new MediaRecorder(stream);
-      }
-
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
@@ -269,10 +194,8 @@ const ChatBot = () => {
       };
 
       mediaRecorder.onstop = () => {
-        const mimeType = mediaRecorder.mimeType || "audio/webm";
-        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
         const audioUrl = URL.createObjectURL(audioBlob);
-
         setRecordedAudio({ blob: audioBlob, url: audioUrl });
         setValue("audio", audioBlob);
         stream.getTracks().forEach((track) => track.stop());
@@ -286,8 +209,8 @@ const ChatBot = () => {
         setRecordingTime((prev) => prev + 1);
       }, 1000);
     } catch (error) {
-      console.error("❌ Recording error:", error);
-      toast.error("Erreur d'accès au microphone");
+      console.error("Recording error:", error);
+      toast.error(t("chatbot.microphone_error", "Erreur d'accès au microphone"));
       setIsRecording(false);
     }
   };
@@ -350,7 +273,6 @@ const ChatBot = () => {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Effects
   useEffect(() => {
     const handleEnterClicked = (e: KeyboardEvent) => {
       if (
@@ -370,8 +292,7 @@ const ChatBot = () => {
 
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [conversationData, isPending]);
 
@@ -390,10 +311,13 @@ const ChatBot = () => {
   const { ref: registerRef, ...registerRest } = register("message");
 
   return (
-      <div className="relative z-[2147483647]">
+    <div className="relative z-[2147483647]">
+      {/* Bouton IABOT - Aligné à gauche pour RTL */}
       {!open && (
         <div
-          className="w-16 h-16 rounded-full bg-primary-orange fixed bottom-20 sm:bottom-8 right-10 flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity shadow-lg"
+          className={`w-16 h-16 rounded-full bg-primary-orange fixed bottom-20 sm:bottom-8 flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity shadow-lg ${
+            isRTL ? "left-10" : "right-10"
+          }`}
           onClick={() => setOpen(true)}
         >
           <AiBot className="text-white w-8 h-8" />
@@ -406,9 +330,11 @@ const ChatBot = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="w-[320px] md:w-[380px] h-[460px] md:h-[550px] fixed border bottom-8 right-8 md:bottom-12 md:right-12 bg-white rounded-lg shadow-xl z-[9999] flex flex-col"
+            className={`w-[320px] md:w-[380px] h-[460px] md:h-[550px] fixed border bottom-8 bg-white rounded-lg shadow-xl z-[9999] flex flex-col ${
+              isRTL ? "left-8 md:left-12" : "right-8 md:right-12"
+            }`}
           >
-            {/* Header */}
+            {/* Header - reste identique */}
             <div className="w-full rounded-t-lg flex items-center bg-primary-orange justify-between px-4 py-4 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -430,50 +356,26 @@ const ChatBot = () => {
               </button>
             </div>
 
-            <div
-              className="flex-1 px-4 py-2 overflow-y-auto"
-              ref={chatContainerRef}
-            >
+            {/* Contenu du chat - reste identique */}
+            <div className="flex-1 px-4 py-2 overflow-y-auto" ref={chatContainerRef}>
               <div className="flex flex-col gap-3">
                 {conversationData.length === 0 && !isPending && (
                   <div className="space-y-3">
                     <div className="flex justify-start">
                       <div className="max-w-xs bg-gray-100 rounded-lg px-4 py-3 shadow-sm">
                         <p className="text-sm text-gray-700">
-                          Bonjour ! Comment puis-je vous aider aujourd'hui ?
+                          {t("chatbot.welcome", "Bonjour ! Comment puis-je vous aider aujourd'hui ?")}
                         </p>
                       </div>
                     </div>
-
-                    {/* <div className="space-y-2">
-                      {AiQuestions.map((item, index) => (
-                        <button
-                          key={index}
-                          className="w-full flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors text-left border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleClick(item.question);
-                          }}
-                          disabled={isPending}
-                        >
-                          <span className="text-lg">{item.icon}</span>
-                          <span className="text-sm text-gray-700">
-                            {t(item.question)}
-                          </span>
-                        </button>
-                      ))}
-                    </div> */}
                   </div>
                 )}
 
-                {/* Display conversation */}
                 {conversationData.map((item) => (
                   <MessageBox
                     key={item.id}
                     message={item.from === "user" ? item.prompt : undefined}
-                    aiResponse={
-                      item.from === "assistant" ? item.prompt : undefined
-                    }
+                    aiResponse={item.from === "assistant" ? item.prompt : undefined}
                     date={item.createdAt}
                     isAiResponseLoading={false}
                     messageId={item.id}
@@ -481,7 +383,6 @@ const ChatBot = () => {
                   />
                 ))}
 
-                {/* Loading state */}
                 {isPending && pendingMessageId && (
                   <MessageBox
                     message={undefined}
@@ -495,7 +396,7 @@ const ChatBot = () => {
               </div>
             </div>
 
-            {/* Input Area */}
+            {/* Input Area - reste identique */}
             <div className="px-4 py-3 flex-shrink-0 border-t border-gray-100">
               {audioMode && (
                 <div className="mb-3 p-3 bg-gray-50 rounded-lg">
@@ -504,7 +405,7 @@ const ChatBot = () => {
                       <div className="flex items-center gap-2">
                         <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
                         <span className="text-sm text-gray-600">
-                          Enregistrement... {formatTime(recordingTime)}
+                          {t("chatbot.recording", "Enregistrement...")} {formatTime(recordingTime)}
                         </span>
                       </div>
                       <button
@@ -518,18 +419,14 @@ const ChatBot = () => {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">
-                          Audio enregistré ({formatTime(recordingTime)})
+                          {t("chatbot.audio_recorded", "Audio enregistré")} ({formatTime(recordingTime)})
                         </span>
                         <div className="flex items-center gap-1">
                           <button
                             onClick={playRecordedAudio}
                             className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
                           >
-                            {isPlaying ? (
-                              <PauseIcon className="w-4 h-4" />
-                            ) : (
-                              <PlayIcon className="w-4 h-4" />
-                            )}
+                            {isPlaying ? <PauseIcon className="w-4 h-4" /> : <PlayIcon className="w-4 h-4" />}
                           </button>
                           <button
                             onClick={clearAudioRecording}
@@ -557,7 +454,7 @@ const ChatBot = () => {
                         <MicIcon className="w-6 h-6" />
                       </button>
                       <p className="text-xs text-gray-500 mt-2">
-                        Appuyez pour commencer l'enregistrement
+                        {t("chatbot.press_to_record", "Appuyez pour commencer l'enregistrement")}
                       </p>
                     </div>
                   )}
@@ -574,7 +471,9 @@ const ChatBot = () => {
                       }}
                       type="text"
                       placeholder={
-                        isPending ? "Envoi..." : "Tapez votre message..."
+                        isPending 
+                          ? t("chatbot.sending", "Envoi...") 
+                          : t("chatbot.type_message", "Tapez votre message...")
                       }
                       className="flex-1 outline-none text-sm"
                       disabled={isPending}
@@ -585,28 +484,10 @@ const ChatBot = () => {
                   {audioMode && (
                     <div className="flex-1 text-sm text-gray-500 px-2">
                       {recordedAudio
-                        ? "Audio prêt à être envoyé"
-                        : "Mode audio activé"}
+                        ? t("chatbot.audio_ready", "Audio prêt à être envoyé")
+                        : t("chatbot.audio_mode", "Mode audio activé")}
                     </div>
                   )}
-
-                  {/* <button
-                    type="button"
-                    onClick={() => {
-                      setAudioMode(!audioMode);
-                      if (audioMode) {
-                        clearAudioRecording();
-                      }
-                    }}
-                    className={`p-2 rounded-md transition-colors ${
-                      audioMode
-                        ? "bg-primary-orange text-white"
-                        : "text-gray-500 hover:bg-gray-100"
-                    }`}
-                    disabled={isPending || isRecording}
-                  >
-                    <MicIcon className="w-5 h-5" />
-                  </button> */}
 
                   <button
                     type="submit"

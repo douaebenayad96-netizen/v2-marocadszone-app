@@ -1,29 +1,21 @@
 import { Link } from "react-router-dom";
-//import { useState } from 'react'
-//import { IoMdArrowDropup } from 'react-icons/io'
 import { useTranslation } from "react-i18next";
-//import { motion, AnimatePresence } from 'framer-motion'
 
 import AppLogo from "../../assets/img/marocadszone_dark.png";
 import strip from "../../assets/img/strip.svg";
 import { useCategories } from "../../services/api/fetchCategory";
 import { useFetchCity } from "../../services/api/fetchCity";
+import LanguageSwitcher from "../common/LanguageSwitcher";
+import getLocalized from "../../utils/getLocalized";
 //import GooglePlayIcon from '../assets/img/google-play.png'
 //import AppleStoreIcon from '../assets/img/app-store.png'
 
 const Footer = () => {
-  const { t, i18n } = useTranslation();
-  /*const [isLangMenuOpen, setIsLangMenuOpen] = useState(false)
-  const lang = i18n.language === 'fr' ? 'french' : i18n.language === 'en' ? 'english' : 'arabic'
-  const handleLangMenu = () => {
-    setIsLangMenuOpen((prev) => !prev)
-  }*/ const { data: Categories } = useCategories(1, true, 15); // Fetch 15 categories per page
-
+  const { t } = useTranslation();
+  const { data: Categories } = useCategories(1, true, 15); // Fetch 15 categories per page
   const { data: cities } = useFetchCity(); // Fetch cities
 
-  // Get the actual categories data
   const categoriesData = Categories?.data || [];
-  console.log("Total categories loaded:", categoriesData.length);
 
   return (
     <footer className="bg-primary-gray-800 text-gray-200">
@@ -52,8 +44,7 @@ const Footer = () => {
               </Link>
             </span>
             <p className="text-sm not-italic font-normal text-primary-white">
-              MarocAdsZone est une plateforme de annonces en ligne qui vous
-              permet de trouver vos besoins facillement et rapidement.
+              {t('footer.description')}
             </p>
 
             <div className="flex justify-start items-center gap-6 mt-4">
@@ -213,13 +204,13 @@ const Footer = () => {
                 <Link to="/categories">{t("categories.text")}</Link>
               </li>
               <li className="text-sm not-italic font-normal mb-[20px] hover:underline hover:text-primary-white transition-all">
-                <Link to="/terms">Conditions générales</Link>
+                <Link to="/terms">{t('footer.termsPage')}</Link>
               </li>
               <li className="text-sm not-italic font-normal mb-[20px] hover:underline hover:text-primary-white transition-all">
-                <Link to="/contact">Contactez-nous</Link>
+                <Link to="/contact">{t('footer.contactUs')}</Link>
               </li>
               <li className="text-sm not-italic font-normal mb-[20px] hover:underline hover:text-primary-white transition-all">
-                <Link to="/tarification">Tarification</Link>
+                <Link to="/tarification">{t('footer.pricing')}</Link>
               </li>
             </ul>
           </div>
@@ -234,7 +225,7 @@ const Footer = () => {
                   className="text-sm not-italic font-normal mb-[20px] hover:underline hover:text-primary-white transition-all"
                 >
                   <Link to={`/annonces?category=${category.label}`}>
-                    {category.label}
+                    {getLocalized(category, 'label') || category.label}
                   </Link>
                 </li>
               ))}
@@ -251,7 +242,7 @@ const Footer = () => {
                   className="text-sm not-italic font-normal mb-[20px] hover:underline hover:text-primary-white transition-all"
                 >
                   <Link to={`/annonces?category=${category.label}`}>
-                    {category.label}
+                    {getLocalized(category, 'label') || category.label}
                   </Link>
                 </li>
               ))}
@@ -259,11 +250,7 @@ const Footer = () => {
           </div>
           <div className="min-w-[300px] xl:min-w-0 mt-12 lg:mt-0 sm:pl-2">
             <h3 className="uppercase h-12 font-medium text-xl text-primary-white">
-              {i18n.language === "fr"
-                ? "Villes"
-                : i18n.language === "en"
-                ? "Cities"
-                : "المدن"}
+              {t('footer.cities')}
             </h3>
             <ul className="mt-0">
               <li className="text-sm not-italic font-normal mb-[20px] hover:underline hover:text-primary-white transition-all">
@@ -279,8 +266,8 @@ const Footer = () => {
                   key={city.id}
                   className="text-sm not-italic font-normal mb-[20px] hover:underline hover:text-primary-white transition-all"
                 >
-                  <Link to={`/annonces?ville=${city.label}`}>
-                    Annonce {city.label}
+                  <Link to={`/annonces?ville=${getLocalized(city, 'label') || city.label}`}>
+                    Annonce {getLocalized(city, 'label') || city.label}
                   </Link>
                 </li>
               ))}
@@ -295,6 +282,9 @@ const Footer = () => {
           <div className="mt-5 flex items-center justify-center gap-6 md:gap-0 md:justify-between flex-wrap">
             <div>
               <p>© {new Date().getFullYear()} DevTi Technologie</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher compact />
             </div>
             {/*
             <div className='relative'>

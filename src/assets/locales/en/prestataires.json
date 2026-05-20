@@ -1,0 +1,49 @@
+{
+  "page": {
+    "title": "Ads",
+    "explore": "Explore all free classifieds",
+    "annonces_count": "Ads available"
+  },
+  "search": {
+    "placeholder": "Search for an ad",
+    "button": "Search"
+  },
+  "filter": {
+    "filtrer": "Filter",
+    "reinitialiser": "Reset",
+    "tous_les_filtres": "All filters",
+    "appliquer": "Apply",
+    "trier_par": "Sort by"
+  },
+  "annonce_filters": {
+    "title": "Ad Filters",
+    "subtitle": "Specific filters for ads",
+    "categorie": "Category",
+    "select_categorie": "Select a category",
+    "sous_categorie": "Subcategory",
+    "select_sous_categorie": "Select a subcategory",
+    "select_category_first": "Select a category first",
+    "loading_subcategories": "Loading subcategories...",
+    "no_subcategories": "No subcategories available",
+    "pays": "Country",
+    "select_pays": "Select a country",
+    "ville": "City",
+    "select_ville": "Select a city",
+    "select_country_first": "Select a country first",
+    "no_cities": "No cities available",
+    "subcategory_count_one": "subcategory",
+    "subcategory_count_other": "subcategories",
+    "city_count_one": "city",
+    "city_count_other": "cities"
+  },
+  "sort": {
+    "newest": "Newest",
+    "most_reviews": "Most reviews",
+    "highest_rating": "Highest rating"
+  },
+  "no_results": {
+    "title": "No ads found",
+    "description": "No ads match your search criteria.",
+    "try_again": "Try adjusting your filters"
+  }
+}

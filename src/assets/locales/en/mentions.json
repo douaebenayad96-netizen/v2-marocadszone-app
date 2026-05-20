@@ -1,0 +1,39 @@
+{
+  "page": {
+    "title": "LEGAL NOTICES",
+    "updated_at": "MarocAdsZone - Last updated: July 3, 2025"
+  },
+  "intro": {
+    "description": "In accordance with the provisions of articles 6-III and 19 of Law No. 04-09 on electronic exchange of legal data in Morocco, we present the legal information concerning our site MarocAdsZone."
+  },
+  "publisher": {
+    "title": "Site Publisher",
+    "company": "Company name",
+    "legal_form": "Legal form",
+    "capital": "Share capital"
+  },
+  "property": {
+    "title": "Intellectual Property",
+    "paragraph1": "The MarocAdsZone site, including its structure, texts, images, photographs, logos, computer code, illustrations, and graphics, is the exclusive property of MarocAdsZone SARL.",
+    "paragraph2": "Any reproduction, representation, modification, or adaptation of all or part of the site's elements, by any means, is prohibited without the prior written permission of MarocAdsZone.",
+    "paragraph3": "Any unauthorized use of the site or any of its elements will be considered copyright infringement and may be prosecuted under the provisions of the Intellectual Property Code."
+  },
+  "links": {
+    "title": "Hyperlinks",
+    "description": "The MarocAdsZone site may contain links to other sites or resources available on the Internet. MarocAdsZone has no control over these external sites and disclaims any responsibility for their content or availability."
+  },
+  "responsibility": {
+    "title": "Liability",
+    "paragraph1": "The information on the MarocAdsZone site is believed to be reliable but does not guarantee that it is free from errors, omissions, or inaccuracies.",
+    "paragraph2": "The site is regularly updated, but errors may occur. Users are invited to report any inaccurate content to: contact@marocadszone.com.",
+    "paragraph3": "MarocAdsZone cannot be held responsible for direct or indirect damages related to the use of the site."
+  },
+  "law": {
+    "title": "Applicable Law and Jurisdiction",
+    "description": "These legal notices are governed by Moroccan law. In the event of a dispute, the courts of Casablanca shall have sole jurisdiction."
+  },
+  "contact": {
+    "title": "Contact",
+    "description": "For any questions regarding these legal notices, you can contact us by email: support@devtigroup.com"
+  }
+}

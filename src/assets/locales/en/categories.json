@@ -1,0 +1,21 @@
+{
+  "page": {
+    "categories": {
+    "title": "Explore all free listing categories",
+    "description":"Explore all categories of free classified ads in Morocco: real estate, cars, jobs, services, multimedia, and more on MarocAdsZone.",
+    "explore_title": "Explore all free listing categories",
+    "search_placeholder": "Search for a category",
+    "no_categories": "No categories found",
+    "no_categories_for": "No categories found for \"{{term}}\""
+  }
+},
+  "common": {
+    "see_more": "View all categories ",
+    "see":"Show more "
+  },
+  "errors": {
+    "loading": "Error loading categories",
+    "check_console": "Check the console for more details"
+  }
+}
+

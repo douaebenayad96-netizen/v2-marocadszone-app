@@ -1,0 +1,21 @@
+{
+  "page": {
+    "categories": {
+    "title": "Explorez toutes les catégories d'annonces gratuites",
+    "description":" Explorez toutes les catégories d'annonces gratuites au Maroc : immobilier, auto, emploi, services, multimédia, et plus sur MarocAdsZone.",
+     "explore_title": "Explorez toutes les catégories d'annonces gratuites",
+    "search_placeholder": "Rechercher une catégorie",
+    "no_categories": "Aucune catégorie trouvée",
+    "no_categories_for": "Aucune catégorie trouvée pour \"{{term}}\""
+  }
+},
+  "common": {
+    "see_more": "Voir toutes les catégories",
+    "see":" Voir plus "
+  },
+  "errors": {
+    "loading": "Erreur lors du chargement des catégories",
+    "check_console": "Vérifiez la console pour plus de détails"
+  }
+}
+

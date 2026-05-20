@@ -1,6 +1,7 @@
 import { BiMailSend, BiPhone } from "react-icons/bi"
 import { BsTicket } from "react-icons/bs"
 import { LuBuilding2 } from "react-icons/lu"
+import { useTranslation } from "react-i18next"
 
 // Self-contained Button component
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -62,41 +63,43 @@ interface ContactMethod {
 }
 
 const PricingCustomerSupport: React.FC = () => {
+  const { t } = useTranslation()
+
   const contactMethods: ContactMethod[] = [
     {
       icon: <BiPhone className="h-6 w-6" />,
-      title: "Téléphone",
-      description: "+212 6 12 34 56 78",
+      title: t("customer_support.methods.0.title", { ns: "pricing" }),
+      description: t("customer_support.methods.0.description", { ns: "pricing" }),
       action: {
-        label: "Appeler",
-        href: "tel:+212612345678",
+        label: t("customer_support.methods.0.action_label", { ns: "pricing" }),
+        href: t("customer_support.methods.0.action_href", { ns: "pricing" }),
       },
     },
     {
       icon: <BiMailSend className="h-6 w-6" />,
-      title: "Email",
-      description: "support@marocadszone.com",
+      title: t("customer_support.methods.1.title", { ns: "pricing" }),
+      description: t("customer_support.methods.1.description", { ns: "pricing" }),
       action: {
-        label: "Envoyer un email",
-        href: "mailto:support@marocadszone.com",
+        label: t("customer_support.methods.1.action_label", { ns: "pricing" }),
+        href: t("customer_support.methods.1.action_href", { ns: "pricing" }),
       },
     },
     {
       icon: <BsTicket className="h-6 w-6" />,
-      title: "Ticket support",
-      description: "Créez un ticket",
+      title: t("customer_support.methods.2.title", { ns: "pricing" }),
+      description: t("customer_support.methods.2.description", { ns: "pricing" }),
       action: {
-        label: "Créer un ticket",
-        href: "/contact",
+        label: t("customer_support.methods.2.action_label", { ns: "pricing" }),
+        href: t("customer_support.methods.2.action_href", { ns: "pricing" }),
       },
     },
     {
       icon: <LuBuilding2 className="h-6 w-6" />,
-      title: "Bureau",
-      description: "Ouvert 7j/7 – 24h/24",
+      title: t("customer_support.methods.3.title", { ns: "pricing" }),
+      description: t("customer_support.methods.3.description", { ns: "pricing" }),
       action: {
-        label: "Nous localiser",
-        href: "#",
+        label: t("customer_support.methods.3.action_label", { ns: "pricing" }),
+        href: t("customer_support.methods.3.action_href", { ns: "pricing" }),
       },
     },
   ]
@@ -106,11 +109,10 @@ const PricingCustomerSupport: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Service Client 7j/7 – 24h/24</h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Notre équipe vous accompagne à tout moment. Que vous soyez vendeur particulier ou pro, nous sommes là pour
-            répondre à toutes vos questions.
-          </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {t("customer_support.title", { ns: "pricing" })}
+          </h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">{t("customer_support.subtitle", { ns: "pricing" })}</p>
         </div>
 
         {/* Contact Methods Grid */}

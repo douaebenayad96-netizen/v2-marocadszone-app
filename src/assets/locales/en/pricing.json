@@ -1,0 +1,111 @@
+{
+  "page": {
+    "title": "Pricing",
+    "subtitle": "Rates to publish listings"
+  },
+  "hero": {
+    "pill": "OUR PLANS",
+    "title": "Pricing offers for professionals and businesses",
+    "subtitle": "Choose the plan that best matches your needs.",
+    "billing_monthly": "Monthly",
+    "billing_yearly": "Yearly",
+    "billing_save": "Save 20%",
+    "subscription_pending": "Your subscription request is pending payment validation.",
+    "subscription_active": "Your subscription is active."
+  },
+  "buttons": {
+    "popular_badge": "Most Popular",
+    "pending_payment": "Pending payment",
+    "active_subscription": "Active Subscription",
+    "start_free": "Start Free",
+    "subscribe_premium": "Subscribe Premium",
+    "become_pro": "Become Pro",
+    "always_free": "Always free"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to the most frequently asked questions",
+    "contact_support": "Contact our support",
+    "other_questions": "Do you have more questions?",
+    "items": [
+      {
+        "question": "How does the Free Pack work?",
+        "answer": "You can publish 2 listings for free per month. Each listing stays online for 30 days."
+      },
+      {
+        "question": "What’s included in the Premium Pack?",
+        "answer": "The Premium Pack allows up to 10 listings, with featured options to boost visibility."
+      },
+      {
+        "question": "What are the benefits of the Pro Pack?",
+        "answer": "The Pro Pack is ideal for professionals: unlimited listings, Pro badge, advanced statistics, and dedicated support."
+      },
+      {
+        "question": "What payment methods do you offer?",
+        "answer": "Bank card via CMI, PayPal, Orange Money, and Inwi Money. Secure and fast transfers."
+      }
+    ]
+  },
+  "features": {
+    "header_title": "Why choose MarocAdsZone?",
+    "header_subtitle": "Discover the benefits that make MarocAdsZone the reference platform for your listings in Morocco",
+    "items": [
+      {
+        "title": "More visibility",
+        "description": "Your listing is shown to thousands of visitors every day across Morocco, with zero effort on your part."
+      },
+      {
+        "title": "Targeted buyers",
+        "description": "Thanks to our smart search engine, your listings reach buyers who are genuinely interested in your goods or services."
+      },
+      {
+        "title": "More sales",
+        "description": "Our Premium and Pro options increase your listings’ visibility up to 5x to generate more leads and close faster."
+      },
+      {
+        "title": "Easy & fast",
+        "description": "Publish in a few clicks, manage your listings from your mobile or computer, and track performance in real time."
+      }
+    ]
+  },
+  "customer_support": {
+    "title": "Customer Service 7 days/7 – 24h/24",
+    "subtitle": "Our team is here for you at all times. Whether you’re a private seller or a professional, we’ll answer all your questions.",
+    "methods": [
+      {
+        "title": "Phone",
+        "description": "+212 6 12 34 56 78",
+        "action_label": "Call",
+        "action_href": "tel:+212612345678"
+      },
+      {
+        "title": "Email",
+        "description": "support@marocadszone.com",
+        "action_label": "Send an email",
+        "action_href": "mailto:support@marocadszone.com"
+      },
+      {
+        "title": "Support ticket",
+        "description": "Create a ticket",
+        "action_label": "Create a ticket",
+        "action_href": "/contact"
+      },
+      {
+        "title": "Office",
+        "description": "Open 7 days/7 – 24h/24",
+        "action_label": "Find us",
+        "action_href": "#"
+      }
+    ]
+  },
+  "cta": {
+    "title": "Start selling today",
+    "description": "Create your free account and publish your first listing in less than 2 minutes. Enjoy the power of MarocAdsZone to sell more, faster.",
+    "button_account": "Create an account",
+    "button_listing": "Post a listing",
+    "trust_1": "Free registration",
+    "trust_2": "2-minute publishing",
+    "trust_3": "24/7 support"
+  }
+}
+

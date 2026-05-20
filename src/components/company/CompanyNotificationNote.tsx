@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const CompanyNotificationNote = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded">
       <div className="flex items-start">
@@ -20,24 +23,23 @@ const CompanyNotificationNote = () => {
         </div>
         <div className="ml-3">
           <h3 className="text-sm font-medium text-blue-800">
-            Information importante
+            {t("company_notification.important_info")}
           </h3>
           <div className="mt-2 text-sm text-blue-700">
             <p>
-              Pour pouvoir publier plus de 2 annonces, vous devez compléter les
-              informations de votre entreprise.
+              {t("company_notification.message")}
               <Link
                 to="/user-account/company"
                 className="font-medium text-blue-600 hover:text-blue-500 ml-1 underline"
               >
-                Remplir les informations de l'entreprise →
+                {t("company_notification.fill_company_info")} →
               </Link>
             </p>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CompanyNotificationNote
+export default CompanyNotificationNote;

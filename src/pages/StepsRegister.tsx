@@ -68,10 +68,12 @@ export type FormValues = {
   price: string;
   video: File | undefined;
 };
+
 export type category = {
   label: string;
   value: string;
 };
+
 export type metier = {
   label: string;
   value: string;
@@ -84,7 +86,7 @@ const StepsRegister = () => {
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
   const token = useAuthStore((state) => state.token);
-  // Auto-skip step 0 (choix du type d'annonce) if we come from the main “Publier une annonce” button.
+  
   const [step, setStep] = useState<ProgressSteps>(() => {
     const shouldSkip = new URLSearchParams(window.location.search).get("skipType") === "1";
     return shouldSkip ? 1 : 0;
@@ -106,46 +108,21 @@ const StepsRegister = () => {
       if (isLoading) return;
 
       if (!user || (!user.id && !user.email)) {
-        CustomToast(
-          t(
-            "Vous devez être connecté pour publier une annonce",
-            "You must be logged in to publish an annonce"
-          ),
-          "error"
-        );
-        navigate("/login"); // Redirect to login page
+        CustomToast(t("steps_register.login_required"), "error");
+        navigate("/login");
         return;
       }
 
       if (!token) {
-        CustomToast(
-          t(
-            "Session expirée. Veuillez vous reconnecter.",
-            "Session expired. Please login again."
-          ),
-          "error"
-        );
-
+        CustomToast(t("steps_register.session_expired"), "error");
         navigate("/login");
-
         return;
       }
 
-      // Check if token looks like a Firebase token (should not be used for Laravel API)
       if (token.startsWith("eyJ") && token.split(".").length === 3) {
-        CustomToast(
-          t(
-            "Votre session doit être mise à jour. Reconnexion automatique...",
-            "Your session needs to be updated. Automatic reconnection..."
-          ),
-          "info"
-        );
-
-        // Clear the invalid token and redirect to login
+        CustomToast(t("steps_register.session_update_needed"), "info");
         const { logout } = useAuthStore.getState();
         logout();
-
-        // Small delay to show the message, then redirect
         setTimeout(() => {
           navigate("/");
         }, 2000);
@@ -153,7 +130,6 @@ const StepsRegister = () => {
       }
 
       const formValues = form.getValues();
-
       const formData = new FormData();
 
       const requiredFields = {
@@ -175,24 +151,15 @@ const StepsRegister = () => {
         .map(([key]) => key);
 
       if (missingFields.length > 0) {
-        CustomToast(
-          t(
-            `Champs requis manquants: ${missingFields.join(", ")}`,
-            `Missing required fields: ${missingFields.join(", ")}`
-          ),
-          "error"
-        );
-
+        CustomToast(t("steps_register.missing_fields", { fields: missingFields.join(", ") }), "error");
         return;
       }
 
-      // Required fields for /announces endpoint
       formData.append("title", formValues.title || "");
       formData.append("description", formValues.description || "");
       formData.append("email", formValues.email || "");
       formData.append("phone_number", `+${formValues.phone}` || "");
 
-      // Category and subcategory IDs (both required)
       if (formValues.category?.value) {
         formData.append("category_id", formValues.category.value);
       }
@@ -200,7 +167,6 @@ const StepsRegister = () => {
         formData.append("subcategory_id", formValues.subCategory.value);
       }
 
-      // Location data
       if (formValues.country?.value) {
         formData.append("country_id", formValues.country.value);
       }
@@ -212,17 +178,10 @@ const StepsRegister = () => {
         formData.append("announce_type", formValues.announcementType);
       }
 
-      // Backend: item_condition n'existe que pour les annonces de type sale (new/used/good_condition)
-      // Pour rental et service, on ne doit PAS envoyer item_condition.
-      
-
-
-      // Price
       if (formValues.price) {
         formData.append("price", formValues.price);
       }
 
-      // Upload files to Firebase Storage
       if (formValues.photos && formValues.photos.length > 0) {
         const imageResults = await uploadFiles(formValues.photos);
         const imageUrls = imageResults.map((result) => result.url);
@@ -240,28 +199,18 @@ const StepsRegister = () => {
       }
 
       try {
-        console.log("FORM VALUES:", formValues);
-        console.log("condition:", formValues.condition);
-        console.log("announcementType:", formValues.announcementType);
         if (formValues.condition) {
           formData.set("item_condition", formValues.condition);
         }
 
-        console.log("BEFORE SEND item_condition:", formData.get("item_condition"));
         await savePost(formData);
-        CustomToast(
-          t("annonce_creee_avec_succes", "Annonce créée avec succès!"),
-          "success"
-        );
-
+        CustomToast(t("steps_register.create_success"), "success");
         navigate("/user-account/annonces");
       } catch (error) {
-        console.error("🚀 [StepsRegister] Post job error:", error);
+        console.error("Error posting job:", error);
 
-        // Extract error message first
-        let errorMessage = t("erreur_lors_de_la_creation_de_la_demande");
+        let errorMessage = t("steps_register.create_error");
 
-        // Check for specific authentication errors
         if (error && typeof error === "object" && "response" in error) {
           const axiosError = error as {
             response?: {
@@ -271,48 +220,26 @@ const StepsRegister = () => {
           };
 
           if (axiosError.response?.status === 401) {
-            CustomToast(
-              t(
-                "Session expirée. Veuillez vous reconnecter.",
-                "Session expired. Please login again."
-              ),
-              "error"
-            );
+            CustomToast(t("steps_register.session_expired"), "error");
             navigate("/login");
             return;
           }
 
-          // Extract error message from API response
           errorMessage =
             axiosError.response?.data?.message ||
             axiosError.response?.data?.error ||
-            t("erreur_lors_de_la_creation_de_la_demande");
+            t("steps_register.create_error");
         }
 
-        // Check if the error is about reaching the annonce limit
-        const limitErrorMessage =
-          "Error icon Vous avez atteint la limite de 3 annonces. Veuillez créer une entreprise pour publier plus d'annonces.";
-
         if (
-          errorMessage.includes("Vous avez atteint la limite de 3 annonces") ||
           errorMessage.includes("limite de 3 annonces") ||
-          errorMessage === limitErrorMessage
+          errorMessage.includes("limit of 3 announcements")
         ) {
-          // Show info toast with redirect message
-          CustomToast(
-            t(
-              "You have reached the limit of 3 announcements. Redirecting to company creation...",
-              "Vous avez atteint la limite de 3 annonces. Redirection vers la création d'entreprise..."
-            ),
-            "info"
-          );
-
-          // Redirect to company creation page after 3 seconds
+          CustomToast(t("steps_register.announce_limit_reached"), "info");
           setTimeout(() => {
             navigate("/user-account/company");
           }, 3000);
         } else {
-          // Show regular error toast for other errors
           CustomToast(errorMessage, "error");
         }
       }
@@ -320,19 +247,16 @@ const StepsRegister = () => {
   };
 
   const handleStepValidation = (newStep: ProgressSteps) => {
-    // handle back
     if (newStep < step) {
       setStep(newStep);
       window.scrollTo(0, 0);
       return;
     }
 
-    // In handleStepValidation function:
     if (step === 0) {
       const formValues = form.getValues();
 
       if (!formValues.annonceType) {
-        // Changed from announcementType
         return;
       }
 
@@ -341,16 +265,12 @@ const StepsRegister = () => {
         return;
       }
 
-      // If user selected "entreprise", redirect to company page
       if (formValues.annonceType == "entreprise") {
         navigate('/user-account/company');
         return;
       }
 
-
-      // Trigger validation for all required fields in step 0
-      const validationResult = form.trigger(["annonceType"]); // Changed from announcementType
-
+      const validationResult = form.trigger(["annonceType"]);
       validationResult.then((isValid) => {
         if (isValid) {
           setStep(newStep);
@@ -360,15 +280,12 @@ const StepsRegister = () => {
     }
 
     if (step === 1) {
-      // Trigger validation for all required fields in step 0
       const validationResult = form.trigger([
         "category",
         "subCategory",
         "country",
         "city",
       ]);
-
-      // Wait for validation to complete before checking isValid
       validationResult.then((isValid) => {
         if (isValid) {
           setStep(newStep);
@@ -378,19 +295,6 @@ const StepsRegister = () => {
     }
 
     if (step === 2) {
-      const formValues = form.getValues();
-
-      // Check if announcement type and condition are properly set
-      if (!formValues.announcementType) {
-        console.error("🚀 [StepsRegister] Announcement type is missing!");
-      }
-      if (!formValues.condition) {
-        console.error("🚀 [StepsRegister] Condition is missing!");
-      }
-      if (!formValues.price) {
-        console.error("🚀 [StepsRegister] Price is missing!");
-      }
-
       const validationResult = form.trigger([
         "title",
         "description",
@@ -429,8 +333,7 @@ const StepsRegister = () => {
 
   return (
     <div className="min-h-screen pt-nav pb-24">
-      <h1 className="sr-only">Publier une annonce gratuite au Maroc</h1>
-      {/* steps content */}
+      <h1 className="sr-only">{t("steps_register.page_title")}</h1>
       <div className="container-post-page">
         <AnimatePresence
           mode="wait"
@@ -438,18 +341,13 @@ const StepsRegister = () => {
           onExitComplete={() => (document.body.style.overflow = "auto")}
         >
           {step === 0 && <TypeAnnonceStep form={form} key="typeAnnonceStep" />}
-
           {step === 1 && <NoUserStep key="noUserStep" form={form} />}
-
           {step === 2 && <InfoFormStep key="infoForm" form={form} />}
-
           {step === 3 && <PhotosSelectStep key="photosSelect" form={form} />}
-
           {step === 4 && <ContactStep key="emailPhoneStep" form={form} />}
         </AnimatePresence>
       </div>
 
-      {/* steps next & back - fixed at bottom */}
       <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 p-4 z-[10000]">
         <div className="container-post-page">
           <div className="flex justify-between font-semibold">
@@ -465,7 +363,7 @@ const StepsRegister = () => {
                   : "text-primary-blue-all-800 border-gray-400"
               }`}
             >
-              {t("previous")}
+              {t("steps_register.previous")}
             </button>
             <button
               onClick={() => {
@@ -481,10 +379,10 @@ const StepsRegister = () => {
               )}
             >
               {isUploading
-                ? t("Uploading...", "Téléchargement...")
+                ? t("steps_register.uploading")
                 : step === LAST_STEP
-                ? t("publish")
-                : t("next")}
+                ? t("steps_register.publish")
+                : t("steps_register.next")}
               {(isLoading || isUploading) && (
                 <AiOutlineLoading3Quarters className="animate-spin inline-block ml-2" />
               )}

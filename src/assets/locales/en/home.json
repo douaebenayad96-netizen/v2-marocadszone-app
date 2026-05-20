@@ -1,0 +1,48 @@
+{
+  "hero": {
+    "title": "Find all the best ads",
+    "title_highlight": "in Morocco",
+    "description": "Explore a wide range of reliable and varied ads across all of Morocco.",
+    "city_placeholder": "City",
+    "search_placeholder": "What are you looking for?",
+    "search_button": "Search",
+    "popular_searches": "Popular searches",
+    "no_categories": "No popular categories found.",
+    "all_cities": "All cities"
+  },
+  "banner": {
+    "careerlink_alt": "Careerlink Banner",
+    "devtitech_alt": "Devti Technologie Banner",
+    "devticloud_alt": "Devti Cloud Banner"
+  },
+   "jobs": {
+    "title": "Our latest job offers",
+    "subtitle": "Discover the most recent professional opportunities",
+    "button": "View All Offers",
+    "view_all": "View all offers",
+    "no_offers": "No job offers available at the moment",
+    "loading": "Loading job offers..."
+  },
+   "categories": {
+    "title": "Explore Popular Categories",
+    "subtitle": "Easily find what you're looking for among our many ad categories.",
+    "explore": "Explore",
+    "no_categories": "No categories available at the moment"
+  },
+  "shorts": {
+    "title": "Short Video Ads",
+    "subtitle": "Discover our latest short video ads",
+    "button": "View more",
+    "loading": "Loading videos...",
+    "error": "Error loading videos",
+    "no_videos": "No videos available at the moment"
+  },
+  "announces": {
+    "title": "Discover Ads Near You",
+    "subtitle": "Explore the latest available ads",
+    "button": "View All Ads",
+    "loading": "Loading ads...",
+    "error": "Unable to load ads",
+    "no_annonces": "No ads available at the moment"
+  }
+}

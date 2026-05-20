@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import SectionHeader from "./SectionHeader";
-import axiosConfig, { apiClientV2 } from "../../services/config/axiosConfig";
+import { apiClientV2 } from "../../services/config/axiosConfig";
 import { PrestataireCardV2 } from "../annonce/PrestataireCard";
 import { Annonce } from "../../services/types/annonce";
 
 const HomePaginatedAnnonces = () => {
+  const { t } = useTranslation("home");
   const [annonces, setAnnonces] = useState<Annonce[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -21,12 +23,8 @@ const HomePaginatedAnnonces = () => {
         },
       });
 
-      // Log the complete response structure
-      console.log("📦 Raw response:", response.data);
-      console.log("📦 Response status:", response.status);
-      console.log("📦 Response type:", typeof response.data);
-
       let announcements: Annonce[] = [];
+      
       // Handle different response formats
       if (response.data) {
         // If response.data has nested structure: data.items (your API format)
@@ -36,34 +34,22 @@ const HomePaginatedAnnonces = () => {
           Array.isArray(response.data.data.items)
         ) {
           announcements = response.data.data.items;
-          console.log(
-            "✅ Found announcements in data.items property:",
-            announcements.length
-          );
+          console.log("✅ Found announcements in data.items property:", announcements.length);
         }
         // If response.data has a 'data' property (Laravel pagination format)
         else if (response.data.data && Array.isArray(response.data.data)) {
           announcements = response.data.data;
-          console.log(
-            "✅ Found announcements in data property:",
-            announcements.length
-          );
+          console.log("✅ Found announcements in data property:", announcements.length);
         }
         // If response.data is directly an array
         else if (Array.isArray(response.data)) {
           announcements = response.data;
-          console.log(
-            "✅ Found announcements as direct array:",
-            announcements.length
-          );
+          console.log("✅ Found announcements as direct array:", announcements.length);
         }
         // If response has items property
         else if (response.data.items && Array.isArray(response.data.items)) {
           announcements = response.data.items;
-          console.log(
-            "✅ Found announcements in items property:",
-            announcements.length
-          );
+          console.log("✅ Found announcements in items property:", announcements.length);
         }
         // If response has announcements property
         else if (
@@ -71,10 +57,7 @@ const HomePaginatedAnnonces = () => {
           Array.isArray(response.data.announcements)
         ) {
           announcements = response.data.announcements;
-          console.log(
-            "✅ Found announcements in announcements property:",
-            announcements.length
-          );
+          console.log("✅ Found announcements in announcements property:", announcements.length);
         }
         // If response has announces property
         else if (
@@ -82,14 +65,9 @@ const HomePaginatedAnnonces = () => {
           Array.isArray(response.data.announces)
         ) {
           announcements = response.data.announces;
-          console.log(
-            "✅ Found announcements in announces property:",
-            announcements.length
-          );
+          console.log("✅ Found announcements in announces property:", announcements.length);
         } else {
-          console.log(
-            "❌ Could not find announcements in any expected property"
-          );
+          console.log("❌ Could not find announcements in any expected property");
           console.log("Available properties:", Object.keys(response.data));
         }
       }
@@ -98,80 +76,97 @@ const HomePaginatedAnnonces = () => {
         // Limit to 8 announcements
         const limitedAnnouncements = announcements.slice(0, 8);
         setAnnonces(limitedAnnouncements);
-        console.log(
-          "✅ Set announcements state with",
-          limitedAnnouncements.length,
-          "items"
-        );
-        console.log("✅ First announcement:", limitedAnnouncements[0]);
+        console.log("✅ Set announcements state with", limitedAnnouncements.length, "items");
       } else {
         console.warn("⚠️ No announcements found in response");
-        console.log(
-          "📦 Full response structure:",
-          JSON.stringify(response.data, null, 2)
-        );
         setAnnonces([]);
       }
     } catch (error: unknown) {
       console.error("❌ Error fetching announcements:", error);
-      setError("Impossible de charger les annonces");
+      setError(t("announces.error"));
     } finally {
       setIsInitialLoad(false);
     }
   };
+
   // Initial load
   useEffect(() => {
     fetchAnnonces();
   }, []);
 
+  const hasNoAnnonces = !isInitialLoad && !error && annonces.length === 0;
+
   return (
     <section className="app-container section-py">
       <SectionHeader
-        title="Découvrez les Annonces Près de Chez Vous"
-        subtitle="Explorez les dernières annonces disponibles"
-        buttonTitle="Voir Toutes les Annonces"
+        title={t("announces.title")}
+        subtitle={t("announces.subtitle")}
+        buttonTitle={t("announces.button")}
         to="/annonces"
-      />{" "}
-      {/* Annonces Grid */}
-      <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {isInitialLoad && (
-          <>
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((index) => (
-              <div
-                key={index}
-                className="animate-pulse bg-white shadow-sm rounded-lg p-4"
-              >
-                <div className="w-full h-48 bg-gray-200 rounded-md mb-4"></div>
-                <div className="space-y-3">
-                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-5 bg-gray-200 rounded w-1/3"></div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 bg-gray-200 rounded-full"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                  </div>
+      />
+
+      {/* Loading Skeletons */}
+      {isInitialLoad && (
+        <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((index) => (
+            <div
+              key={index}
+              className="animate-pulse bg-white shadow-sm rounded-lg p-4"
+            >
+              <div className="w-full h-48 bg-gray-200 rounded-md mb-4"></div>
+              <div className="space-y-3">
+                <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-5 bg-gray-200 rounded w-1/3"></div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 bg-gray-200 rounded-full"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
                 </div>
               </div>
-            ))}
-          </>
-        )}
+            </div>
+          ))}
+        </div>
+      )}
 
-        {!isInitialLoad &&
-          annonces.map((annonce) => (
+      {/* Loading Text (optional) */}
+      {isInitialLoad && (
+        <div className="text-center mt-4">
+          <div className="inline-flex items-center gap-2 text-gray-500">
+            <div className="w-4 h-4 border-2 border-gray-300 border-t-primary-orange rounded-full animate-spin"></div>
+            <span className="text-sm">{t("announces.loading")}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Annonces Grid */}
+      {!isInitialLoad && annonces.length > 0 && (
+        <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {annonces.map((annonce) => (
             <PrestataireCardV2 key={annonce.id} annonce={annonce} />
           ))}
-      </div>{" "}
+        </div>
+      )}
+
       {/* Error Message */}
       {error && (
         <div className="text-center py-8">
-          <p className="text-red-500">{error}</p>
+          <div className="inline-flex items-center gap-2 text-red-500">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p>{error}</p>
+          </div>
         </div>
       )}
+
       {/* No Announcements Message */}
-      {!isInitialLoad && !error && annonces.length === 0 && (
+      {hasNoAnnonces && (
         <div className="text-center py-8">
-          <p className="text-gray-500">
-            Aucune annonce disponible pour le moment
-          </p>
+          <div className="inline-flex flex-col items-center gap-2 text-gray-400">
+            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <p>{t("announces.no_annonces")}</p>
+          </div>
         </div>
       )}
     </section>

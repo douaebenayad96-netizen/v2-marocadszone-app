@@ -6,17 +6,18 @@ import { motion } from 'framer-motion'
 
 import { useCategories1, useSubcategories } from '../../services/api/fetchCategory'
 import { useFetchCity } from '../../services/api/fetchCity'
-  import { useFetchCountries } from '../../services/api/fetchCountry'
+import { useFetchCountries } from '../../services/api/fetchCountry'
 import { Category } from '../../services/types/category'
 import { FormValues } from '../../pages/StepsRegister'
 import StepSectionHeader from '../common/StepSectionHeader'
+import getLocalized from '../../utils/getLocalized'
 
 interface FormProps {
   form: UseFormReturn<FormValues>
 }
 
 const NoUserStep = ({ form }: FormProps) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   
   const { formState: { errors }, control, clearErrors, watch } = form
   const { data: citiesDataList, isLoading: isLoadingCities } = useFetchCity()
@@ -30,41 +31,17 @@ const NoUserStep = ({ form }: FormProps) => {
   
   const { data: subcategories, isLoading: isLoadingSubcategories } = useSubcategories(category?.value ? parseInt(category.value) : 0)
 
-  // Debug logging for API data
-  console.log('🚀 [NoUserStep] API Loading States:')
-  console.log('  - Cities loading:', isLoadingCities)
-  console.log('  - Countries loading:', isLoadingCountries)
-  console.log('🚀 [NoUserStep] API Data:')
-  console.log('  - Cities data:', citiesDataList)
-  console.log('  - Countries data:', countriesDataList)
-  console.log('  - Categories data:', categories)
-  console.log('  - Subcategories data:', subcategories)
-  console.log('🚀 [NoUserStep] Current form values:')
-  console.log('  - Category:', category)
-  console.log('  - Subcategory:', subCategory)
-  console.log('  - Country:', country)
-  console.log('  - City:', city)
-
   // Clear errors when fields are filled correctly
   useEffect(() => {
-    if (category?.value) {
-      clearErrors('category')
-    }
-    if (subCategory?.value) {
-      clearErrors('subCategory')
-    }
-    if (city?.value) {
-      clearErrors('city')
-    }
-    if (country?.value) {
-      clearErrors('country')
-    }
+    if (category?.value) clearErrors('category')
+    if (subCategory?.value) clearErrors('subCategory')
+    if (city?.value) clearErrors('city')
+    if (country?.value) clearErrors('country')
   }, [category, subCategory, city, country, clearErrors])
 
   // Set Morocco as default country when countries data is loaded
   useEffect(() => {
     if (countriesDataList && countriesDataList.length > 0 && !country?.value) {
-      // Find Morocco in the countries list (assuming it's labeled as "Morocco" or "Maroc")
       const morocco = countriesDataList.find(
         (countryItem) => 
           countryItem.label?.toLowerCase().includes('morocco') || 
@@ -73,13 +50,17 @@ const NoUserStep = ({ form }: FormProps) => {
       
       if (morocco) {
         form.setValue('country', {
-          label: morocco.label,
+          label: getLocalized(morocco, 'label') || morocco.label,
           value: morocco.id.toString()
         })
-        console.log('🚀 [NoUserStep] Set Morocco as default country:', morocco)
       }
     }
   }, [countriesDataList, country, form])
+
+  // Helper function to get localized label
+  const getLocalizedLabel = (item: any) => {
+    return getLocalized(item, 'label') || item.label || ''
+  }
 
   return (
     <motion.div
@@ -88,17 +69,19 @@ const NoUserStep = ({ form }: FormProps) => {
       transition={{ duration: 0.2, ease: "easeInOut" }}
     >
       <StepSectionHeader
-        title={t('post_job_form.category.title')}
-        subtitle={t('post_job_form.category.subtitle')}
+        title={t('no_user_step.title')}
+        subtitle={t('no_user_step.subtitle')}
       />
       <form className="pb-4">
         <div className="mt-4">
-          <div className="space-y-4">            <div>
+          <div className="space-y-4">
+            {/* Category Selection */}
+            <div>
               <label
                 htmlFor="category"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                {t('Categorie')}
+                {t('no_user_step.category_label')}
                 <span className="text-red-500">*</span>
               </label>
               <Controller
@@ -107,7 +90,7 @@ const NoUserStep = ({ form }: FormProps) => {
                 rules={{
                   required: {
                     value: true,
-                    message: t('la_categorie_est_obligatoire')
+                    message: t('no_user_step.category_required')
                   }
                 }}
                 render={({ field }) => (
@@ -125,19 +108,17 @@ const NoUserStep = ({ form }: FormProps) => {
                     }}
                     options={
                       categories?.map((item: Category) => ({
-                        label: item.label || '',
+                        label: getLocalizedLabel(item),
                         value: item.id.toString()
                       })) || []
-                    }                    onChange={(selectedOption) => {
+                    }
+                    onChange={(selectedOption) => {
                       field.onChange(selectedOption)
-                      // Clear subcategory when category changes
                       form.setValue('subCategory', { label: '', value: '' })
-                      if (selectedOption) {
-                        clearErrors('category')
-                      }
+                      if (selectedOption) clearErrors('category')
                     }}
-                    placeholder={t('Sélectionner une Catégorie')}
-                    noOptionsMessage={() => t('Aucune catégorie trouvée')}
+                    placeholder={t('no_user_step.category_placeholder')}
+                    noOptionsMessage={() => t('no_user_step.no_category')}
                     isLoading={isLoadingCategories}
                   />
                 )}
@@ -156,7 +137,7 @@ const NoUserStep = ({ form }: FormProps) => {
                   htmlFor="subCategory"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  {t('Sous-Catégorie')}
+                  {t('no_user_step.subcategory_label')}
                   <span className="text-red-500">*</span>
                 </label>
                 <Controller
@@ -165,7 +146,7 @@ const NoUserStep = ({ form }: FormProps) => {
                   rules={{
                     required: {
                       value: true,
-                      message: t('La sous-catégorie est requise')
+                      message: t('no_user_step.subcategory_required')
                     }
                   }}
                   render={({ field }) => (
@@ -183,18 +164,16 @@ const NoUserStep = ({ form }: FormProps) => {
                       }}
                       options={
                         subcategories?.map((item) => ({
-                          label: item.label || '',
+                          label: getLocalizedLabel(item),
                           value: item.id.toString()
                         })) || []
                       }
                       onChange={(selectedOption) => {
                         field.onChange(selectedOption)
-                        if (selectedOption) {
-                          clearErrors('subCategory')
-                        }
+                        if (selectedOption) clearErrors('subCategory')
                       }}
-                      placeholder={t('Sélectionner une sous-catégorie')}
-                      noOptionsMessage={() => t('Aucune sous-catégorie trouvée')}
+                      placeholder={t('no_user_step.subcategory_placeholder')}
+                      noOptionsMessage={() => t('no_user_step.no_subcategory')}
                       isLoading={isLoadingSubcategories}
                       isDisabled={!category?.value}
                     />
@@ -214,7 +193,7 @@ const NoUserStep = ({ form }: FormProps) => {
                 htmlFor="country"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                {t('Pays')}
+                {t('no_user_step.country_label')}
                 <span className="text-red-500">*</span>
               </label>
               <Controller
@@ -223,7 +202,7 @@ const NoUserStep = ({ form }: FormProps) => {
                 rules={{
                   required: {
                     value: true,
-                    message: t('Le pays est requis')
+                    message: t('no_user_step.country_required')
                   }
                 }}
                 render={({ field }) => (
@@ -241,22 +220,19 @@ const NoUserStep = ({ form }: FormProps) => {
                     }}
                     options={
                       countriesDataList?.map((item) => ({
-                        label: item.label || '',
+                        label: getLocalizedLabel(item),
                         value: item.id.toString()
                       })) || []
                     }
                     onChange={(selectedOption) => {
                       field.onChange(selectedOption)
-                      // Clear city when country changes
                       form.setValue('city', { label: '', value: '' })
-                      if (selectedOption) {
-                        clearErrors('country')
-                      }
+                      if (selectedOption) clearErrors('country')
                     }}
-                    placeholder={t('Sélectionner un pays')}
-                    noOptionsMessage={() => t('Aucun pays trouvé')}
+                    placeholder={t('no_user_step.country_placeholder')}
+                    noOptionsMessage={() => t('no_user_step.no_country')}
                     isLoading={isLoadingCountries}
-                    isDisabled={true} // Disable country selection since Morocco is set as default
+                    isDisabled={true}
                   />
                 )}
               />
@@ -273,7 +249,7 @@ const NoUserStep = ({ form }: FormProps) => {
                 htmlFor="city"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                {t('Ville')}
+                {t('no_user_step.city_label')}
                 <span className="text-red-500">*</span>
               </label>
               <Controller
@@ -282,7 +258,7 @@ const NoUserStep = ({ form }: FormProps) => {
                 rules={{
                   required: {
                     value: true,
-                    message: t('La ville est requise', 'City is required')
+                    message: t('no_user_step.city_required')
                   }
                 }}
                 render={({ field }) => (
@@ -300,24 +276,21 @@ const NoUserStep = ({ form }: FormProps) => {
                     }}
                     options={
                       citiesDataList?.filter((item) => {
-                        // Filter cities by selected country
                         if (country?.value) {
                           return item.country_id === parseInt(country.value)
                         }
                         return true
                       }).map((item) => ({
-                        label: item.label || '',
+                        label: getLocalizedLabel(item),
                         value: item.id.toString()
                       })) || []
                     }
                     onChange={(selectedOption) => {
                       field.onChange(selectedOption)
-                      if (selectedOption) {
-                        clearErrors('city')
-                      }
+                      if (selectedOption) clearErrors('city')
                     }}
-                    placeholder={t('Sélectionner une ville')}
-                    noOptionsMessage={() => t('Aucune ville trouvée')}
+                    placeholder={t('no_user_step.city_placeholder')}
+                    noOptionsMessage={() => t('no_user_step.no_city')}
                     isLoading={isLoadingCities}
                   />
                 )}

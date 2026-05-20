@@ -12,6 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumb, { BreadcrumbItem } from "../components/ui/Breadcrumb";
 import { useGetJobOffer } from "../services/api/fetchService";
 import { formatRelativeTime, formatRelativeUpdateTime } from "../utils/helpers";
+import getLocalized from '../utils/getLocalized'
 
 const JobOfferDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -337,7 +338,7 @@ const JobOfferDetailsPage: React.FC = () => {
                 <div className="flex items-center">
                   <FiMapPin className="w-5 h-5 mr-2 text-blue-500" />
                   <span className="font-medium">
-                    {jobOffer.city?.name || jobOffer.city?.label || "N/A"}
+                    {getLocalized(jobOffer.city, 'label') || jobOffer.city?.name || "N/A"}
                   </span>
                 </div>{" "}
                 <div
@@ -418,7 +419,7 @@ const JobOfferDetailsPage: React.FC = () => {
                   </span>
                   <p className="text-lg font-medium text-gray-900 mt-1 flex items-center">
                     <FiMapPin className="w-4 h-4 mr-2 text-blue-500" />
-                    {jobOffer.city?.name || jobOffer.city?.label || "N/A"}
+                    {getLocalized(jobOffer.city, 'label') || jobOffer.city?.name || "N/A"}
                   </p>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-xl">

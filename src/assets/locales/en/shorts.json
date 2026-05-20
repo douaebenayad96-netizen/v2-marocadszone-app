@@ -1,0 +1,13 @@
+{
+  "page": {
+    "title": "Video Ads in Morocco",
+    "h1": "Explore all video ads in Morocco",
+    "description": "Find and post video classifieds in Morocco to buy, sell or rent: cars, real estate, fashion...",
+    "videos_count": "videos available",
+    "search_button": "Search",
+    "search_placeholder": "Search for a video",
+    "loading_error": "Error loading videos",
+    "no_videos": "No videos available at the moment",
+    "shorts_label": "Shorts"
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { AiOutlineLoading3Quarters, AiOutlinePlus } from "react-icons/ai";
 import { FaTrash } from "react-icons/fa";
 import { RiArrowRightLine, RiShareLine } from "react-icons/ri";
@@ -50,7 +51,9 @@ interface VideoCardProps {
 }
 
 const VideoCard: React.FC<VideoCardProps> = ({ announcement, onAskDelete }) => {
-  // Convert VideoAnnouncement to Annonce format for compatibility
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
   const annonceData: Annonce = {
     id: announcement.id,
     title: announcement.title,
@@ -103,41 +106,18 @@ const VideoCard: React.FC<VideoCardProps> = ({ announcement, onAskDelete }) => {
     thumbnail_url: announcement.thumbnail_url,
   };
 
-  // const getVideoThumbnail = (): string => {
-  //   if (
-  //     annonceData.image_urls &&
-  //     Array.isArray(annonceData.image_urls) &&
-  //     annonceData.image_urls.length > 0
-  //   ) {
-  //     return annonceData.image_urls[0];
-  //   }
-
-  //   if (annonceData.images && annonceData.images.length > 0) {
-  //     return (
-  //       annonceData.images[0]?.original_url ||
-  //       annonceData.images[0]?.url ||
-  //       annonceData.images[0]?.preview_url
-  //     );
-  //   }
-
-  //   return annonceData?.thumbnail_url;
-  // };
-
   const getVideoTitle = (): string => {
-    return (
-      annonceData.title || "Regardez cette vidéo incroyable ! 🔥 #tendance"
-    );
+    return annonceData.title || t("video_page.default_title");
   };
 
-  // Determine CTA button properties
-  let ctaText = "Voir l'annonce";
+  let ctaText = t("video_page.view_ad");
   let ctaHref: string | undefined = undefined;
 
   if (announcement.contact_type === "phone" && announcement.phone_number) {
-    ctaText = "Contacter";
+    ctaText = t("video_page.contact");
     ctaHref = `tel:${announcement.phone_number}`;
   } else if (announcement.contact_type === "url" && announcement.url) {
-    ctaText = "Voir l'annonce";
+    ctaText = t("video_page.view_ad");
     ctaHref = announcement.url;
   }
 
@@ -151,14 +131,11 @@ const VideoCard: React.FC<VideoCardProps> = ({ announcement, onAskDelete }) => {
       } catch (error) {
         console.error("Error sharing:", error);
       }
-    } else {
-      console.warn("Share not supported");
     }
   };
 
   return (
-    <div className="relative rounded-xl overflow-hidden aspect-[9/16] bg-gray-100 shadow-md hover:shadow-lg transition-shadow cursor-pointer group">
-      {/* Video / Thumbnail */}
+    <div className={`relative rounded-xl overflow-hidden aspect-[9/16] bg-gray-100 shadow-md hover:shadow-lg transition-shadow cursor-pointer group ${isRTL ? "rtl" : ""}`}>
       <div className="absolute inset-0">
         {annonceData.video_url ? (
           <video
@@ -168,51 +145,42 @@ const VideoCard: React.FC<VideoCardProps> = ({ announcement, onAskDelete }) => {
             muted
             loop
             controls
-            // autoPlay
             playsInline
             preload="metadata"
           >
-            Désolé, votre navigateur ne supporte pas les vidéos intégrées.
+            {t("video_page.video_not_supported")}
           </video>
         ) : (
           <img
             src={annonceData?.thumbnail_url}
-            alt="Vidéo courte"
+            alt={t("video_page.short_video")}
             className="w-full h-full object-cover"
           />
         )}
-        {/* Dark overlay for better readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
       </div>
 
-      {/* Delete Button */}
       <button
         onClick={() => onAskDelete(announcement.id)}
-        className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors z-50 opacity-0 group-hover:opacity-100"
-        aria-label="Supprimer la vidéo"
+        className={`absolute top-2 ${isRTL ? "left-2" : "right-2"} bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors z-50 opacity-0 group-hover:opacity-100`}
+        aria-label={t("video_page.delete_video")}
       >
         <FaTrash size={12} />
       </button>
 
-      {/* Video Information */}
       <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
         <p className="text-sm mb-4 line-clamp-2">{getVideoTitle()}</p>
 
-        {/* CTA Button */}
         {ctaHref ? (
           <a
             href={ctaHref}
             target={announcement.contact_type === "url" ? "_blank" : undefined}
-            rel={
-              announcement.contact_type === "url"
-                ? "noopener noreferrer"
-                : undefined
-            }
+            rel={announcement.contact_type === "url" ? "noopener noreferrer" : undefined}
             className="px-4 py-2 w-full inline-block text-center bg-orange-500 hover:bg-orange-600 relative text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-md"
           >
             {ctaText}
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 transition-transform duration-200">
-              <RiArrowRightLine className="inline-block text-lg -mt-0.5 -rotate-45" />
+            <div className={`absolute ${isRTL ? "left-2" : "right-2"} top-1/2 transform -translate-y-1/2 transition-transform duration-200`}>
+              <RiArrowRightLine className={`inline-block text-lg -mt-0.5 ${isRTL ? "rotate-180" : "-rotate-45"}`} />
             </div>
           </a>
         ) : (
@@ -221,20 +189,19 @@ const VideoCard: React.FC<VideoCardProps> = ({ announcement, onAskDelete }) => {
             disabled
           >
             {ctaText}
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 transition-transform duration-200">
-              <RiArrowRightLine className="inline-block text-lg -mt-0.5 -rotate-45" />
+            <div className={`absolute ${isRTL ? "left-2" : "right-2"} top-1/2 transform -translate-y-1/2 transition-transform duration-200`}>
+              <RiArrowRightLine className={`inline-block text-lg -mt-0.5 ${isRTL ? "rotate-180" : "-rotate-45"}`} />
             </div>
           </button>
         )}
       </div>
 
-      {/* Interaction Buttons (right side) */}
-      <div className="absolute right-3 bottom-24 flex flex-col items-center space-y-4">
+      <div className={`absolute ${isRTL ? "left-3" : "right-3"} bottom-24 flex flex-col items-center space-y-4`}>
         <div className="flex flex-col items-center">
           <button
             onClick={handleShare}
             className="p-2 bg-black/30 rounded-full hover:bg-black/50 transition-colors"
-            aria-label="Partager la vidéo"
+            aria-label={t("video_page.share_video")}
           >
             <RiShareLine className="text-white" size={20} />
           </button>
@@ -245,24 +212,21 @@ const VideoCard: React.FC<VideoCardProps> = ({ announcement, onAskDelete }) => {
 };
 
 const VideoUploadPage: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const [searchParams] = useSearchParams();
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [videoAnnouncements, setVideoAnnouncements] = useState<
-    VideoAnnouncement[]
-  >([]);
+  const [videoAnnouncements, setVideoAnnouncements] = useState<VideoAnnouncement[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const { uploadSingleFile } = useFirebaseUpload(STORAGE_FOLDERS.ANNONCE_VIDEOS);
 
   const [uploadPercent, setUploadPercent] = useState<number>(0);
-  const [uploadStatus, setUploadStatus] = useState<
-    "idle" | "uploading" | "success" | "error"
-  >("idle");
+  const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
 
   const { mutateAsync: saveVideoAnnounce } = usePostVideoAnnounce();
-
   const { mutateAsync: deleteVideoAnnounce } = useDeleteVideoAnnounce();
 
   const {
@@ -308,8 +272,6 @@ const VideoUploadPage: React.FC = () => {
           setVideoAnnouncements(response.data.data);
         } else if (Array.isArray(response.data)) {
           setVideoAnnouncements(response.data);
-        } else {
-          console.error("Unexpected response structure:", response.data);
         }
       }
     } catch (error) {
@@ -325,18 +287,15 @@ const VideoUploadPage: React.FC = () => {
       const file = files[0];
 
       if (!file.type.startsWith("video/")) {
-        CustomToast("Veuillez sélectionner un fichier vidéo valide", "error");
+        CustomToast(t("video_page.invalid_video"), "error");
         e.target.value = "";
         setValue("video", undefined);
         return;
       }
 
-      const maxSizeInBytes = 100 * 1024 * 1024; // 100MB
+      const maxSizeInBytes = 100 * 1024 * 1024;
       if (file.size > maxSizeInBytes) {
-        CustomToast(
-          "Le fichier vidéo est trop volumineux (max 100MB)",
-          "error"
-        );
+        CustomToast(t("video_page.video_too_large"), "error");
         e.target.value = "";
         setValue("video", undefined);
         return;
@@ -351,19 +310,15 @@ const VideoUploadPage: React.FC = () => {
     if (files && files.length > 0) {
       const file = files[0];
 
-      // Validate image aspect ratio (9:16 for vertical video)
       const img = new Image();
       img.onload = () => {
         const aspectRatio = img.width / img.height;
         const targetAspectRatio = 9 / 16;
-        const tolerance = 0.1; // 10% tolerance
+        const tolerance = 0.1;
 
         if (Math.abs(aspectRatio - targetAspectRatio) > tolerance) {
-          CustomToast(
-            "La miniature doit avoir un ratio de 9:16 (vertical, comme la vidéo)",
-            "error"
-          );
-          e.target.value = ""; // Clear the input
+          CustomToast(t("video_page.invalid_thumbnail_ratio"), "error");
+          e.target.value = "";
           return;
         }
 
@@ -378,10 +333,10 @@ const VideoUploadPage: React.FC = () => {
     try {
       await deleteVideoAnnounce(id);
       setVideoAnnouncements((prev) => prev.filter((a) => a.id !== id));
-      CustomToast("Vidéo supprimée avec succès", "success");
+      CustomToast(t("video_page.delete_success"), "success");
     } catch (error) {
       console.error("Error deleting video announcement:", error);
-      CustomToast("Erreur lors de la suppression", "error");
+      CustomToast(t("video_page.delete_error"), "error");
     } finally {
       setPendingDeleteId(null);
     }
@@ -389,7 +344,7 @@ const VideoUploadPage: React.FC = () => {
 
   const onSubmit = async (data: VideoFormValues) => {
     if (!data.video) {
-      CustomToast("Veuillez sélectionner une vidéo", "error");
+      CustomToast(t("video_page.select_video"), "error");
       return;
     }
 
@@ -398,16 +353,12 @@ const VideoUploadPage: React.FC = () => {
       setUploadStatus("uploading");
       setUploadPercent(0);
 
-      // Fake incremental progress so UI matches YouTube-like behavior even
-      // when Firebase upload doesn't expose byte-level progress.
-      // Real-time progress requires axios upload with onUploadProgress.
       let raf: number | null = null;
       let stopped = false;
       const start = () => {
         const tick = () => {
           if (stopped) return;
           setUploadPercent((p) => {
-            // accelerate but never reach 95% until the real upload completes
             const next = Math.min(95, Math.max(p + (p < 30 ? 4 : p < 70 ? 3 : 2), p + 1));
             return next;
           });
@@ -418,11 +369,7 @@ const VideoUploadPage: React.FC = () => {
       start();
 
       try {
-        // Upload video to Firebase
-        const videoResult = await uploadSingleFile(
-          data.video,
-          STORAGE_FOLDERS.ANNONCE_VIDEOS
-        );
+        const videoResult = await uploadSingleFile(data.video, STORAGE_FOLDERS.ANNONCE_VIDEOS);
 
         stopped = true;
         if (raf) window.clearTimeout(raf);
@@ -430,12 +377,10 @@ const VideoUploadPage: React.FC = () => {
         setUploadPercent(100);
         setUploadStatus("success");
 
-        // Prepare form data
         const formData = new FormData();
         formData.append("title", data.title);
         formData.append("video_url", videoResult.url);
 
-        // Add thumbnail directly to FormData (not uploading to Firebase)
         if (data.thumbnail) {
           formData.append("thumbnail", data.thumbnail);
         }
@@ -448,20 +393,14 @@ const VideoUploadPage: React.FC = () => {
           formData.append("url", data.url);
         }
 
-        // Submit to API
         await saveVideoAnnounce(formData);
 
-        // Reset form and hide it
         reset();
         setShowForm(false);
-
         setUploadPercent(0);
         setUploadStatus("idle");
 
-
-        CustomToast("Annonce vidéo publiée avec succès", "success");
-
-        // Refresh the video announcements list
+        CustomToast(t("video_page.publish_success"), "success");
         await loadVideoAnnouncements();
       } catch (e) {
         stopped = true;
@@ -474,12 +413,10 @@ const VideoUploadPage: React.FC = () => {
 
       setUploadStatus("error");
 
-      let message = "Une erreur est survenue lors de la publication";
+      let message = t("video_page.publish_error");
 
       if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as {
-          response?: { data?: any; status?: number; statusText?: string };
-        };
+        const axiosError = error as { response?: { data?: any; status?: number; statusText?: string } };
         if (axiosError.response?.data?.message) {
           message = axiosError.response.data.message;
         } else if (axiosError.response?.statusText) {
@@ -494,43 +431,32 @@ const VideoUploadPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      {/* Header */}
+    <div className={`container mx-auto py-8 px-4 ${isRTL ? "rtl" : ""}`}>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Annonces Vidéo</h1>
+        <h1 className="text-2xl font-bold">{t("video_page.title")}</h1>
         <button
           onClick={() => setShowForm(!showForm)}
           className="flex items-center px-4 py-2 bg-primary-orange hover:bg-primary-orange-dark text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           {showForm ? (
-            "Annuler"
+            t("video_page.cancel")
           ) : (
             <>
               <AiOutlinePlus className="mr-2" />
-              Ajouter une vidéo
+              {t("video_page.add_video")}
             </>
           )}
         </button>
       </div>
 
-      {/* Upload Form */}
       {showForm && (
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">
-            Publier une annonce vidéo
-          </h2>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="bg-white rounded-lg shadow-md p-6"
-          >
-            {/* Title Field */}
+          <h2 className="text-xl font-semibold mb-4">{t("video_page.publish_video_ad")}</h2>
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-md p-6">
             <div className="mb-4">
               <div className="flex items-center gap-1">
-                <label
-                  htmlFor="title"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Titre
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                  {t("video_page.title_label")}
                 </label>
                 <span className="text-red-500">*</span>
               </div>
@@ -540,19 +466,13 @@ const VideoUploadPage: React.FC = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 {...register("title", { required: true })}
               />
-              {errors.title && (
-                <p className="mt-1 text-sm text-red-600">Le titre est requis</p>
-              )}
+              {errors.title && <p className="mt-1 text-sm text-red-600">{t("video_page.title_required")}</p>}
             </div>
 
-            {/* Video Field */}
             <div className="mb-4">
               <div className="w-full flex items-center gap-1">
-                <label
-                  htmlFor="video"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Vidéo
+                <label htmlFor="video" className="block text-sm font-medium text-gray-700 mb-1">
+                  {t("video_page.video_label")}
                 </label>
                 <span className="text-red-500">*</span>
               </div>
@@ -566,21 +486,15 @@ const VideoUploadPage: React.FC = () => {
               />
               {videoFile && (
                 <p className="mt-1 text-sm text-green-600">
-                  Vidéo sélectionnée: {videoFile.name}
+                  {t("video_page.video_selected")}: {videoFile.name}
                 </p>
               )}
             </div>
 
-            {/* Thumbnail Field */}
             <div className="mb-4">
-              <label
-                htmlFor="thumbnail"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Video miniature{" "}
-                <span className="text-gray-500 text-xs">
-                  (ratio 9:16 recommandé)
-                </span>
+              <label htmlFor="thumbnail" className="block text-sm font-medium text-gray-700 mb-1">
+                {t("video_page.thumbnail_label")}
+                <span className="text-gray-500 text-xs"> ({t("video_page.thumbnail_ratio")})</span>
               </label>
               <input
                 id="thumbnail"
@@ -591,93 +505,60 @@ const VideoUploadPage: React.FC = () => {
               />
               {videoMiniature && (
                 <p className="mt-1 text-sm text-green-600">
-                  Miniature sélectionnée: {videoMiniature.name}
+                  {t("video_page.thumbnail_selected")}: {videoMiniature.name}
                 </p>
               )}
-              <p className="mt-1 text-xs text-gray-500">
-                Format vertical (9:16) pour correspondre au ratio de la vidéo
-              </p>
+              <p className="mt-1 text-xs text-gray-500">{t("video_page.thumbnail_ratio_hint")}</p>
             </div>
 
-            {/* Contact Type Field */}
             <div className="mb-4">
               <div className="flex items-center gap-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Type de contact
+                  {t("video_page.contact_type_label")}
                 </label>
                 <span className="text-red-500">*</span>
               </div>
               <div className="flex space-x-4">
                 <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    value="phone"
-                    className="form-radio"
-                    {...register("contactType", { required: true })}
-                  />
-                  <span className="ml-2">Numéro de téléphone</span>
+                  <input type="radio" value="phone" className="form-radio" {...register("contactType", { required: true })} />
+                  <span className="ml-2">{t("video_page.phone_number")}</span>
                 </label>
                 <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    value="url"
-                    className="form-radio"
-                    {...register("contactType", { required: true })}
-                  />
-                  <span className="ml-2">URL de l'annonce</span>
+                  <input type="radio" value="url" className="form-radio" {...register("contactType", { required: true })} />
+                  <span className="ml-2">{t("video_page.ad_url")}</span>
                 </label>
               </div>
-              {errors.contactType && (
-                <p className="mt-1 text-sm text-red-600">
-                  Veuillez sélectionner un type de contact
-                </p>
-              )}
+              {errors.contactType && <p className="mt-1 text-sm text-red-600">{t("video_page.contact_type_required")}</p>}
             </div>
 
-            {/* Phone Number Field (Conditional) */}
             {contactType === "phone" && (
               <div className="mb-4">
                 <div className="flex gap-1 items-center w-full">
-                  <label
-                    htmlFor="phoneNumber"
-                    className="text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Numéro de téléphone
+                  <label htmlFor="phoneNumber" className="text-sm font-medium text-gray-700 mb-1">
+                    {t("video_page.phone_number_label")}
                   </label>
                   <span className="text-red-500">*</span>
                 </div>
                 <div className="flex items-center border border-gray-300 rounded-md">
-                  <span className="px-3 py-2 bg-gray-100 rounded-e-md">
-                    +212
-                  </span>
+                  <span className="px-3 py-2 bg-gray-100 rounded-e-md">+212</span>
                   <input
                     id="phoneNumber"
                     type="tel"
                     className="w-full px-3 py-2 outline-none"
                     placeholder="6********"
                     maxLength={9}
-                    {...register("phoneNumber", {
-                      required: contactType === "phone",
-                    })}
+                    {...register("phoneNumber", { required: contactType === "phone" })}
                   />
                 </div>
-                {errors.phoneNumber && (
-                  <p className="mt-1 text-sm text-red-600">
-                    Le numéro de téléphone est requis
-                  </p>
-                )}
+                {errors.phoneNumber && <p className="mt-1 text-sm text-red-600">{t("video_page.phone_required")}</p>}
               </div>
             )}
 
-            {/* URL Field (Conditional) */}
             {contactType === "url" && (
               <div className="mb-4">
                 <div className="flex gap-1 items-center">
-                  <label
-                    htmlFor="url"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    URL de l'annonce
+                  <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-1">
+                    {t("video_page.ad_url_label")}
                   </label>
                   <span className="text-red-500">*</span>
                 </div>
@@ -688,34 +569,24 @@ const VideoUploadPage: React.FC = () => {
                   placeholder="https://example.com/annonce"
                   {...register("url", { required: contactType === "url" })}
                 />
-                {errors.url && (
-                  <p className="mt-1 text-sm text-red-600">L'URL est requise</p>
-                )}
+                {errors.url && <p className="mt-1 text-sm text-red-600">{t("video_page.url_required")}</p>}
               </div>
             )}
 
-            {/* Upload progress UI */}
             {(uploadStatus === "uploading" || uploadStatus === "success" || uploadStatus === "error") && (
               <div className="mb-5">
                 <div className="flex items-center justify-between gap-3">
                   <p className="text-sm font-semibold text-primary-orange">
                     {uploadStatus === "uploading"
-                      ? "Téléchargement en cours..."
+                      ? t("video_page.uploading")
                       : uploadStatus === "success"
-                      ? "Téléversement terminé"
-                      : "Échec du chargement"}
-
+                      ? t("video_page.upload_complete")
+                      : t("video_page.upload_failed")}
                   </p>
-                  <p className="text-xs text-gray-600 font-medium tabular-nums">
-                    {uploadPercent}%
-                  </p>
+                  <p className="text-xs text-gray-600 font-medium tabular-nums">{uploadPercent}%</p>
                 </div>
                 <div className="mt-2 h-2.5 w-full bg-orange-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary-orange rounded-full transition-all duration-150"
-                    style={{ width: `${uploadPercent}%` }}
-                  />
-                  {/* subtle youtube-like moving shine */}
+                  <div className="h-full bg-primary-orange rounded-full transition-all duration-150" style={{ width: `${uploadPercent}%` }} />
                   {uploadStatus === "uploading" && (
                     <div className="relative -mt-[2px]">
                       <div className="absolute top-0 left-0 h-[6px] w-[40%] bg-white/30 rounded-full animate-[shine_1.2s_ease-in-out_infinite]" />
@@ -726,72 +597,55 @@ const VideoUploadPage: React.FC = () => {
               </div>
             )}
 
-            {/* Submit Button */}
             <div className="mt-6">
               <button
                 type="submit"
                 disabled={isSubmitting || uploadStatus === "uploading"}
                 className={cn(
                   "w-full py-2 px-4 bg-primary-orange hover:bg-primary-orange-dark text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
-                  (isSubmitting || uploadStatus === "uploading") &&
-                    "opacity-70 cursor-not-allowed"
+                  (isSubmitting || uploadStatus === "uploading") && "opacity-70 cursor-not-allowed"
                 )}
               >
                 {isSubmitting || uploadStatus === "uploading" ? (
                   <span className="flex items-center justify-center">
                     <AiOutlineLoading3Quarters className="animate-spin mr-2" />
-                    Publication en cours...
+                    {t("video_page.publishing")}
                   </span>
                 ) : (
-                  "Publier l'annonce vidéo"
+                  t("video_page.publish_button")
                 )}
               </button>
             </div>
-
           </form>
         </div>
       )}
 
-      {/* Video Announcements Section */}
       <div>
-        <h2 className="text-xl font-semibold mb-4">Mes annonces vidéo</h2>
+        <h2 className="text-xl font-semibold mb-4">{t("video_page.my_video_ads")}</h2>
 
-        {/* Loading State */}
         {isLoading && (
           <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {[...Array(5)].map((_, index) => (
-              <div
-                key={index}
-                className="animate-pulse bg-gray-200 aspect-[9/16] rounded-xl"
-              />
+              <div key={index} className="animate-pulse bg-gray-200 aspect-[9/16] rounded-xl" />
             ))}
           </div>
         )}
 
-        {/* Videos Grid */}
         {!isLoading && videoAnnouncements.length > 0 && (
           <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {videoAnnouncements.map((announcement) => (
-              <VideoCard
-                key={announcement.id}
-                announcement={announcement}
-                onAskDelete={setPendingDeleteId}
-              />
+              <VideoCard key={announcement.id} announcement={announcement} onAskDelete={setPendingDeleteId} />
             ))}
           </div>
         )}
 
-        {/* No Videos Message */}
         {!isLoading && videoAnnouncements.length === 0 && (
           <div className="bg-gray-50 rounded-lg p-8 text-center">
-            <p className="text-gray-600 mb-4">
-              Vous n'avez pas encore publié d'annonces vidéo
-            </p>
+            <p className="text-gray-600 mb-4">{t("video_page.no_videos")}</p>
           </div>
         )}
       </div>
 
-      {/* Delete Confirmation Modal */}
       {pendingDeleteId !== null && (
         <>
           <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm transition-all duration-200" />
@@ -799,9 +653,9 @@ const VideoUploadPage: React.FC = () => {
             <ConfirmDeleteModal
               onConfirm={() => handleDeleteVideo(pendingDeleteId)}
               onCancel={() => setPendingDeleteId(null)}
-              message="Êtes-vous sûr de vouloir supprimer cette vidéo ?"
-              cancelLabel="Annuler"
-              deleteLabel="Supprimer"
+              message={t("video_page.delete_confirm")}
+              cancelLabel={t("video_page.cancel")}
+              deleteLabel={t("video_page.delete")}
             />
           </div>
         </>

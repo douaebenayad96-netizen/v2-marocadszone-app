@@ -11,30 +11,60 @@ type InfoFormStepProps = {
 }
 
 const InfoFormStep = ({ form }: InfoFormStepProps) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { register, formState: { errors }, watch } = form
   const { data: annonceTypesData } = useAnnonceTypes()
 
-  // Watch form values for debugging
   const announcementType = watch('announcementType')
   const condition = watch('condition')
   const price = watch('price')
-
-  console.log('🚀 [InfoFormStep] Current form values:')
-  console.log('  - Announcement Type:', announcementType)
-  console.log('  - Condition:', condition)
-  console.log('  - Price:', price)
-  console.log('🚀 [InfoFormStep] Form errors:', errors)
-  console.log('🚀 [InfoFormStep] Announcement types data:', annonceTypesData)
 
   const isService = announcementType === 'service'
   const isSale = announcementType === 'sale'
   const isRental = announcementType === 'rental'
 
-
   useEffect(() => {
     form.setValue('condition', '')
   }, [announcementType])
+
+  // Fonction pour traduire le type d'annonce
+  const translateAnnounceType = (typeValue: string, originalLabel: string) => {
+    const lang = i18n.language
+    
+    const translations: Record<string, Record<string, string>> = {
+      fr: {
+        'sale': 'Vente',
+        'rental': 'Location',
+        'service': 'Service'
+      },
+      en: {
+        'sale': 'Sale',
+        'rental': 'Rental',
+        'service': 'Service'
+      },
+      ar: {
+        'sale': 'بيع',
+        'rental': 'إيجار',
+        'service': 'خدمة'
+      }
+    }
+    
+    return translations[lang]?.[typeValue] || originalLabel
+  }
+
+  // Helper to get condition label based on type
+  const getConditionLabel = () => {
+    if (isService) return t('info_form_step.pricing_label')
+    if (isRental) return t('info_form_step.rental_period_label')
+    return t('info_form_step.condition_label')
+  }
+
+  // Helper to get condition placeholder
+  const getConditionPlaceholder = () => {
+    if (isService) return t('info_form_step.pricing_placeholder')
+    if (isRental) return t('info_form_step.rental_period_placeholder')
+    return t('info_form_step.condition_placeholder')
+  }
 
   return (
     <motion.div
@@ -43,20 +73,22 @@ const InfoFormStep = ({ form }: InfoFormStepProps) => {
       transition={{ duration: 0.2, ease: "easeInOut" }}
     >
       <StepSectionHeader
-        title={t('post_job_form.info.title')}
-        subtitle={t('post_job_form.info.subtitle')}
+        title={t('info_form_step.title')}
+        subtitle={t('info_form_step.subtitle')}
       />
       <form>
         {/* Title */}
         <div>
-          <label htmlFor="title" className="text-sm font-medium text-gray-700">Titre</label>
+          <label htmlFor="title" className="text-sm font-medium text-gray-700">
+            {t('info_form_step.title_label')}
+          </label>
           <input
             type="text"
             id="title"
             className={`input ${errors.title ? "border-red-500" : ""}`}
-            placeholder='Titre'
+            placeholder={t('info_form_step.title_placeholder')}
             {...register('title', {
-              required: t('post_job_form.info.title_required'),
+              required: t('info_form_step.title_required'),
               onChange: () => form.trigger('title')
             })}
           />
@@ -65,17 +97,19 @@ const InfoFormStep = ({ form }: InfoFormStepProps) => {
         
         {/* Description */}
         <div className="mt-4">
-          <label htmlFor="description" className="text-sm font-medium text-gray-700">Description</label>
+          <label htmlFor="description" className="text-sm font-medium text-gray-700">
+            {t('info_form_step.description_label')}
+          </label>
           <textarea
             id="description"
             className={`input ${errors.description ? "border-red-500" : ""}`}
-            placeholder={t('post_job_form.info.description_placeholder')}
+            placeholder={t('info_form_step.description_placeholder')}
             rows={5}
             {...register('description', {
-              required: t('post_job_form.info.description_required'),
+              required: t('info_form_step.description_required'),
               minLength: {
                 value: 10,
-                message: t('Minimum 10 caractères') || 'Minimum 10 caractères'
+                message: t('info_form_step.description_min_length')
               },
               onChange: () => form.trigger('description')
             })}
@@ -87,91 +121,82 @@ const InfoFormStep = ({ form }: InfoFormStepProps) => {
         <div className="space-y-4 mt-4 pb-32">
           {/* Announce Type */}
           <div>
-            <label htmlFor="announcementType" className="block mb-2 text-base font-medium text-gray-600">Type d'annonce</label>
+            <label htmlFor="announcementType" className="block mb-2 text-base font-medium text-gray-600">
+              {t('info_form_step.announcement_type_label')}
+            </label>
             <select
               id="announcementType"
               className={`input w-full ${errors.announcementType ? "border-red-500" : ""}`}
               {...register('announcementType', { 
-                required: 'Type d\'annonce requis',
+                required: t('info_form_step.announcement_type_required'),
                 onChange: (e) => {
-                  const value = e.target.value
-                  console.log('🚀 [InfoFormStep] Announcement type changed to:', value)
                   form.trigger('announcementType')
                 }
               })}
             >
-              <option value="">Choisir le type</option>
-              {annonceTypesData?.map((type) => {
-                console.log('🎯 [InfoFormStep] Rendering option:', type)
-                return (
-                  <option key={type.id} value={type.value}>
-                    {type.label}
-                  </option>
-                )
-              })}
+              <option value="">{t('info_form_step.announcement_type_placeholder')}</option>
+              {annonceTypesData?.map((type) => (
+                <option key={type.id} value={type.value}>
+                  {translateAnnounceType(type.value, type.label)}
+                </option>
+              ))}
             </select>
             {errors.announcementType && <p className="text-red-500 text-sm">{errors.announcementType.message}</p>}
           </div>
 
           {/* Item Condition / Tarification (selon le type d'annonce) */}
           <div>
-              <label htmlFor="condition" className="block mb-2 text-base font-medium text-gray-600">
-              {isService ? 'Choisir la tarification' : isRental ? 'Choisir la période de location' : "État de l'article"}
+            <label htmlFor="condition" className="block mb-2 text-base font-medium text-gray-600">
+              {getConditionLabel()}
             </label>
 
-
-            {/* Important: for service we keep tarification UI but we MUST NOT send it as item_condition.
-                So we still write into 'condition' locally, but backend will ignore it for service. */}
             <select
               id="condition"
               className={`input w-full ${errors.condition ? "border-red-500" : ""}`}
               {...register('condition', {
-                required: isService ? false : "État requis",
+                required: isService ? false : t('info_form_step.condition_required'),
                 onChange: (e) => {
-                  const value = e.target.value
-                  console.log('🚀 [InfoFormStep] Condition changed to:', value)
                   form.trigger('condition')
                 }
               })}
             >
-              <option value="">{isService ? 'Choisir la tarification' : isRental ? 'Choisir la période' : "Choisir l'état"}</option>
+              <option value="">{getConditionPlaceholder()}</option>
 
-              {/* vente */}
+              {/* sale */}
               {announcementType === 'sale' && (
                 <>
-                  <option value="new">Neuf</option>
-                  <option value="used">Usagé</option>
-                  <option value="good_condition">Bon état</option>
+                  <option value="new">{t('info_form_step.condition_new')}</option>
+                  <option value="used">{t('info_form_step.condition_used')}</option>
+                  <option value="good_condition">{t('info_form_step.condition_good')}</option>
                 </>
               )}
 
-              {/* location */}
+              {/* rental */}
               {announcementType === 'rental' && (
                 <>
-                  <option value="rental_day">Jour</option>
-                  <option value="rental_week">Semaine</option>
-                  <option value="rental_month">Mois</option>
+                  <option value="rental_day">{t('info_form_step.rental_day')}</option>
+                  <option value="rental_week">{t('info_form_step.rental_week')}</option>
+                  <option value="rental_month">{t('info_form_step.rental_month')}</option>
                 </>
               )}
 
               {/* service */}
               {isService && (
                 <>
-                  <option value="service_hour">Heure</option>
-                  <option value="service_day">Jour</option>
-                  <option value="service_mission">Mission</option>
+                  <option value="service_hour">{t('info_form_step.service_hour')}</option>
+                  <option value="service_day">{t('info_form_step.service_day')}</option>
+                  <option value="service_mission">{t('info_form_step.service_mission')}</option>
                 </>
               )}
 
               {/* fallback */}
               {(!isService && !isSale && !isRental) && (
                 <>
-                  <option value="new">Neuf</option>
-                  <option value="used">Usagé</option>
-                  <option value="good_condition">Bon état</option>
+                  <option value="new">{t('info_form_step.condition_new')}</option>
+                  <option value="used">{t('info_form_step.condition_used')}</option>
+                  <option value="good_condition">{t('info_form_step.condition_good')}</option>
                 </>
               )}
-
             </select>
 
             {errors.condition && !isService && (
@@ -181,18 +206,18 @@ const InfoFormStep = ({ form }: InfoFormStepProps) => {
 
           {/* Price */}
           <div>
-            <label htmlFor="price" className="block mb-2 text-base font-medium text-gray-600">Prix</label>
+            <label htmlFor="price" className="block mb-2 text-base font-medium text-gray-600">
+              {t('info_form_step.price_label')}
+            </label>
             <input
               type="number"
               step="0.01"
               id="price"
               className={`input w-full ${errors.price ? "border-red-500" : ""}`}
-              placeholder="Prix en MAD"
+              placeholder={t('info_form_step.price_placeholder')}
               {...register('price', { 
-                required: 'Prix requis',
+                required: t('info_form_step.price_required'),
                 onChange: (e) => {
-                  const value = e.target.value
-                  console.log('🚀 [InfoFormStep] Price changed to:', value)
                   form.trigger('price')
                 }
               })}
@@ -200,7 +225,6 @@ const InfoFormStep = ({ form }: InfoFormStepProps) => {
             {errors.price && <p className="text-red-500 text-sm">{errors.price.message}</p>}
           </div>
         </div>
-       
       </form>
     </motion.div>
   )

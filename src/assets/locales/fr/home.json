@@ -1,0 +1,48 @@
+{
+  "hero": {
+    "title": "Trouvez toutes les meilleures annonces",
+    "title_highlight": "au Maroc",
+    "description": "Explorez une large gamme d'annonces fiables et variées à travers tout le Maroc.",
+    "city_placeholder": "Ville",
+    "search_placeholder": "Que recherchez-vous ?",
+    "search_button": "Chercher",
+    "popular_searches": "Recherches populaires",
+    "no_categories": "Aucune catégorie populaire trouvée.",
+    "all_cities": "Toutes les villes"
+  },
+  "banner": {
+    "careerlink_alt": "Bannière Careerlink",
+    "devtitech_alt": "Bannière Devti Technologie",
+    "devticloud_alt": "Bannière Devti Cloud"
+  },
+   "jobs": {
+    "title": "Nos dernières offres d'emploi",
+    "subtitle": "Découvrez les opportunités professionnelles les plus récentes",
+    "button": "Voir Toutes les Offres",
+    "view_all": "Voir toutes les offres",
+    "no_offers": "Aucune offre d'emploi disponible pour le moment",
+    "loading": "Chargement des offres d'emploi..."
+  },
+  "categories": {
+    "title": "Explorez les Catégories Populaires",
+    "subtitle": "Trouvez facilement ce que vous cherchez parmi nos nombreuses catégories d'annonces.",
+    "explore": "Explorer",
+    "no_categories": "Aucune catégorie disponible pour le moment"
+  },
+   "shorts": {
+    "title": "Annonces vidéos courtes",
+    "subtitle": "Découvrez nos dernières annonces vidéos courtes",
+    "button": "Voir plus",
+    "loading": "Chargement des vidéos...",
+    "error": "Erreur lors du chargement des vidéos",
+    "no_videos": "Aucune vidéo disponible pour le moment"
+  },
+  "announces": {
+    "title": "Découvrez les Annonces Près de Chez Vous",
+    "subtitle": "Explorez les dernières annonces disponibles",
+    "button": "Voir Toutes les Annonces",
+    "loading": "Chargement des annonces...",
+    "error": "Impossible de charger les annonces",
+    "no_annonces": "Aucune annonce disponible pour le moment"
+  }
+}

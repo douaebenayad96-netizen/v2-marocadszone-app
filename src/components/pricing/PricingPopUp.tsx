@@ -3,6 +3,7 @@ import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import { useMutation } from "react-query";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 import { Close } from "../../assets/icons/Close";
 import usePlans from "../../hooks/usePlans";
 import { activatePlan, cancelPlan } from "../../services/api/fetchTarification";
@@ -109,6 +110,7 @@ export function PricingPopUp({
   className?: string;
   onClose: () => void;
 }) {
+  const { t, i18n } = useTranslation();
   const { user, setUser } = useAuthStore();
   const [bankModal, setBankModal] = useState(false);
   const [currentId, setCurrentId] = useState<number>(0);
@@ -119,6 +121,7 @@ export function PricingPopUp({
   );
 
   const planData = usePlans();
+  const isRTL = i18n.language === "ar";
 
   const { mutateAsync: cancelPlanMutate } = useMutation({
     mutationFn: () => cancelPlan(),
@@ -129,8 +132,9 @@ export function PricingPopUp({
 
   const handleCancellation = () => {
     toast.promise(cancelPlanMutate(), {
-      pending: "annulation en cour ...",
-      success: "anullation avec sucess",
+      pending: t("pricing.cancelling"),
+      success: t("pricing.cancel_success"),
+      error: t("pricing.cancel_error"),
     });
   };
 
@@ -143,13 +147,14 @@ export function PricingPopUp({
 
   const handleActivation = () => {
     toast.promise(activatePlanMutate(), {
-      pending: "activation en cour ...",
-      success: "activation avec sucess",
+      pending: t("pricing.activating"),
+      success: t("pricing.activation_success"),
+      error: t("pricing.activation_error"),
     });
   };
-  console.log("USER DATA FI PRICING POPUP:\n", JSON.stringify(user, null, 2));
+
   return (
-    <section className={cn("py-8 px-4 bg-white", className)}>
+    <section className={cn("py-8 px-4 bg-white", className, isRTL ? "rtl" : "")}>
       <span
         className="flex justify-end cursor-pointer hover:text-gray-700"
         onClick={() => onClose()}
@@ -160,21 +165,21 @@ export function PricingPopUp({
         {/* Header */}
         <div className="text-center mb-16 max-w-5xl mx-auto">
           <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-6 text-balance max-w-3xl mx-auto">
-            Publiez des annonces gratuitement ou boostez votre visibilité
+            {t("pricing.main_title")}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto text-pretty">
-            Choisissez la formule qui correspond le mieux à vos besoins.
+            {t("pricing.subtitle")}
           </p>
         </div>
 
         {/* Billing Toggle */}
-        <div className="flex items-center justify-center gap-4 mb-12">
+        <div className={`flex items-center justify-center gap-4 mb-12 ${isRTL ? "flex-row-reverse" : ""}`}>
           <span
             className={`text-sm ${
               !isYearly ? "text-gray-900 font-medium" : "text-gray-600"
             }`}
           >
-            Mensuel
+            {t("pricing.monthly")}
           </span>
           <button
             onClick={() => setIsYearly(!isYearly)}
@@ -188,227 +193,122 @@ export function PricingPopUp({
               }`}
             />
           </button>
-          <div className="flex items-center gap-2">
+          <div className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
             <span
               className={`text-sm ${
                 isYearly ? "text-gray-900 font-medium" : "text-gray-600"
               }`}
             >
-              Annuel
+              {t("pricing.yearly")}
             </span>
             <Badge variant="secondary" className="bg-orange-100 text-[#E17A30]">
-              Économisez 20%
+              {t("pricing.save_20")}
             </Badge>
           </div>
         </div>
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {isYearly
-            ? planData["yearly"].map((tier, index) => (
-                <Card
-                  key={tier.name}
-                  className={`flex flex-col justify-between relative ${
-                    tier.popular ? "ring-2 ring-[#E17A30]" : ""
-                  } ${index === 0 ? "border-[#E17A30]" : ""}`}
-                >
-                  <div>
-                    {tier.popular && (
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                        <Badge className="bg-[#E17A30] text-white">
-                          Plus Populaire
-                        </Badge>
-                      </div>
-                    )}
-
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold text-gray-600">
-                          {tier.name}
-                        </h3>
-                      </div>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-bold text-gray-900">
-                          {tier.price}
-                        </span>
-                        <span className="text-gray-600">MAD / mois</span>
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        {tier.transactionFee}
-                      </p>
-                    </CardHeader>
+          {(isYearly ? planData["yearly"] : planData["monthly"]).map((tier, index) => (
+            <Card
+              key={tier.name}
+              className={`flex flex-col justify-between relative ${
+                tier.popular ? "ring-2 ring-[#E17A30]" : ""
+              } ${index === 0 ? "border-[#E17A30]" : ""}`}
+            >
+              <div>
+                {tier.popular && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-[#E17A30] text-white">
+                      {t("pricing.most_popular")}
+                    </Badge>
                   </div>
+                )}
 
-                  <CardContent className=" flex-1 flex flex-col justify-between">
-                    <ul className="space-y-3">
-                      {tier.features.map((feature, featureIndex) => (
-                        <li
-                          key={featureIndex}
-                          className="flex items-center gap-3"
-                        >
-                          <BiCheck className="h-4 w-4 text-[#E17A30] flex-shrink-0" />
-                          <span className="text-sm text-gray-900">
-                            {feature}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                    {user?.current_active_subscription?.plan?.id === tier.id &&
-                    user?.current_active_subscription.status === "active" ? (
-                      <Button variant="danger" onClick={handleCancellation}>
-                        Cancel Subscription
-                      </Button>
-                    ) : user?.current_active_subscription?.plan?.id === tier.id &&
-                      user?.current_active_subscription.status === "cancelled" ? (
-                      <Button variant="pending" onClick={handleActivation}>
-                        Activer l'abonnement
-                      </Button>
-                    ) : (user?.pending_subscription?.plan?.id === tier.id || user?.pending_subscription?.plan_id === tier.id) ? (
-                      /* HADI HIYA LA PARTIE LI ZDNA */
-                      <div className="space-y-4">
-                        <Button
-                          variant="pending"
-                          size="lg"
-                          disabled
-                          className="w-full mt-6 opacity-70 cursor-not-allowed"
-                        >
-                          En attente de validation
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <Button
-                          onClick={() => {
-                            setBankModal(!bankModal);
-                            setCurrentId(tier.id);
-                          }}
-                          className="w-full mt-6"
-                          variant={tier.buttonVariant}
-                          size="lg"
-                        >
-                          {index === 0
-                            ? "Commencer Gratuitement"
-                            : index === 1
-                            ? "Souscrire Premium"
-                            : "Devenir Pro"}
-                        </Button>
-
-                        {index === 0 && (
-                          <p className="text-xs text-center text-gray-600">
-                            Toujours gratuit
-                          </p>
-                        )}
-                      </div>
-)}
-                  </CardContent>
-
-                  {(index === 0 || index === 2) && (
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#E17A30] rounded-b-lg" />
-                  )}
-                </Card>
-              ))
-            : planData["monthly"].map((tier, index) => (
-                <Card
-                  key={tier.name}
-                  className={`flex flex-col justify-between relative ${
-                    tier.popular ? "ring-2 ring-[#E17A30]" : ""
-                  } ${index === 0 ? "border-[#E17A30]" : ""}`}
-                >
-                  <div>
-                    {tier.popular && (
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                        <Badge className="bg-[#E17A30] text-white">
-                          Plus Populaire
-                        </Badge>
-                      </div>
-                    )}
-
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-sm font-semibold text-gray-600">
-                          {tier.name}
-                        </h3>
-                      </div>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-4xl font-bold text-gray-900">
-                          {tier.price}
-                        </span>
-                        <span className="text-gray-600">MAD / mois</span>
-                      </div>
-                      <p className="text-sm text-gray-600">
-                        {tier.transactionFee}
-                      </p>
-                    </CardHeader>
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-semibold text-gray-600">
+                      {tier.name}
+                    </h3>
                   </div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-gray-900">
+                      {tier.price}
+                    </span>
+                    <span className="text-gray-600">{t("pricing.per_month")}</span>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    {tier.transactionFee}
+                  </p>
+                </CardHeader>
+              </div>
 
-                  <CardContent className=" flex-1 flex flex-col justify-between">
-                    <ul className="space-y-3">
-                      {tier.features.map((feature, featureIndex) => (
-                        <li
-                          key={featureIndex}
-                          className="flex items-center gap-3"
-                        >
-                          <BiCheck className="h-4 w-4 text-[#E17A30] flex-shrink-0" />
-                          <span className="text-sm text-gray-900">
-                            {feature}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+              <CardContent className="flex-1 flex flex-col justify-between">
+                <ul className="space-y-3">
+                  {tier.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-center gap-3">
+                      <BiCheck className="h-4 w-4 text-[#E17A30] flex-shrink-0" />
+                      <span className="text-sm text-gray-900">
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
 
-                    {user?.current_active_subscription?.plan?.id === tier.id &&
-                    user?.current_active_subscription.status === "active" ? (
-                      <Button variant="danger" onClick={handleCancellation}>
-                        Cancel Subscription
-                      </Button>
-                    ) : user?.current_active_subscription?.plan?.id === tier.id &&
-                      user?.current_active_subscription.status === "cancelled" ? (
-                      <Button variant="pending" onClick={handleActivation}>
-                        Activer l'abonnement
-                      </Button>
-                    ) : (user?.pending_subscription?.plan?.id === tier.id || user?.pending_subscription?.plan_id === tier.id) ? (
-                      <div className="space-y-4">
-                        <Button
-                          variant="pending"
-                          size="lg"
-                          disabled
-                          className="w-full mt-6 opacity-70 cursor-not-allowed"
-                        >
-                          En attente de validation
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <Button
-                          onClick={() => {
-                            setBankModal(!bankModal);
-                            setCurrentId(tier.id);
-                          }}
-                          className="w-full mt-6"
-                          variant={tier.buttonVariant}
-                          size="lg"
-                        >
-                          {index === 0
-                            ? "Commencer Gratuitement"
-                            : index === 1
-                            ? "Souscrire Premium"
-                            : "Devenir Pro"}
-                        </Button>
+                {user?.current_active_subscription?.plan?.id === tier.id &&
+                user?.current_active_subscription.status === "active" ? (
+                  <Button variant="danger" onClick={handleCancellation}>
+                    {t("pricing.cancel_subscription")}
+                  </Button>
+                ) : user?.current_active_subscription?.plan?.id === tier.id &&
+                  user?.current_active_subscription.status === "cancelled" ? (
+                  <Button variant="pending" onClick={handleActivation}>
+                    {t("pricing.activate_subscription")}
+                  </Button>
+                ) : (user?.pending_subscription?.plan?.id === tier.id || 
+                     user?.pending_subscription?.plan_id === tier.id) ? (
+                  <div className="space-y-4">
+                    <Button
+                      variant="pending"
+                      size="lg"
+                      disabled
+                      className="w-full mt-6 opacity-70 cursor-not-allowed"
+                    >
+                      {t("pricing.pending_validation")}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <Button
+                      onClick={() => {
+                        setBankModal(!bankModal);
+                        setCurrentId(tier.id);
+                      }}
+                      className="w-full mt-6"
+                      variant={tier.buttonVariant}
+                      size="lg"
+                    >
+                      {index === 0
+                        ? t("pricing.start_free")
+                        : index === 1
+                        ? t("pricing.subscribe_premium")
+                        : t("pricing.become_pro")}
+                    </Button>
 
-                        {index === 0 && (
-                          <p className="text-xs text-center text-gray-600">
-                            Toujours gratuit
-                          </p>
-                        )}
-                      </div>
+                    {index === 0 && (
+                      <p className="text-xs text-center text-gray-600">
+                        {t("pricing.always_free")}
+                      </p>
                     )}
-                  </CardContent>
+                  </div>
+                )}
+              </CardContent>
 
-                  {(index === 0 || index === 2) && (
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#E17A30] rounded-b-lg" />
-                  )}
-                </Card>
-              ))}
+              {(index === 0 || index === 2) && (
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#E17A30] rounded-b-lg" />
+              )}
+            </Card>
+          ))}
         </div>
       </div>
       <AnimatePresence>

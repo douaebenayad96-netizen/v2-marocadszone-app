@@ -1,0 +1,55 @@
+{
+  "filters": {
+    "title": "Search filters",
+    "show": "Show filters",
+    "hide": "Hide filters",
+    "search": "Search",
+    "search_placeholder": "Title, description, keywords...",
+    "sector": "Sector",
+    "sector_placeholder": "All sectors",
+    "private": "Private Sector",
+    "public": "Public Sector",
+    "location": "Location",
+    "location_placeholder": "All cities",
+    "sort": "Sort by",
+    "sort_newest": "Newest",
+    "sort_oldest": "Oldest",
+    "sort_title_asc": "Title (A-Z)",
+    "sort_title_desc": "Title (Z-A)"
+  },
+  "results": {
+    "job_offers_found": "job offer found",
+    "job_offers_found_plural": "job offers found",
+    "page": "Page",
+    "out_of": "of",
+    "searching": "Searching...",
+    "loading": "Loading..."
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "job_offers": "Job Offers",
+    "search_prefix": "Search"
+  },
+  "page": {
+    "h1": "Find your job offer in Morocco",
+    "description": "Discover the best professional opportunities tailored to your profile"
+  },
+  "seo": {
+    "title": "Job offers in Morocco - MarocAdsZone",
+    "description": "Find your next job in Morocco. Thousands of job offers available."
+  },
+  "error": {
+    "title": "Loading error",
+    "description": "An error occurred while loading job offers.",
+    "reload_button": "Reload page",
+    "reset_button": "Reset"
+  },
+  "no_offers": {
+    "title": "No offers found",
+    "description": "No job offers match your search criteria.",
+    "reset_filters": "Reset filters",
+    "clear_search": "Clear search"
+  },
+  "loading_pagination": "Loading pagination...",
+  "ad_banner": "Ad Banner"
+}

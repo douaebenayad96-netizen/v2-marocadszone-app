@@ -24,13 +24,10 @@ import { AnnonceFilter, PrestataireFilter } from "../services/types/filter";
 import { SelectType, villeSelect } from "../services/types/select";
 import { getAnnoncesSEO } from "../utils/seoMetadata";
 import { CategorySelectStyles, SelectStyles } from "../utils/style";
-
-//const ListSortByPrestataireFR = [{ label: "Nouveaux", value: 'newest' }, { label: "Plus d'avis", value: 'most_reviews' }, { label: "Meilleur note", value: 'highest_rating' }]
-//const ListSortByPrestataireEN = [{ label: "Newest", value: 'newest' }, { label: "Most reviews", value: 'most_reviews' }, { label: "Highest rating", value: 'highest_rating' }]
-//const ListSortByPrestataireAR = [{ label: "Ø§Ù„Ø£Ø­Ø¯Ø«", value: 'newest' }, { label: "Ø§Ù„Ø£ÙƒØ«Ø± Ù…Ø±Ø§Ø¬Ø¹Ø©", value: 'most_reviews' }, { label: "Ø£Ø¹Ù„Ù‰ ØªØµÙ†ÙŠÙ", value: 'highest_rating' }]
+import getLocalized from '../utils/getLocalized';
 
 const PrestatairesPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation(["prestataires", "common"]);
   const { data: categoriesData } = useCategories1();
   const { data: countriesData } = useFetchCountries();
   const [showFilter, setShowFilter] = useState(false);
@@ -43,24 +40,19 @@ const PrestatairesPage = () => {
   const [metier, setMetier] = useState<SelectType | null>();
 
   // New state for hierarchical annonce filtering
-  const [selectedCategory, setSelectedCategory] = useState<SelectType | null>(
-    null
-  );
-  const [selectedSubcategory, setSelectedSubcategory] =
-    useState<SelectType | null>(null);
-  const [selectedCountry, setSelectedCountry] = useState<SelectType | null>(
-    null
-  );
-  const [selectedAnnonceCity, setSelectedAnnonceCity] =
-    useState<villeSelect | null>(null); // Fetch subcategories based on selected category
+  const [selectedCategory, setSelectedCategory] = useState<SelectType | null>(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<SelectType | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<SelectType | null>(null);
+  const [selectedAnnonceCity, setSelectedAnnonceCity] = useState<villeSelect | null>(null);
+  
   const annoncesSEO = getAnnoncesSEO(
     searchParams.get("category"),
     searchParams.get("ville")
   );
+  
   const { data: subcategoriesData, isLoading: subcategoriesLoading } =
     useSubcategories(selectedCategory?.value ?? 0, !!selectedCategory);
 
-  // Get available subcategories based on selected category
   const availableSubcategories = subcategoriesData || [];
 
   const availableCities = Array.isArray(citiesData)
@@ -69,7 +61,6 @@ const PrestatairesPage = () => {
       )
     : [];
 
-  // Fetch annonces with the same filter parameters and pagination - showing 10 per page
   const { data: annoncesResponse, isLoading: annoncesLoading } =
     useAnnoncesWithFilter(
       annonceFilter,
@@ -78,7 +69,6 @@ const PrestatairesPage = () => {
       10
     );
 
-  // For now, handle both formats but convert to old format for compatibility
   const annoncesData =
     annoncesResponse && "message" in annoncesResponse
       ? {
@@ -90,37 +80,33 @@ const PrestatairesPage = () => {
           last_page_url: "",
         }
       : annoncesResponse;
+
   useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
-    // check if no sort_by in params
     if (!params.sort_by) {
       params.sort_by = "newest";
     }
     setFilter(params);
-    // Sync annonce filter with search params
+    
     const annonceParams: AnnonceFilter = {
       search: params.search,
       sort_by: params.sort_by,
-      // Support both ID and name-based filtering
       city_id: params.city_id ? parseInt(params.city_id) : undefined,
-      ville: params.ville, // Add city name filter
+      ville: params.ville,
       country_id: params.country_id ? parseInt(params.country_id) : undefined,
-      category_id: params.category_id
-        ? parseInt(params.category_id)
-        : undefined,
-      category: params.category, // Add category name filter
-      subcategory_id: params.subcategory_id
-        ? parseInt(params.subcategory_id)
-        : undefined,
+      category_id: params.category_id ? parseInt(params.category_id) : undefined,
+      category: params.category,
+      subcategory_id: params.subcategory_id ? parseInt(params.subcategory_id) : undefined,
     };
-    setAnnonceFilter(annonceParams); // Update form state from URL params - simplified
+    setAnnonceFilter(annonceParams);
+
     if (params.country_id && countriesData && Array.isArray(countriesData)) {
       const countryOption = countriesData.find(
         (country) => country.id === parseInt(params.country_id)
       );
       if (countryOption) {
         setSelectedCountry({
-          label: countryOption.label,
+          label: getLocalized(countryOption, 'label') || countryOption.label,
           value: countryOption.id,
         });
       }
@@ -128,39 +114,37 @@ const PrestatairesPage = () => {
       setSelectedCountry(null);
     }
 
-    // Update city state from URL params
     if (params.city_id && citiesData && Array.isArray(citiesData)) {
       const cityOption = citiesData.find(
         (city) => city.id === parseInt(params.city_id)
       );
       if (cityOption) {
         setSelectedAnnonceCity({
-          label: cityOption.label,
+          label: getLocalized(cityOption, 'label') || cityOption.label,
           value: cityOption.id,
         });
       }
     } else {
       setSelectedAnnonceCity(null);
-    } // Update category state from URL params - support both ID and name
+    }
+
     if (params.category && categoriesData) {
-      // First try to find by name
       const categoryOption = categoriesData.find(
-        (category) => category.label === params.category
+        (category) => (getLocalized(category, 'label') || category.label) === params.category
       );
       if (categoryOption) {
         setSelectedCategory({
-          label: categoryOption.label || "",
+          label: getLocalized(categoryOption, 'label') || categoryOption.label || "",
           value: categoryOption.id,
         });
       }
     } else if (params.category_id && categoriesData) {
-      // Fallback to ID for backward compatibility
       const categoryOption = categoriesData.find(
         (category) => category.id === parseInt(params.category_id)
       );
       if (categoryOption) {
         setSelectedCategory({
-          label: categoryOption.label || "",
+          label: getLocalized(categoryOption, 'label') || categoryOption.label || "",
           value: categoryOption.id,
         });
       }
@@ -170,7 +154,6 @@ const PrestatairesPage = () => {
     }
   }, [searchParams, countriesData, citiesData, categoriesData]);
 
-  // Handle subcategory loading from URL when subcategories data becomes available
   useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
     if (params.subcategory_id && subcategoriesData && selectedCategory) {
@@ -189,18 +172,12 @@ const PrestatairesPage = () => {
   }, [subcategoriesData, searchParams, selectedCategory]);
 
   useEffect(() => {
-    // list sort by default
     setFilter((prev) => ({ ...prev, sort_by: "newest" }));
   }, []);
-
-  /*const handleSortBy = (value: string) => {
-    searchParams.set('sort_by', value)
-    setSearchParams(searchParams)  }*/
 
   const handleSearchBySearch = (value: string) => {
     searchParams.set("search", value);
     setSearchParams(searchParams);
-    // Reset annonce page when search changes
     setAnnoncePage(1);
   };
 
@@ -213,6 +190,7 @@ const PrestatairesPage = () => {
       searchParams.has("ville")
     );
   };
+
   const handleResetFilter = () => {
     setCity(null);
     setMetier(null);
@@ -226,7 +204,6 @@ const PrestatairesPage = () => {
     searchParams.delete("subcategory_id");
     searchParams.delete("ville");
     setSearchParams(searchParams);
-    // Reset annonce page when filters are reset
     setAnnoncePage(1);
   };
 
@@ -255,37 +232,28 @@ const PrestatairesPage = () => {
     handleFilterMetier();
     handleApplyAnnonceFilters();
     setShowFilter(false);
-    // Reset annonce page when filters are applied
     setAnnoncePage(1);
   };
+
   const handleApplyAnnonceFilters = () => {
-    // Apply category filter for annonces - use ONLY name for filtering
     if (selectedCategory) {
-      // Use category name for filtering
       searchParams.set("category", selectedCategory.label);
-      // Remove ID-based filtering
       searchParams.delete("category_id");
     } else {
       searchParams.delete("category");
       searchParams.delete("category_id");
     }
 
-    // Apply subcategory filter for annonces
     if (selectedSubcategory) {
       searchParams.set("subcategory_id", selectedSubcategory.value.toString());
     } else {
       searchParams.delete("subcategory_id");
     }
 
-    // We don't need country filter for annonces
-    // Remove country_id parameter
     searchParams.delete("country_id");
 
-    // Apply city filter for annonces - use ONLY name, not ID
     if (selectedAnnonceCity) {
-      // Use ville (city name) for filtering
       searchParams.set("ville", selectedAnnonceCity.label);
-      // Remove city_id parameter
       searchParams.delete("city_id");
     } else {
       searchParams.delete("ville");
@@ -295,70 +263,65 @@ const PrestatairesPage = () => {
     setSearchParams(searchParams);
   };
 
-  // Clear city when country changes
   useEffect(() => {
     setSelectedAnnonceCity(null);
   }, [selectedCountry]);
 
   return (
     <div className="pt-nav">
-      <SEOHead title={annoncesSEO.title} description={annoncesSEO.description} path={`/annonces${searchParams.toString() ? `?${searchParams.toString()}` : ""}`} />
+      <SEOHead 
+        title={annoncesSEO.title} 
+        description={annoncesSEO.description} 
+        path={`/annonces${searchParams.toString() ? `?${searchParams.toString()}` : ""}`} 
+      />
+      
       <div className="app-container page-py page-pt-sm">
         <div>
-          {/* page header */}
           <PageHeader>
-            {/* title */}
             <div>
               <h1 className="title-h1">
-                {annoncesSEO.h1 || t("prestationsFilter.explore")}
+                { t("prestataires:page.explore")}
               </h1>
               <div>
-                <span className="text-base text-gray-400">400+ Annonces</span>
+                <span className="text-base text-gray-400">
+                  {t("prestataires:page.annonces_count")}
+                </span>
               </div>
             </div>
-            {/* search input */}
+            
             <div className="mt-5">
               <SearchInput
-                placeholder="Rechercher une annonce"
-                btnText={t("rechercher")}
+                placeholder={t("prestataires:search.placeholder")}
+                btnText={t("prestataires:search.button")}
                 callback={handleSearchBySearch}
                 valueD={filter.search}
               />
             </div>
           </PageHeader>
-          {/* sort by new or.. */}
+          
           <div className="mt-4 flex items-center justify-between">
-            {/* filter button */}
             <div className="flex items-center gap-2 w-fit">
               <SampleButtonFilter
-                text={t("prestationsFilter.filtrer")}
+                text={t("prestataires:filter.filtrer")}
                 icon={<TbFilterPlus />}
                 callback={() => setShowFilter(true)}
               />
-              {/* reset filter btn */}
               {checkFilter() && (
                 <SampleButtonFilter
-                  text={t("reinitialiser")}
+                  text={t("prestataires:filter.reinitialiser")}
                   icon={<LuFilterX />}
                   callback={handleResetFilter}
                 />
               )}
             </div>
-            {/*<div>
-              <SimpleDropDown
-                text={t('prestationsFilter.trier_par')}
-                onChange={(value) => handleSortBy(value)}
-                list={i18n.language === 'ar' ? ListSortByPrestataireAR : i18n.language === 'en' ? ListSortByPrestataireEN : ListSortByPrestataireFR}
-              />
-            </div>*/}
           </div>
         </div>
-        {/* sous categories */}{" "}
+        
         <SpecialitiesList className="mt-4" categories={categoriesData || []} />
-        {/* line */}
-        <div className="mb-8 mt-4 line"></div>{" "}
+        
+        <div className="mb-8 mt-4 line"></div>
+        
         <div>
-          {/* list prestataires and annonces */}
           <PrestatairesFilterList
             filter={filter}
             annoncesData={annoncesData}
@@ -368,13 +331,13 @@ const PrestatairesPage = () => {
         </div>
       </div>
 
-      {/* filter slide */}
+      {/* Filter Slide Panel */}
       <SlideLayout showSlide={showFilter} setShowSlide={setShowFilter}>
         <div className="w-[calc(100vw-4rem)] max-w-[400px]">
           <div className="p-4">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-bold text-primary-blue">
-                {t("prestationsFilter.tous_les_filtres")}
+                {t("prestataires:filter.tous_les_filtres")}
               </h3>
               <button
                 onClick={() => setShowFilter(false)}
@@ -384,44 +347,40 @@ const PrestatairesPage = () => {
               </button>
             </div>
           </div>
-          {/* line */}
+          
           <div className="line"></div>
-          {/* filter category */}
-          {/* Section divider for Annonce Filters */}
+          
+          {/* Annonce Filters Section */}
           <div className="border-b border-gray-200 bg-gradient-to-r from-orange-50 to-orange-100"></div>
+          
           <div className="p-4 bg-gradient-to-r from-orange-50 to-orange-100">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-2 h-6 bg-orange-500 rounded-full"></div>
               <h2 className="text-xl font-bold text-orange-600">
-                {t("Filtres Annonces", "Filtres Annonces")}
+                {t("prestataires:annonce_filters.title")}
               </h2>
             </div>
             <p className="text-sm text-orange-700/80 ml-5">
-              {t(
-                "Filtres spécifiques pour les annonces",
-                "Filtres spécifiques pour les annonces"
-              )}
+              {t("prestataires:annonce_filters.subtitle")}
             </p>
-          </div>{" "}
-          {/* Annonce Category Filter */}
+          </div>
+
+          {/* Category Filter */}
           <div className="px-4 py-5 border-b border-gray-100 bg-white">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-5 h-5 bg-orange-100 rounded-lg flex items-center justify-center">
                 <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
               </div>
               <h3 className="text-lg font-bold text-gray-900">
-                {t("Catégorie", "Catégorie")}
+                {t("prestataires:annonce_filters.categorie")}
               </h3>
             </div>
             <div className="mt-3">
               <Select
-                placeholder={t(
-                  "Sélectionnez une catégorie",
-                  "Sélectionnez une catégorie"
-                )}
+                placeholder={t("prestataires:annonce_filters.select_categorie")}
                 options={
                   categoriesData?.map((category) => ({
-                    label: category.label || "",
+                    label: getLocalized(category, 'label') || category.label || "",
                     value: category.id,
                   })) || []
                 }
@@ -430,7 +389,7 @@ const PrestatairesPage = () => {
                 isClearable
                 onChange={(value) => {
                   setSelectedCategory(value as unknown as SelectType);
-                  setSelectedSubcategory(null); // Reset subcategory when category changes
+                  setSelectedSubcategory(null);
                 }}
                 value={
                   selectedCategory
@@ -443,7 +402,8 @@ const PrestatairesPage = () => {
               />
             </div>
           </div>
-          {/* Annonce Subcategory Filter (only show if category is selected) */}
+
+          {/* Subcategory Filter */}
           {selectedCategory && (
             <div className="px-4 py-5 border-b border-gray-100 bg-gradient-to-r from-orange-25 to-yellow-25">
               <div className="flex items-center gap-2 mb-3">
@@ -451,14 +411,14 @@ const PrestatairesPage = () => {
                   <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
                 </div>
                 <h3 className="text-lg font-bold text-gray-900">
-                  {t("Sous-catégorie", "Sous-catégorie")}
+                  {t("prestataires:annonce_filters.sous_categorie")}
                 </h3>
                 {selectedCategory && !subcategoriesLoading && (
                   <span className="text-sm text-orange-600 bg-orange-100 px-2 py-1 rounded-full">
                     {availableSubcategories.length}{" "}
                     {availableSubcategories.length === 1
-                      ? "sous-catégorie"
-                      : "sous-catégories"}
+                      ? t("prestataires:annonce_filters.subcategory_count_one")
+                      : t("prestataires:annonce_filters.subcategory_count_other")}
                   </span>
                 )}
               </div>
@@ -466,27 +426,15 @@ const PrestatairesPage = () => {
                 <Select
                   placeholder={
                     !selectedCategory
-                      ? t(
-                          "Sélectionnez d'abord une catégorie",
-                          "Sélectionnez d'abord une catégorie"
-                        )
+                      ? t("prestataires:annonce_filters.select_category_first")
                       : subcategoriesLoading
-                      ? t(
-                          "Chargement des sous-catégories...",
-                          "Chargement des sous-catégories..."
-                        )
+                      ? t("prestataires:annonce_filters.loading_subcategories")
                       : availableSubcategories.length === 0
-                      ? t(
-                          "Aucune sous-catégorie disponible",
-                          "Aucune sous-catégorie disponible"
-                        )
-                      : t(
-                          "Sélectionnez une sous-catégorie",
-                          "Sélectionnez une sous-catégorie"
-                        )
+                      ? t("prestataires:annonce_filters.no_subcategories")
+                      : t("prestataires:annonce_filters.select_sous_categorie")
                   }
                   options={availableSubcategories.map((subcategory) => ({
-                    label: subcategory.label || "",
+                    label: getLocalized(subcategory, 'label') || subcategory.label || "",
                     value: subcategory.id,
                   }))}
                   className="z-[99998]"
@@ -513,24 +461,25 @@ const PrestatairesPage = () => {
               </div>
             </div>
           )}
-          {/* Annonce Country Filter */}
+
+          {/* Country Filter */}
           <div className="px-4 py-5 border-b border-gray-100 bg-white">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-5 h-5 bg-blue-100 rounded-lg flex items-center justify-center">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
               </div>
               <h3 className="text-lg font-bold text-gray-900">
-                {t("Pays", "Pays")}
+                {t("prestataires:annonce_filters.pays")}
               </h3>
-            </div>{" "}
+            </div>
             <div className="mt-3">
               <Select
-                placeholder={t("Sélectionnez un pays", "Sélectionnez un pays")}
+                placeholder={t("prestataires:annonce_filters.select_pays")}
                 options={(countriesData && Array.isArray(countriesData)
                   ? countriesData
                   : []
                 ).map((country) => ({
-                  label: country.label,
+                  label: getLocalized(country, 'label') || country.label,
                   value: country.id,
                 }))}
                 className="z-[9999]"
@@ -538,7 +487,7 @@ const PrestatairesPage = () => {
                 isClearable
                 onChange={(value) => {
                   setSelectedCountry(value as unknown as SelectType);
-                  setSelectedAnnonceCity(null); // Reset city when country changes
+                  setSelectedAnnonceCity(null);
                 }}
                 value={
                   selectedCountry
@@ -551,21 +500,23 @@ const PrestatairesPage = () => {
               />
             </div>
           </div>
-          {/* Annonce City Filter (only show if country is selected) */}
+
+          {/* City Filter */}
           {selectedCountry && (
             <div className="px-4 py-5 border-b border-gray-100 bg-gradient-to-r from-blue-25 to-teal-25">
-              {" "}
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-5 h-5 bg-blue-200 rounded-lg flex items-center justify-center">
                   <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
                 </div>
                 <h3 className="text-lg font-bold text-gray-900">
-                  {t("Ville (Annonce)", "Ville (Annonce)")}
+                  {t("prestataires:annonce_filters.ville")}
                 </h3>
                 {selectedCountry && (
                   <span className="text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
                     {availableCities.length}{" "}
-                    {availableCities.length === 1 ? "ville" : "villes"}
+                    {availableCities.length === 1
+                      ? t("prestataires:annonce_filters.city_count_one")
+                      : t("prestataires:annonce_filters.city_count_other")}
                   </span>
                 )}
               </div>
@@ -573,16 +524,13 @@ const PrestatairesPage = () => {
                 <Select
                   placeholder={
                     !selectedCountry
-                      ? t(
-                          "Sélectionnez d'abord un pays",
-                          "Sélectionnez d'abord un pays"
-                        )
+                      ? t("prestataires:annonce_filters.select_country_first")
                       : availableCities.length === 0
-                      ? t("Aucune ville disponible", "Aucune ville disponible")
-                      : t("Sélectionnez une ville", "Sélectionnez une ville")
+                      ? t("prestataires:annonce_filters.no_cities")
+                      : t("prestataires:annonce_filters.select_ville")
                   }
                   options={availableCities.map((city) => ({
-                    label: city.label,
+                    label: getLocalized(city, 'label') || city.label,
                     value: city.id,
                   }))}
                   className="z-[9998]"
@@ -603,8 +551,9 @@ const PrestatairesPage = () => {
                 />
               </div>
             </div>
-          )}{" "}
-          {/* apply btn */}
+          )}
+
+          {/* Apply Button */}
           <div className="px-4 pt-6 pb-4 bg-gradient-to-r from-orange-50 to-orange-100 border-t border-orange-200">
             <button
               onClick={handleApplyFilter}
@@ -612,7 +561,7 @@ const PrestatairesPage = () => {
             >
               <span className="flex items-center justify-center gap-2">
                 <TbFilterPlus className="text-lg" />
-                {t("prestationsFilter.appliquer")}
+                {t("prestataires:filter.appliquer")}
               </span>
             </button>
           </div>

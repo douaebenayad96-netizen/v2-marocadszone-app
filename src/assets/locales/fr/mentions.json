@@ -1,0 +1,39 @@
+{
+  "page": {
+    "title": "MENTIONS LÉGALES",
+    "updated_at": "MarocAdsZone - Date de dernière mise à jour : 3 juillet 2025"
+  },
+  "intro": {
+    "description": "Conformément aux dispositions des articles 6-III et 19 de la Loi n° 04-09 relative aux échanges électroniques de données juridiques au Maroc, nous vous présentons les informations légales concernant notre site MarocAdsZone."
+  },
+  "publisher": {
+    "title": "Éditeur du site",
+    "company": "Raison sociale",
+    "legal_form": "Forme juridique",
+    "capital": "Capital social"
+  },
+  "property": {
+    "title": "Propriété intellectuelle",
+    "paragraph1": "Le site MarocAdsZone, comprenant sa structure, ses textes, images, photographies, logos, codes informatiques, illustrations et graphismes, est la propriété exclusive de MarocAdsZone SARL.",
+    "paragraph2": "Toute reproduction, représentation, modification ou adaptation de tout ou partie des éléments du site, quel que soit le moyen utilisé, est interdite sans l'autorisation écrite préalable de MarocAdsZone.",
+    "paragraph3": "Toute utilisation non autorisée du site ou de l'un de ses éléments sera considérée comme constitutive d'une contrefaçon et pourra être poursuivie conformément aux dispositions du Code de la propriété intellectuelle."
+  },
+  "links": {
+    "title": "Liens hypertextes",
+    "description": "Le site MarocAdsZone peut contenir des liens vers d'autres sites ou ressources disponibles sur Internet. MarocAdsZone n'exerce aucun contrôle sur ces sites externes et décline toute responsabilité quant à leur contenu ou leur disponibilité."
+  },
+  "responsibility": {
+    "title": "Responsabilité",
+    "paragraph1": "Les informations présentes sur le site MarocAdsZone sont réputées fiables mais ne garantissent pas qu'elles soient exemptes d'erreurs, d'omissions ou d'inexactitudes.",
+    "paragraph2": "Le site est régulièrement mis à jour, cependant des erreurs peuvent survenir. Les utilisateurs sont invités à signaler tout contenu inexact à : contact@marocadszone.com.",
+    "paragraph3": "MarocAdsZone ne peut être tenue responsable des dommages directs ou indirects liés à l'utilisation du site."
+  },
+  "law": {
+    "title": "Loi applicable et juridiction compétente",
+    "description": "Les présentes mentions légales sont régies par le droit marocain. En cas de litige, les tribunaux de Casablanca seront seuls compétents."
+  },
+  "contact": {
+    "title": "Contact",
+    "description": "Pour toute question relative à ces mentions légales, vous pouvez nous contacter par email : support@devtigroup.com"
+  }
+}

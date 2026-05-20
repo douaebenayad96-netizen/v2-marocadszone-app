@@ -1,0 +1,78 @@
+{
+  "page": {
+    "title": "POLITIQUE DE COOKIES",
+    "updated_at": "MarocAdsZone - Date de dernière mise à jour : 3 juillet 2025"
+  },
+  "what_is_cookie": {
+    "title": "Qu'est-ce qu'un cookie ?",
+    "content": "Un cookie est un petit fichier texte déposé sur votre terminal (ordinateur, smartphone, tablette) lorsque vous visitez le site MarocAdsZone. Ces cookies permettent de vous reconnaître lors de vos visites, de vous proposer une navigation personnalisée et d'analyser le trafic pour améliorer nos services."
+  },
+  "cookies_we_use": {
+    "title": "Les cookies que nous utilisons",
+    "necessary": {
+      "title": "Cookies strictement nécessaires",
+      "description": "Ces cookies sont essentiels au fonctionnement du site et à l'utilisation de ses fonctionnalités de base (connexion, sécurité, préférences). Sans ces cookies, certaines fonctionnalités du site peuvent ne pas fonctionner correctement.",
+      "examples_title": "Exemples :",
+      "examples": [
+        "Cookies de session pour gérer la connexion des utilisateurs",
+        "Cookies de sécurité pour protéger les comptes",
+        "Cookies liés aux préférences de confidentialité"
+      ]
+    },
+    "performance": {
+      "title": "Cookies de performance",
+      "description": "Ces cookies nous permettent de mesurer l'audience et d'améliorer les performances de MarocAdsZone en analysant l'utilisation que vous faites du site (pages visitées, temps passé, erreurs rencontrées). Les données collectées sont agrégées et anonymisées.",
+      "examples_title": "Exemples :",
+      "examples": [
+        "Google Analytics",
+        "Matomo",
+        "Outils de suivi des performances du site"
+      ]
+    },
+    "functional": {
+      "title": "Cookies de fonctionnalité",
+      "description": "Ces cookies permettent de mémoriser vos choix et préférences sur le site pour vous offrir une expérience personnalisée (langue, préférences d'affichage, filtres de recherche).",
+      "examples_title": "Exemples :",
+      "examples": [
+        "Cookies de langue et de localisation",
+        "Cookies de mémorisation des recherches récentes",
+        "Cookies de personnalisation des annonces consultées"
+      ]
+    },
+    "advertising": {
+      "title": "Cookies de ciblage et publicitaires",
+      "description": "Ces cookies peuvent être placés sur notre site par nos partenaires publicitaires afin de vous proposer des publicités pertinentes en fonction de vos centres d'intérêt. Ces cookies permettent également de mesurer l'efficacité des campagnes publicitaires.",
+      "examples_title": "Exemples :",
+      "examples": [
+        "Google Ads",
+        "Facebook Pixel",
+        "Cookies des réseaux sociaux"
+      ]
+    }
+  },
+  "management": {
+    "title": "Gestion des cookies",
+    "description": "Lors de votre première visite sur MarocAdsZone, un bandeau cookies vous permet de gérer vos préférences. Vous pouvez à tout moment :",
+    "items": [
+      "Accepter ou refuser tout ou partie des cookies",
+      "Modifier vos choix via les paramètres de votre navigateur",
+      "Supprimer les cookies déjà installés sur votre appareil"
+    ],
+    "warning": "Attention : Le refus de certains cookies peut impacter le bon fonctionnement de certaines fonctionnalités du site."
+  },
+  "duration": {
+    "title": "Durée de conservation des cookies",
+    "content": "Les cookies sont conservés pour une durée maximale de 13 mois après leur dépôt sur votre terminal."
+  },
+  "contact": {
+    "title": "Contact",
+    "content": "Pour toute question concernant cette Politique de Cookies ou pour exercer vos droits relatifs à vos données personnelles, vous pouvez nous contacter à :"
+  },
+  "navigation_links": {
+    "title": "Navigation",
+    "text": "Pour consulter d'autres documents légaux, visitez nos",
+    "mentions": "Mentions Légales",
+    "terms": "Conditions Générales d'Utilisation",
+    "privacy": "Politique de Confidentialité"
+  }
+}

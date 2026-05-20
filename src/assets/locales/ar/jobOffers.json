@@ -1,0 +1,55 @@
+{
+  "filters": {
+    "title": "فلاتر البحث",
+    "show": "إظهار الفلاتر",
+    "hide": "إخفاء الفلاتر",
+    "search": "بحث",
+    "search_placeholder": "العنوان، الوصف، الكلمات المفتاحية...",
+    "sector": "القطاع",
+    "sector_placeholder": "جميع القطاعات",
+    "private": "القطاع الخاص",
+    "public": "القطاع العام",
+    "location": "الموقع",
+    "location_placeholder": "جميع المدن",
+    "sort": "ترتيب حسب",
+    "sort_newest": "الأحدث",
+    "sort_oldest": "الأقدم",
+    "sort_title_asc": "العنوان (أ-ي)",
+    "sort_title_desc": "العنوان (ي-أ)"
+  },
+  "results": {
+    "job_offers_found": "عرض عمل موجود",
+    "job_offers_found_plural": "عروض عمل موجودة",
+    "page": "صفحة",
+    "out_of": "من",
+    "searching": "جاري البحث...",
+    "loading": "جاري التحميل..."
+  },
+  "breadcrumb": {
+    "home": "الرئيسية",
+    "job_offers": "عروض العمل",
+    "search_prefix": "بحث"
+  },
+  "page": {
+    "h1": "ابحث عن عرض عمل في المغرب",
+    "description": "اكتشف أفضل الفرص المهنية المناسبة لملفك الشخصي"
+  },
+  "seo": {
+    "title": "عروض العمل في المغرب - MarocAdsZone",
+    "description": "ابحث عن وظيفتك التالية في المغرب. آلاف عروض العمل المتاحة."
+  },
+  "error": {
+    "title": "خطأ في التحميل",
+    "description": "حدث خطأ أثناء تحميل عروض العمل.",
+    "reload_button": "إعادة تحميل الصفحة",
+    "reset_button": "إعادة تعيين"
+  },
+  "no_offers": {
+    "title": "لم يتم العثور على عروض",
+    "description": "لا توجد عروض عمل تطابق معايير البحث الخاصة بك.",
+    "reset_filters": "إعادة تعيين الفلاتر",
+    "clear_search": "مسح البحث"
+  },
+  "loading_pagination": "جاري تحميل الترقيم...",
+  "ad_banner": "لافتة إعلانية"
+}

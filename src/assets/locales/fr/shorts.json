@@ -1,0 +1,13 @@
+{
+  "page": {
+    "title": "Annonces vidéos au Maroc",
+    "h1": "Explorez toutes les annonces vidéos Maroc",
+    "description": "Trouvez et publiez des petites annonces vidéo au Maroc pour acheter, vendre ou louer : voitures, immobilier, mode...",
+    "videos_count": "vidéos disponibles",
+    "search_placeholder": "Rechercher une vidéo",
+    "search_button": "Rechercher",
+    "loading_error": "Erreur lors du chargement des vidéos",
+    "no_videos": "Aucune vidéo disponible pour le moment",
+    "shorts_label": "Shorts"
+  }
+}

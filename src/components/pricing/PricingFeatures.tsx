@@ -1,6 +1,7 @@
 import { BiBriefcase, BiRocket, BiTrendingUp } from "react-icons/bi"
 import { CiSettings } from "react-icons/ci"
 import { cn } from "../../utils/helpers"
+import { useTranslation } from "react-i18next"
 
 interface Feature {
   icon: React.ComponentType<{ className?: string }>
@@ -13,30 +14,28 @@ interface PricingFeaturesProps {
 }
 
 function PricingFeatures({ className }: PricingFeaturesProps) {
+  const { t } = useTranslation()
+
   const features: Feature[] = [
     {
       icon: BiRocket,
-      title: "Plus de visibilité",
-      description:
-        "Votre annonce est diffusée à des milliers de visiteurs chaque jour partout au Maroc, sans effort de votre part.",
+      title: t("features.items.0.title", { ns: "pricing" }),
+      description: t("features.items.0.description", { ns: "pricing" }),
     },
     {
       icon: BiBriefcase,
-      title: "Acheteurs ciblés",
-      description:
-        "Grâce à notre moteur de recherche intelligent, vos annonces atteignent les acheteurs réellement intéressés par vos biens ou services.",
+      title: t("features.items.1.title", { ns: "pricing" }),
+      description: t("features.items.1.description", { ns: "pricing" }),
     },
     {
       icon: BiTrendingUp,
-      title: "Plus de ventes",
-      description:
-        "Nos options Premium et Pro augmentent jusqu'à 5x la visibilité de vos annonces pour générer plus de contacts et conclure plus rapidement.",
+      title: t("features.items.2.title", { ns: "pricing" }),
+      description: t("features.items.2.description", { ns: "pricing" }),
     },
     {
       icon: CiSettings,
-      title: "Facile & rapide",
-      description:
-        "Publiez en quelques clics, gérez vos annonces depuis votre mobile ou ordinateur, et suivez les performances en temps réel.",
+      title: t("features.items.3.title", { ns: "pricing" }),
+      description: t("features.items.3.description", { ns: "pricing" }),
     },
   ]
 
@@ -45,9 +44,9 @@ function PricingFeatures({ className }: PricingFeaturesProps) {
       <div className="max-w-6xl mx-auto">
         {/* Header section */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Pourquoi choisir MarocAdsZone ?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{t("features.header_title", { ns: "pricing" })}</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Découvrez les avantages qui font de MarocAdsZone la plateforme de référence pour vos annonces au Maroc
+            {t("features.header_subtitle", { ns: "pricing" })}
           </p>
         </div>
 

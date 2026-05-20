@@ -1,21 +1,26 @@
+import { useTranslation } from "react-i18next";
 import { useVideos } from "../../services/api/fetchAnnonce";
 import ShortCard from "../shorts/ShortCard";
 import SectionHeader from "./SectionHeader";
 
 const HomeShorts = () => {
+  const { t } = useTranslation("home");
   const { data: videosData, isLoading, error } = useVideos(1, 5);
+
+  const hasVideos = videosData?.data && videosData.data.length > 0;
+  const showNoVideos = !isLoading && !error && !hasVideos;
 
   return (
     <section className="app-container section-py">
       <SectionHeader
-        title="Annonces vidéos courtes"
-        subtitle="Découvrez nos dernières annonces vidéos courtes"
-        buttonTitle="Voir plus"
+        title={t("shorts.title")}
+        subtitle={t("shorts.subtitle")}
+        buttonTitle={t("shorts.button")}
         to="/videos"
       />
 
       {/* Loading State */}
-      {isLoading ? (
+      {isLoading && (
         <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
           {[1, 2, 3, 4, 5].map((index) => (
             <div
@@ -24,36 +29,30 @@ const HomeShorts = () => {
             />
           ))}
         </div>
-      ) : null}
+      )}
 
       {/* Error State */}
       {error && (
         <div className="text-center py-8">
-          <p className="text-red-500">Erreur lors du chargement des vidéos</p>
+          <p className="text-red-500">{t("shorts.error")}</p>
         </div>
       )}
 
       {/* Videos Grid */}
-      {!isLoading && !error && (
+      {!isLoading && !error && hasVideos && (
         <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-          {videosData?.data && videosData.data.length > 0
-            ? videosData.data
-                .slice(0, 5)
-                .map((video) => <ShortCard key={video.id} video={video} />)
-            : null}
+          {videosData.data.slice(0, 5).map((video) => (
+            <ShortCard key={video.id} video={video} />
+          ))}
         </div>
       )}
 
       {/* No Videos Message */}
-      {!isLoading &&
-        !error &&
-        (!videosData?.data || videosData.data.length === 0) && (
-          <div className="text-center py-8">
-            <p className="text-gray-500">
-              Aucune vidéo disponible pour le moment
-            </p>
-          </div>
-        )}
+      {showNoVideos && (
+        <div className="text-center py-8">
+          <p className="text-gray-500">{t("shorts.no_videos")}</p>
+        </div>
+      )}
     </section>
   );
 };

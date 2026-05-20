@@ -1,4 +1,5 @@
 import { useLoginModelStore } from "../../services/store/LoginModelStore"
+import { useTranslation } from "react-i18next"
 
 // Self-contained Button component
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -45,6 +46,7 @@ const CardContent: React.FC<CardProps> = ({ className = "", children }) => (
 )
 
 const PricingCTACard: React.FC = () => {
+  const { t } = useTranslation()
   const { openRegisterModel } = useLoginModelStore()
 
   const handleOpenRegister = () => {
@@ -62,26 +64,25 @@ const PricingCTACard: React.FC = () => {
             <div className="max-w-2xl mx-auto">
               {/* Main heading */}
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-balance">
-                Commencez à vendre dès aujourd'hui
+                {t("cta.title", { ns: "pricing" })}
               </h2>
 
               {/* Description */}
               <p className="text-lg text-gray-600 mb-8 text-pretty leading-relaxed">
-                Créez votre compte gratuit et publiez votre première annonce en moins de 2 minutes. Profitez de la
-                puissance de MarocAdsZone pour vendre plus, plus vite.
+                {t("cta.description", { ns: "pricing" })}
               </p>
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <Button
                   onClick={handleOpenRegister}
-                  variant="primary" size="lg" className="w-full sm:w-auto min-w-[200px]">
-                  Créer un compte
+                  >
+                  {t("cta.button_account", { ns: "pricing" })}
                 </Button>
                 <Button
                   onClick={handleOpenRegister}
                   variant="secondary" size="lg" className="w-full sm:w-auto min-w-[200px]">
-                  Déposer une annonce
+                  {t("cta.button_listing", { ns: "pricing" })}
                 </Button>
               </div>
 
@@ -90,15 +91,15 @@ const PricingCTACard: React.FC = () => {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-gray-600">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-[#E17A30] rounded-full" />
-                    <span>Inscription gratuite</span>
+                    <span>{t("cta.trust_1", { ns: "pricing" })}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-[#E17A30] rounded-full" />
-                    <span>Publication en 2 minutes</span>
+                    <span>{t("cta.trust_2", { ns: "pricing" })}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-[#E17A30] rounded-full" />
-                    <span>Support 24h/24</span>
+                    <span>{t("cta.trust_3", { ns: "pricing" })}</span>
                   </div>
                 </div>
               </div>

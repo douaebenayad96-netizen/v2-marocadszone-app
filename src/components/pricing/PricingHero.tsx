@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import usePlans from "../../hooks/usePlans";
 import { activatePlan, cancelPlan } from "../../services/api/fetchTarification";
 import { useAuthStore } from "../../services/store/authStore";
+import { useTranslation } from "react-i18next";
 import { cn } from "../../utils/helpers";
 import BankDataModal from "../BankDataModal";
 import useSubscription from "../../hooks/useSubscription";
@@ -103,6 +104,7 @@ const Badge = ({
 };
 
 export function PricingHero({ className = "" }: { className?: string }) {
+  const { t } = useTranslation();
   const { user, setUser } = useAuthStore();
   const [bankModal, setBankModal] = useState(false);
   const [currentId, setCurrentId] = useState<number>(0);
@@ -152,13 +154,13 @@ console.log("SUBSCRIPTION:", subscription);
         {/* Header */}
         <div className="text-center mb-16 max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 text-sm text-gray-600 mb-4">
-            <span>NOS FORMULES</span>
+            <span>{t("hero.pill", { ns: "pricing" })}</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 text-balance">
-            Nos offres de tarification pour professionnels et entreprises
+{t("hero.title", { ns: "pricing" })}
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto text-pretty">
-            Choisissez la formule qui correspond le mieux à vos besoins.
+            {t("hero.subtitle", { ns: "pricing" })}
           </p>
         </div>
 
@@ -169,7 +171,7 @@ console.log("SUBSCRIPTION:", subscription);
               !isYearly ? "text-gray-900 font-medium" : "text-gray-600"
             }`}
           >
-            Mensuel
+            {t("hero.billing_monthly", { ns: "pricing" })}
           </span>
           <button
             onClick={() => setIsYearly(!isYearly)}
@@ -189,10 +191,10 @@ console.log("SUBSCRIPTION:", subscription);
                 isYearly ? "text-gray-900 font-medium" : "text-gray-600"
               }`}
             >
-              Annuel
+              {t("hero.billing_yearly", { ns: "pricing" })}
             </span>
             <Badge variant="secondary" className="bg-orange-100 text-[#E17A30]">
-              Économisez 20%
+              {t("hero.billing_save", { ns: "pricing" })}
             </Badge>
           </div>
         </div>

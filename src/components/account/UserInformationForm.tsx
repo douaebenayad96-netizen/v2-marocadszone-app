@@ -13,6 +13,7 @@ import { Media } from "../../services/types/media";
 import { SelectType } from "../../services/types/select";
 import { handleStylesWithErrors } from "../../utils/style";
 import CustomToast from "../common/CustomToast";
+import getLocalized from '../../utils/getLocalized';
 
 type FormValues = {
   firstName: string;
@@ -185,7 +186,7 @@ const UserInformationForm = () => {
                   placeholder={t("votre_ville")}
                   options={citiesDataList?.map((city) => ({
                     value: city.id,
-                    label: city.label,
+                    label: getLocalized(city, 'label') || city.label,
                   }))}
                   isLoading={isLoadingCities}
                   {...handleStylesWithErrors(errors.city ? true : false)}

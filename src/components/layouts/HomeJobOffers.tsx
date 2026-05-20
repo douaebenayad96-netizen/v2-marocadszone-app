@@ -1,9 +1,12 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useGetJobOffers } from "../../services/api/fetchService";
 import JobOfferBlogCard from "../blog/BlogCard1";
 import SectionHeader from "./SectionHeader";
 
 const HomeJobOffers: React.FC = () => {
+  const { t } = useTranslation("home");
+  
   // Fetch the latest 8 job offers
   const {
     data: jobOffersData,
@@ -15,17 +18,32 @@ const HomeJobOffers: React.FC = () => {
     return null; // Don't show the section if there's an error
   }
 
+  // Get job offers array from response
+  const getJobOffersArray = () => {
+    if (Array.isArray(jobOffersData?.data)) {
+      return jobOffersData.data;
+    }
+    if (Array.isArray(jobOffersData?.data?.items)) {
+      return jobOffersData.data.items;
+    }
+    return [];
+  };
+
+  const jobOffers = getJobOffersArray();
+  const hasNoOffers = !isLoading && !isError && jobOffers.length === 0;
+
   return (
     <section className="app-container section-py">
       <SectionHeader
-        title="Nos derniers offres d'emploi"
-        subtitle="Découvrez les opportunités professionnelles les plus récentes"
-        buttonTitle="Voir Toutes les Offres"
+        title={t("jobs.title")}
+        subtitle={t("jobs.subtitle")}
+        buttonTitle={t("jobs.button")}
         to="/offres"
       />
 
       {/* Job Offers Grid */}
       <div className="grid grid-cols-1 gap-6 mt-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {/* Loading Skeletons */}
         {isLoading && (
           <>
             {[1, 2, 3, 4, 5, 6, 7, 8].map((index) => (
@@ -47,30 +65,18 @@ const HomeJobOffers: React.FC = () => {
           </>
         )}
 
+        {/* Job Offers Cards */}
         {!isLoading &&
-          (Array.isArray(jobOffersData?.data)
-            ? jobOffersData.data
-            : Array.isArray(jobOffersData?.data?.items)
-              ? jobOffersData.data.items
-              : []
-          )
-            .slice(0, 8)
-            .map((jobOffer) => (
-              <JobOfferBlogCard key={jobOffer.id} jobOffer={jobOffer} />
-            ))}
+          jobOffers.slice(0, 8).map((jobOffer) => (
+            <JobOfferBlogCard key={jobOffer.id} jobOffer={jobOffer} />
+          ))}
       </div>
 
       {/* No Job Offers Message */}
-      {!isLoading &&
-  !isError &&
-  (Array.isArray(jobOffersData?.data)
-    ? jobOffersData.data.length === 0
-    : Array.isArray(jobOffersData?.data?.items)
-      ? jobOffersData.data.items.length === 0
-      : true) && (
+      {hasNoOffers && (
         <div className="text-center py-8">
           <p className="text-gray-500">
-            Aucune offre d'emploi disponible pour le moment
+            {t("jobs.no_offers")}
           </p>
         </div>
       )}

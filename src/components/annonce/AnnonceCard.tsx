@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Annonce } from '../../services/types/annonce'
 import FirebaseImage from '../common/FirebaseImage'
 import { formatTimeAgoFr } from '../../utils/timeAgo'
+import getLocalized from '../../utils/getLocalized'
 
 
 interface AnnonceCardProps {
@@ -130,7 +131,7 @@ const AnnonceCard = ({ annonce, showDistance = false }: AnnonceCardProps) => {
           {/* Category */}
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-              {annonce.subcategory?.category?.label || 'N/A'}
+              {getLocalized(annonce.subcategory?.category, 'label') || 'N/A'}
             </span>
           </div>
 
@@ -187,7 +188,7 @@ const AnnonceCard = ({ annonce, showDistance = false }: AnnonceCardProps) => {
           <div className="flex items-center gap-1 mb-3">
             <FiMapPin className="w-4 h-4 text-gray-400" />
             <span className="text-sm text-gray-600 truncate">
-              {annonce.city?.label || 'N/A'}, {annonce.country?.label || 'N/A'}
+              {getLocalized(annonce.city, 'label') || 'N/A'}, {getLocalized(annonce.country, 'label') || 'N/A'}
             </span>
           </div>
 

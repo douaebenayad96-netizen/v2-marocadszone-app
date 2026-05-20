@@ -1,0 +1,78 @@
+{
+  "page": {
+    "title": "COOKIE POLICY",
+    "updated_at": "MarocAdsZone - Last updated: July 3, 2025"
+  },
+  "what_is_cookie": {
+    "title": "What is a cookie?",
+    "content": "A cookie is a small text file placed on your device (computer, smartphone, tablet) when you visit the MarocAdsZone website. These cookies allow us to recognize you during your visits, provide you with a personalized browsing experience, and analyze traffic to improve our services."
+  },
+  "cookies_we_use": {
+    "title": "Cookies we use",
+    "necessary": {
+      "title": "Strictly necessary cookies",
+      "description": "These cookies are essential for the website to function and for you to use its basic features (login, security, preferences). Without these cookies, certain features of the site may not work properly.",
+      "examples_title": "Examples:",
+      "examples": [
+        "Session cookies to manage user login",
+        "Security cookies to protect accounts",
+        "Cookies related to privacy preferences"
+      ]
+    },
+    "performance": {
+      "title": "Performance cookies",
+      "description": "These cookies allow us to measure audience traffic and improve the performance of MarocAdsZone by analyzing how you use the site (pages visited, time spent, errors encountered). The data collected is aggregated and anonymized.",
+      "examples_title": "Examples:",
+      "examples": [
+        "Google Analytics",
+        "Matomo",
+        "Site performance tracking tools"
+      ]
+    },
+    "functional": {
+      "title": "Functionality cookies",
+      "description": "These cookies remember your choices and preferences on the site to offer you a personalized experience (language, display preferences, search filters).",
+      "examples_title": "Examples:",
+      "examples": [
+        "Language and location cookies",
+        "Cookies remembering recent searches",
+        "Cookies for personalizing the ads you have viewed"
+      ]
+    },
+    "advertising": {
+      "title": "Targeting and advertising cookies",
+      "description": "These cookies may be placed on our site by our advertising partners to show you relevant ads based on your interests. These cookies also help measure the effectiveness of advertising campaigns.",
+      "examples_title": "Examples:",
+      "examples": [
+        "Google Ads",
+        "Facebook Pixel",
+        "Social media cookies"
+      ]
+    }
+  },
+  "management": {
+    "title": "Cookie management",
+    "description": "When you first visit MarocAdsZone, a cookie banner allows you to manage your preferences. At any time you can:",
+    "items": [
+      "Accept or refuse all or some cookies",
+      "Change your choices via your browser settings",
+      "Delete cookies already installed on your device"
+    ],
+    "warning": "Note: Refusing certain cookies may affect the proper functioning of some site features."
+  },
+  "duration": {
+    "title": "Cookie retention period",
+    "content": "Cookies are kept for a maximum of 13 months after being placed on your device."
+  },
+  "contact": {
+    "title": "Contact",
+    "content": "For any questions regarding this Cookie Policy or to exercise your rights relating to your personal data, you can contact us at:"
+  },
+  "navigation_links": {
+    "title": "Navigation",
+    "text": "To view other legal documents, visit our",
+    "mentions": "Legal Notices",
+    "terms": "Terms and Conditions",
+    "privacy": "Privacy Policy"
+  }
+}

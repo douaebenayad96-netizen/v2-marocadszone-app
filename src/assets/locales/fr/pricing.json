@@ -1,0 +1,111 @@
+{
+  "page": {
+    "title": "Tarification",
+    "subtitle": "Tarifs pour publier des annonces"
+  },
+  "hero": {
+    "pill": "NOS FORMULES",
+    "title": "Nos offres de tarification pour professionnels et entreprises",
+    "subtitle": "Choisissez la formule qui correspond le mieux à vos besoins.",
+    "billing_monthly": "Mensuel",
+    "billing_yearly": "Annuel",
+    "billing_save": "Économisez 20%",
+    "subscription_pending": "Votre demande d’abonnement est en attente de validation du paiement.",
+    "subscription_active": "Votre abonnement est actif."
+  },
+  "buttons": {
+    "popular_badge": "Plus Populaire",
+    "pending_payment": "En attente de paiement",
+    "active_subscription": "Abonnement Actif",
+    "start_free": "Commencer Gratuitement",
+    "subscribe_premium": "Souscrire Premium",
+    "become_pro": "Devenir Pro",
+    "always_free": "Toujours gratuit"
+  },
+  "faq": {
+    "title": "Foire Aux Questions",
+    "subtitle": "Trouvez les réponses aux questions les plus fréquentes",
+    "contact_support": "Contactez notre support",
+    "other_questions": "Vous avez d'autres questions ?",
+    "items": [
+      {
+        "question": "Comment fonctionne le Pack Gratuit ?",
+        "answer": "Vous pouvez publier gratuitement 2 annonces par mois. Chaque annonce reste en ligne pendant 30 jours."
+      },
+      {
+        "question": "Que contient le Pack Premium ?",
+        "answer": "Le Pack Premium permet jusqu'à 10 annonces, avec des options de mise en avant pour booster la visibilité."
+      },
+      {
+        "question": "Quels sont les avantages du Pack Pro ?",
+        "answer": "Le Pack Pro est idéal pour les professionnels : annonces illimitées, badge Pro, statistiques avancées et support dédié."
+      },
+      {
+        "question": "Quels moyens de paiement proposez-vous ?",
+        "answer": "Carte bancaire via CMI, PayPal, Orange Money, et Inwi Money. Transferts sécurisés et rapides."
+      }
+    ]
+  },
+  "features": {
+    "header_title": "Pourquoi choisir MarocAdsZone ?",
+    "header_subtitle": "Découvrez les avantages qui font de MarocAdsZone la plateforme de référence pour vos annonces au Maroc",
+    "items": [
+      {
+        "title": "Plus de visibilité",
+        "description": "Votre annonce est diffusée à des milliers de visiteurs chaque jour partout au Maroc, sans effort de votre part."
+      },
+      {
+        "title": "Acheteurs ciblés",
+        "description": "Grâce à notre moteur de recherche intelligent, vos annonces atteignent les acheteurs réellement intéressés par vos biens ou services."
+      },
+      {
+        "title": "Plus de ventes",
+        "description": "Nos options Premium et Pro augmentent jusqu'à 5x la visibilité de vos annonces pour générer plus de contacts et conclure plus rapidement."
+      },
+      {
+        "title": "Facile & rapide",
+        "description": "Publiez en quelques clics, gérez vos annonces depuis votre mobile ou ordinateur, et suivez les performances en temps réel."
+      }
+    ]
+  },
+  "customer_support": {
+    "title": "Service Client 7j/7 – 24h/24",
+    "subtitle": "Notre équipe vous accompagne à tout moment. Que vous soyez vendeur particulier ou pro, nous sommes là pour répondre à toutes vos questions.",
+    "methods": [
+      {
+        "title": "Téléphone",
+        "description": "+212 6 12 34 56 78",
+        "action_label": "Appeler",
+        "action_href": "tel:+212612345678"
+      },
+      {
+        "title": "Email",
+        "description": "support@marocadszone.com",
+        "action_label": "Envoyer un email",
+        "action_href": "mailto:support@marocadszone.com"
+      },
+      {
+        "title": "Ticket support",
+        "description": "Créez un ticket",
+        "action_label": "Créer un ticket",
+        "action_href": "/contact"
+      },
+      {
+        "title": "Bureau",
+        "description": "Ouvert 7j/7 – 24h/24",
+        "action_label": "Nous localiser",
+        "action_href": "#"
+      }
+    ]
+  },
+  "cta": {
+    "title": "Commencez à vendre dès aujourd'hui",
+    "description": "Créez votre compte gratuit et publiez votre première annonce en moins de 2 minutes. Profitez de la puissance de MarocAdsZone pour vendre plus, plus vite.",
+    "button_account": "Créer un compte",
+    "button_listing": "Déposer une annonce",
+    "trust_1": "Inscription gratuite",
+    "trust_2": "Publication en 2 minutes",
+    "trust_3": "Support 24h/24"
+  }
+}
+

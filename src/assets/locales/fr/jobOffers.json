@@ -1,0 +1,55 @@
+{
+  "filters": {
+    "title": "Filtres de recherche",
+    "show": "Afficher les filtres",
+    "hide": "Masquer les filtres",
+    "search": "Recherche",
+    "search_placeholder": "Titre, description, mots-clés...",
+    "sector": "Secteur",
+    "sector_placeholder": "Tous les secteurs",
+    "private": "Secteur Privé",
+    "public": "Secteur Public",
+    "location": "Localisation",
+    "location_placeholder": "Toutes les villes",
+    "sort": "Trier par",
+    "sort_newest": "Plus récent",
+    "sort_oldest": "Plus ancien",
+    "sort_title_asc": "Titre (A-Z)",
+    "sort_title_desc": "Titre (Z-A)"
+  },
+  "results": {
+    "job_offers_found": "offre d'emploi trouvée",
+    "job_offers_found_plural": "offres d'emploi trouvées",
+    "page": "Page",
+    "out_of": "sur",
+    "searching": "Recherche en cours...",
+    "loading": "Chargement..."
+  },
+  "breadcrumb": {
+    "home": "Accueil",
+    "job_offers": "Offres d'Emploi",
+    "search_prefix": "Recherche"
+  },
+  "page": {
+    "h1": "Trouvez votre offre d'emploi au Maroc",
+    "description": "Découvrez les meilleures opportunités professionnelles adaptées à votre profil"
+  },
+  "seo": {
+    "title": "Offres d'emploi au Maroc - MarocAdsZone",
+    "description": "Trouvez votre prochain emploi au Maroc. Des milliers d'offres d'emploi disponibles."
+  },
+  "error": {
+    "title": "Erreur de chargement",
+    "description": "Une erreur s'est produite lors du chargement des offres d'emploi.",
+    "reload_button": "Recharger la page",
+    "reset_button": "Réinitialiser"
+  },
+  "no_offers": {
+    "title": "Aucune offre trouvée",
+    "description": "Aucune offre d'emploi ne correspond à vos critères de recherche.",
+    "reset_filters": "Réinitialiser les filtres",
+    "clear_search": "Effacer la recherche"
+  },
+  "loading_pagination": "Chargement de la pagination...",
+  "ad_banner": "Bannière Publicitaire"
+}

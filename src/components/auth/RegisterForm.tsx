@@ -58,6 +58,38 @@ const RegisterForm = () => {
 
   const navigate = useNavigate();
 
+  // Fonction pour obtenir les textes OTP selon la langue
+  const getOtpText = (key: string) => {
+    const lang = i18n.language;
+    const texts: Record<string, Record<string, string>> = {
+      fr: {
+        title: "Vérifiez votre email",
+        subtitle: "Entrez le code OTP envoyé à:",
+        placeholder: "Code OTP",
+        confirm: "Confirmer le code",
+        back: "Retour",
+        success: "Votre compte a été créé. Vérifiez votre email pour le code OTP."
+      },
+      en: {
+        title: "Verify your email",
+        subtitle: "Enter the OTP code sent to:",
+        placeholder: "OTP Code",
+        confirm: "Confirm code",
+        back: "Back",
+        success: "Your account has been created. Check your email for the OTP code."
+      },
+      ar: {
+        title: "تحقق من بريدك الإلكتروني",
+        subtitle: "أدخل رمز OTP المرسل إلى:",
+        placeholder: "رمز OTP",
+        confirm: "تأكيد الرمز",
+        back: "رجوع",
+        success: "تم إنشاء حسابك. تحقق من بريدك الإلكتروني للحصول على رمز OTP."
+      }
+    };
+    return texts[lang]?.[key] || texts.fr[key];
+  };
+
   const onSubmit = async (data: FormValues) => {
     try {
       const res: any = await mutateAsync(data as RegisterUser);
@@ -76,10 +108,7 @@ const RegisterForm = () => {
         setRegisteredEmail(emailFromResponse);
         setShowOtpStep(true);
 
-        CustomToast(
-          "Votre compte a été créé. Vérifiez votre email pour le code OTP.",
-          "success"
-        );
+        CustomToast(getOtpText("success"), "success");
         return;
       }
 
@@ -87,10 +116,7 @@ const RegisterForm = () => {
       setRegisteredEmail(emailFromResponse);
       setShowOtpStep(true);
 
-      CustomToast(
-        "Votre compte a été créé. Vérifiez votre email pour le code OTP.",
-        "success"
-      );
+      CustomToast(getOtpText("success"), "success");
     } catch (err: any) {
       console.log("❌ Registration error:", err);
       CustomToast(getAuthErrorMessage(err), "error");
@@ -106,7 +132,6 @@ const RegisterForm = () => {
 
       console.log("Full OTP response:", JSON.stringify(otpResponse));
 
-      // Sign in with OTP response (contains token + user)
       if (otpResponse) {
         await signIn(otpResponse, true);
       }
@@ -161,10 +186,10 @@ const RegisterForm = () => {
       <div>
         <div className="text-center mb-4">
           <h3 className="text-lg font-semibold text-gray-800">
-            Vérifiez votre email
+            {getOtpText("title")}
           </h3>
           <p className="text-sm text-gray-500 mt-1">
-            Entrez le code OTP envoyé à:
+            {getOtpText("subtitle")}
           </p>
           <p className="text-sm font-semibold text-gray-700">
             {registeredEmail}
@@ -174,7 +199,7 @@ const RegisterForm = () => {
         <input
           className="input mt-3 text-center tracking-widest"
           type="text"
-          placeholder="Code OTP"
+          placeholder={getOtpText("placeholder")}
           value={otp}
           maxLength={6}
           onChange={(e) => setOtp(e.target.value)}
@@ -194,7 +219,7 @@ const RegisterForm = () => {
               <span className="ml-2">{t("chargement")}</span>
             </div>
           ) : (
-            <span>Confirmer le code</span>
+            <span>{getOtpText("confirm")}</span>
           )}
         </button>
 
@@ -203,7 +228,7 @@ const RegisterForm = () => {
           className="w-full mt-3 text-sm text-gray-500 hover:text-orange-500"
           onClick={() => setShowOtpStep(false)}
         >
-          Retour
+          {getOtpText("back")}
         </button>
       </div>
     );

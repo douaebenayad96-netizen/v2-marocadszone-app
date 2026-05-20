@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone } from '@fortawesome/free-solid-svg-icons'
 import { RiLoader4Line } from 'react-icons/ri'
 import { useTranslation } from 'react-i18next'
+import getLocalized from '../../utils/getLocalized'
 
 import { City } from '../../services/types/city'
 
@@ -69,8 +70,8 @@ const UserInfoBox = ({
     return null
   }
 
-  const metier = data.metier?.label || data.subcategory?.category?.name || data.category?.name
-  const city = typeof data.city === 'string' ? data.city : data.city?.label || data.city?.name
+  const metier = getLocalized(data.metier, 'label') || getLocalized(data.subcategory?.category, 'label') || getLocalized(data.category, 'label') || data.subcategory?.category?.name || data.category?.name
+  const city = typeof data.city === 'string' ? data.city : getLocalized(data.city, 'label') || data.city?.name
   const avatar = data.media?.[0]?.original_url || '/default-avatar.png'
 
   const renderRatingDisplay = () => {
@@ -139,7 +140,7 @@ const UserInfoBox = ({
                   className="inline-flex items-center justify-center w-full gap-2 px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 bg-primary-orange rounded-lg hover:bg-orange-600 focus:ring-2 focus:ring-orange-300 focus:ring-offset-2 shadow-sm"
                 >
                   <FontAwesomeIcon icon={faPhone} className="w-4 h-4" />
-                  <span>Afficher le numéro</span>
+                  <span>{t("annonce_details.show_number")}</span>
                 </button>
               ) : (
                 <a

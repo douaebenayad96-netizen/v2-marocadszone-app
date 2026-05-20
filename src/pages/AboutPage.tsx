@@ -1,4 +1,5 @@
-﻿import AboutHeroSection from "../components/static/AboutHeroSection"
+﻿import { useTranslation } from "react-i18next"
+import AboutHeroSection from "../components/static/AboutHeroSection"
 import AboutNumbersSection from "../components/static/AboutNumbersSection"
 import AboutOurMissionSection from "../components/static/AboutOurMissionSection"
 import AboutOurStorySection from "../components/static/AboutOurStorySection"
@@ -6,6 +7,8 @@ import AboutEngagementsSection from "../components/static/AboutEngagementsSectio
 import SEOHead from "../components/seo/SEOHead"
 
 const AboutPage = () => {
+  const { t } = useTranslation()
+
   return (
     <div className="min-h-screen">
       <SEOHead title="À propos de MarocAdsZone - Petites annonces gratuites au Maroc" description="MarocAdsZone, votre site de petites annonces gratuites au Maroc pour vendre ou acheter facilement des biens et services à petit prix." path="/about" />
@@ -19,3 +22,4 @@ const AboutPage = () => {
 }
 
 export default AboutPage
+

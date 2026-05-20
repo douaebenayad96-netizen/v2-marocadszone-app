@@ -1,0 +1,49 @@
+{
+  "about_page": {
+    "title": "About us",
+    "subtitle": "Connect Morocco, one listing at a time."
+  },
+  "numbers": {
+    "active_ads": "Active listings",
+    "monthly_users": "Monthly users",
+    "transactions": "Facilitated transactions",
+    "active_professionals": "Active professionals"
+  },
+  "story": {
+    "pill": "#Our Story",
+    "title": "Founded with a simple yet ambitious vision",
+    "p1": "MarocAdsZone has become Morocco's leading online listings platform, providing a secure and efficient space to buy, sell, and promote services with confidence.",
+    "p2": "From the beginning, we have been committed to :",
+    "li1": "Simplifying the buying and selling process for individuals and businesses.",
+    "li2": "Building a bridge between sellers and buyers, without barriers or unnecessary complexity.",
+    "li3": "Offering a reliable channel so that every listing generates visibility and real opportunities."
+  },
+  "engagements": {
+    "pill": "#Our Commitments",
+    "title": "A secure, intuitive and high-performing platform",
+    "card1_title": "Simplicity",
+    "card1_p": "Create and publish your listings in just a few clicks.",
+    "card2_title": "Visibility",
+    "card2_p": "Reach a qualified audience across Morocco.",
+    "card3_title": "Security",
+    "card3_p": "All listings are verified to ensure the platform's reliability.",
+    "card4_title": "Support",
+    "card4_p": "Our dedicated support is here to guide you and meet your needs."
+  },
+  "mission": {
+    "pill": "#Our Mission",
+    "title": "Make access to the Moroccan market easier",
+    "p1": "We believe every project deserves visibility and every seller should be able to reach their audience easily.",
+    "p2": "We actively contribute to strengthening the local economy by helping Moroccan individuals and businesses sell, rent, and promote their services faster and more effectively.",
+    "card1_title": "Proof of quality",
+    "card1_p": "MarocAdsZone verifies listings and profiles to ensure the quality of published content.",
+    "card2_title": "Flexibility",
+    "card2_p": "Post your listings whenever you want, according to your priorities.",
+    "card3_title": "Goal",
+    "card3_p": "Help you turn every listing into a real opportunity.",
+    "cta_title": "Join MarocAdsZone today",
+    "cta_p": "Become part of a dynamic community of buyers and sellers, and give new momentum to your sales and services.",
+    "cta_button": "Sign up now"
+  }
+}
+

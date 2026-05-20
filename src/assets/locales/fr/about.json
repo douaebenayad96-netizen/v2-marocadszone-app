@@ -1,0 +1,49 @@
+{
+  "about_page": {
+    "title": "À propos de nous",
+    "subtitle": "Connecter le Maroc, une annonce à la fois."
+  },
+  "numbers": {
+    "active_ads": "Annonces actives",
+    "monthly_users": "Utilisateurs mensuels",
+    "transactions": "Transactions facilitées",
+    "active_professionals": "Professionnels actifs"
+  },
+  "story": {
+    "pill": "#Notre Histoire",
+    "title": "Fondée avec une vision simple mais ambitieuse",
+    "p1": "MarocAdsZone est devenue la plateforme d'annonces en ligne de référence au Maroc, offrant un espace sécurisé et efficace pour vendre, acheter et promouvoir des services en toute confiance.",
+    "p2": "Depuis nos débuts, nous nous engageons à :",
+    "li1": "Simplifier le processus de vente et d'achat pour les particuliers et professionnels.",
+    "li2": "Créer un pont entre les vendeurs et les acheteurs, sans barrières ni complexités inutiles.",
+    "li3": "Offrir un canal fiable permettant à chaque annonce de générer de la visibilité et des opportunités réelles."
+  },
+  "engagements": {
+    "pill": "#Nos Engagements",
+    "title": "Une plateforme sécurisée, intuitive et performante",
+    "card1_title": "Simplicité",
+    "card1_p": "Créez et publiez vos annonces en quelques clics.",
+    "card2_title": "Visibilité",
+    "card2_p": "Touchez un public qualifié à travers le Maroc.",
+    "card3_title": "Sécurité",
+    "card3_p": "Toutes les annonces sont vérifiées pour garantir la fiabilité de la plateforme.",
+    "card4_title": "Accompagnement",
+    "card4_p": "Notre support dédié est à votre écoute pour vous guider et répondre à vos besoins."
+  },
+  "mission": {
+    "pill": "#Notre Mission",
+    "title": "Faciliter l'accès au marché marocain",
+    "p1": "Nous croyons que chaque projet mérite de la visibilité et chaque vendeur doit pouvoir atteindre son public facilement.",
+    "p2": "Nous contribuons activement à la dynamisation de l'économie locale en aidant les particuliers et entreprises marocaines à vendre, louer et promouvoir leurs services plus rapidement et efficacement.",
+    "card1_title": "Preuve de qualité",
+    "card1_p": "MarocAdsZone vérifie les annonces et profils pour assurer la qualité des contenus publiés.",
+    "card2_title": "Flexibilité",
+    "card2_p": "Postez vos annonces quand vous le souhaitez, selon vos priorités.",
+    "card3_title": "Objectif",
+    "card3_p": "Vous permettre de transformer chaque annonce en opportunité réelle.",
+    "cta_title": "Rejoignez MarocAdsZone dès aujourd'hui",
+    "cta_p": "Intégrez une communauté dynamique d'acheteurs et de vendeurs, et donnez une nouvelle dimension à vos ventes et services.",
+    "cta_button": "S'inscrire maintenant"
+  }
+}
+

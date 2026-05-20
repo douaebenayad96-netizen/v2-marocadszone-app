@@ -15,6 +15,7 @@ import UserInfoBox from '../components/account/UserInfoBox'
 import ServiceIncludeList from '../components/annonce/ServiceIncludeList'
 import ThumbsGallery from '../components/common/ThumbsGallery'
 import SectionHeader from '../components/layouts/SectionHeader'
+import getLocalized from '../utils/getLocalized'
 
 const ServicePage = () => {
   const { t, i18n } = useTranslation()
@@ -69,7 +70,7 @@ const ServicePage = () => {
                 {t('service_page.located_in')} {' '}
                 <span>
                   {
-                    i18n.language === 'fr' ? prestationData?.villes[0]?.label : i18n.language === 'en' ? prestationData?.villes[0]?.label : prestationData?.villes[0]?.label
+                    getLocalized(prestationData?.villes?.[0], 'label') || prestationData?.villes?.[0]?.label
                   }
                 </span>
               </span>
@@ -166,7 +167,7 @@ const ServicePage = () => {
               <div>
                 <span className="text-primary-blue text-base">
                   {prestationData?.villes.map(ville => {
-                    return i18n.language === 'fr' ? ville.label : i18n.language === 'en' ? ville.label : ville.label
+                    return getLocalized(ville, 'label') || ville.label
                   }).join(', ')}
                 </span>
               </div>
@@ -209,9 +210,9 @@ const ServicePage = () => {
                   >
                     <div>
                       <span className="text-primary-blue text-base">
-                        {i18n.language === 'fr' ? prestationData?.prestataire?.profession?.label : i18n.language === 'en' ? prestationData?.prestataire?.profession?.label : prestationData?.prestataire?.profession?.label}
+                        {getLocalized(prestationData?.prestataire?.profession, 'label') || prestationData?.prestataire?.profession?.label}
                         , {' '}
-                        {i18n.language === 'fr' ? prestationData?.prestataire?.speciality?.label : i18n.language === 'en' ? prestationData?.prestataire?.speciality?.label : prestationData?.prestataire?.speciality?.label}
+                        {getLocalized(prestationData?.prestataire?.speciality, 'label') || prestationData?.prestataire?.speciality?.label}
                       </span>
                     </div>
                   </div>

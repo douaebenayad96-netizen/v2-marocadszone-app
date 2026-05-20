@@ -1,0 +1,49 @@
+{
+  "page": {
+    "title": "الإعلانات",
+    "explore": "استكشف جميع الإعلانات المجانية",
+    "annonces_count": "الإعلانات المتاحة"
+  },
+  "search": {
+    "placeholder": "ابحث عن إعلان",
+    "button": "بحث"
+  },
+  "filter": {
+    "filtrer": "تصفية",
+    "reinitialiser": "إعادة تعيين",
+    "tous_les_filtres": "جميع الفلاتر",
+    "appliquer": "تطبيق",
+    "trier_par": "ترتيب حسب"
+  },
+  "annonce_filters": {
+    "title": "فلاتر الإعلانات",
+    "subtitle": "فلاتر محددة للإعلانات",
+    "categorie": "الفئة",
+    "select_categorie": "اختر فئة",
+    "sous_categorie": "الفئة الفرعية",
+    "select_sous_categorie": "اختر فئة فرعية",
+    "select_category_first": "اختر فئة أولاً",
+    "loading_subcategories": "جاري تحميل الفئات الفرعية...",
+    "no_subcategories": "لا توجد فئات فرعية متاحة",
+    "pays": "البلد",
+    "select_pays": "اختر بلداً",
+    "ville": "المدينة",
+    "select_ville": "اختر مدينة",
+    "select_country_first": "اختر بلداً أولاً",
+    "no_cities": "لا توجد مدن متاحة",
+    "subcategory_count_one": "فئة فرعية",
+    "subcategory_count_other": "فئات فرعية",
+    "city_count_one": "مدينة",
+    "city_count_other": "مدن"
+  },
+  "sort": {
+    "newest": "الأحدث",
+    "most_reviews": "الأكثر تقييماً",
+    "highest_rating": "أعلى تقييم"
+  },
+  "no_results": {
+    "title": "لم يتم العثور على إعلانات",
+    "description": "لا توجد إعلانات تطابق معايير البحث الخاصة بك.",
+    "try_again": "حاول تعديل الفلاتر الخاصة بك"
+  }
+}

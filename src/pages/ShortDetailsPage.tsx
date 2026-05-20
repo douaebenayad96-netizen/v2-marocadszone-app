@@ -2,6 +2,7 @@
 import { RiArrowUpSLine, RiCloseFill, RiPlayLine } from "react-icons/ri";
 import { useInView } from "react-intersection-observer";
 import { Link, useParams } from "react-router-dom";
+import { useTranslation } from 'react-i18next'
 import ShortCard from "../components/shorts/ShortCard";
 import ShortVideoPlayerCard from "../components/shorts/ShortVideoCard";
 import { useVideosBySlugInfinite } from "../services/api/fetchAnnonce";
@@ -9,6 +10,7 @@ import SEOHead from "../components/seo/SEOHead";
 import { cn } from "../utils/helpers";
 
 const ShortDetailsPage = () => {
+  const { t } = useTranslation()
   const slug = useParams().slug as string;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showSimilarVideos, setShowSimilarVideos] = useState(false);
@@ -159,7 +161,7 @@ const ShortDetailsPage = () => {
           className="absolute top-20 pb-16 md:right-4 z-[9999] w-full md:w-[500px] overflow-scroll h-screen bg-black/90 backdrop-blur-md rounded-lg p-4 shadow-xl border border-gray-800"
         >
           <h3 className="text-white text-lg font-bold mb-4">
-            Vidéos similaires
+            {t('shorts_page.similar_videos')}
           </h3>
 
           {similarShorts.length > 0 ? (

@@ -85,7 +85,7 @@ to='/annonces/new?skipType=1'
             className={`h-9 min-w-max flex items-center justify-between px-6 hover:bg-[#F8F9FA] cursor-pointer font-[400] text-md text-[#656A70]`}
           >
             <span>
-              Publier une vidéo
+              {t('publier_video')}
             </span>
           </Link>
         </li>
@@ -95,7 +95,7 @@ to='/annonces/new?skipType=1'
             onClick={onClick}
             className={`h-9 min-w-max flex items-center justify-between px-6 hover:bg-[#F8F9FA] cursor-pointer font-[400] text-md text-[#656A70]`}
           >
-            <span>Publier dans l'Annuaire</span>
+            <span>{t('publier_annuaire')}</span>
           </Link>
         </li>
         {/*<li>

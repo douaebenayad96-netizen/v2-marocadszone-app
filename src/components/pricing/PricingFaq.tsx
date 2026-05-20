@@ -3,6 +3,7 @@
 import React from "react"
 import { BiChevronDown } from "react-icons/bi"
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 interface AccordionItemProps {
   question: string
@@ -30,26 +31,25 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ question, answer, isOpen,
 }
 
 export default function PricingFaq() {
+  const { t } = useTranslation()
   const [openIndex, setOpenIndex] = React.useState<number | null>(null)
 
   const faqData = [
     {
-      question: "Comment fonctionne le Pack Gratuit ?",
-      answer: "Vous pouvez publier gratuitement 2 annonces par mois. Chaque annonce reste en ligne pendant 30 jours.",
+      question: t("faq.items.0.question", { ns: "pricing" }),
+      answer: t("faq.items.0.answer", { ns: "pricing" }),
     },
     {
-      question: "Que contient le Pack Premium ?",
-      answer:
-        "Le Pack Premium permet jusqu'à 10 annonces, avec des options de mise en avant pour booster la visibilité.",
+      question: t("faq.items.1.question", { ns: "pricing" }),
+      answer: t("faq.items.1.answer", { ns: "pricing" }),
     },
     {
-      question: "Quels sont les avantages du Pack Pro ?",
-      answer:
-        "Le Pack Pro est idéal pour les professionnels : annonces illimitées, badge Pro, statistiques avancées et support dédié.",
+      question: t("faq.items.2.question", { ns: "pricing" }),
+      answer: t("faq.items.2.answer", { ns: "pricing" }),
     },
     {
-      question: "Quels moyens de paiement proposez-vous ?",
-      answer: "Carte bancaire via CMI, PayPal, Orange Money, et Inwi Money. Transferts sécurisés et rapides.",
+      question: t("faq.items.3.question", { ns: "pricing" }),
+      answer: t("faq.items.3.answer", { ns: "pricing" }),
     },
   ]
 
@@ -60,8 +60,8 @@ export default function PricingFaq() {
   return (
     <section className="py-16 px-4 max-w-4xl mx-auto">
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Foire Aux Questions</h2>
-        <p className="text-gray-600 text-lg">Trouvez les réponses aux questions les plus fréquentes</p>
+        <h2 className="text-3xl font-bold text-gray-900 mb-4">{t("faq.title", { ns: "pricing" })}</h2>
+        <p className="text-gray-600 text-lg">{t("faq.subtitle", { ns: "pricing" })}</p>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -77,13 +77,15 @@ export default function PricingFaq() {
       </div>
 
       <div className="text-center mt-8">
-        <p className="text-gray-600 mb-4">Vous avez d'autres questions ?</p>
+        <p className="text-gray-600 mb-4">{t("faq.other_questions", { ns: "pricing" })}</p>
         <Link
           to="/contact"
-          className="inline-flex items-center px-6 py-3 bg-white border border-orange-500 text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-colors duration-200">
-          Contactez notre support
+          className="inline-flex items-center px-6 py-3 bg-white border border-orange-500 text-orange-600 font-medium rounded-lg hover:bg-orange-50 transition-colors duration-200"
+        >
+          {t("faq.contact_support", { ns: "pricing" })}
         </Link>
       </div>
     </section>
   )
 }
+

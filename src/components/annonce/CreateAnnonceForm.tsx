@@ -11,6 +11,7 @@ import { useFetchCity } from '../../services/api/fetchCity'
 import { useCreateAnnonce, CreateAnnonceData } from '../../services/api/fetchAnnonce'
 import { useAnnonceTypes } from '../../services/api/fetchAnnonceTypes'
 import { SelectStyles, CategorySelectStyles } from '../../utils/style'
+import getLocalized from '../../utils/getLocalized'
 import { useAuthStore } from '../../services/store/authStore'
 import { useFirebaseUpload } from '../../hooks/useFirebaseUpload'
 import { STORAGE_FOLDERS } from '../../services/firebase/storageService'
@@ -367,7 +368,7 @@ const CreateAnnonceForm: React.FC<CreateAnnonceFormProps> = ({ onSuccess, onCanc
                 console.log('🎯 Rendering option:', type)
                 return (
                   <option key={type.id} value={type.value}>
-                    {type.label}
+                    {getLocalized(type, 'label') || type.label}
                   </option>
                 )
               })}
@@ -432,9 +433,9 @@ const CreateAnnonceForm: React.FC<CreateAnnonceFormProps> = ({ onSuccess, onCanc
             </label>
             <Select
               placeholder={t('Select a category', 'Sélectionnez une catégorie')}
-              options={
+                options={
                 categoriesData?.map((category) => ({
-                  label: category.label || '',
+                  label: getLocalized(category, 'label') || category.label || '',
                   value: category.id
                 })) || []
               }
@@ -458,7 +459,7 @@ const CreateAnnonceForm: React.FC<CreateAnnonceFormProps> = ({ onSuccess, onCanc
                 }
                 options={
                   subcategoriesData?.map((subcategory) => ({
-                    label: subcategory.label || '',
+                    label: getLocalized(subcategory, 'label') || subcategory.label || '',
                     value: subcategory.id
                   })) || []
                 }
@@ -481,9 +482,9 @@ const CreateAnnonceForm: React.FC<CreateAnnonceFormProps> = ({ onSuccess, onCanc
             </label>
             <Select
               placeholder={t('Select a country', 'Sélectionnez un pays')}
-              options={
+                options={
                 (countriesData && Array.isArray(countriesData) ? countriesData : []).map((country) => ({
-                  label: country.label,
+                  label: getLocalized(country, 'label') || country.label,
                   value: country.id
                 }))
               }
@@ -506,9 +507,9 @@ const CreateAnnonceForm: React.FC<CreateAnnonceFormProps> = ({ onSuccess, onCanc
                   ? t('No cities available', 'Aucune ville disponible')
                   : t('Select a city', 'Sélectionnez une ville')
               }
-              options={
+                options={
                 availableCities.map((city) => ({
-                  label: city.label,
+                  label: getLocalized(city, 'label') || city.label,
                   value: city.id
                 }))
               }

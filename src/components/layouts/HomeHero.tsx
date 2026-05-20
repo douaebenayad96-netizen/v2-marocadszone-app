@@ -15,7 +15,7 @@ import { clearText, getFirstWord } from "../../utils/helpers";
 import ListView from "../common/ListView";
 
 const HomeHero = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("home");
   const {
     data: categoriesData,
     isLoading: categoriesLoading,
@@ -52,11 +52,15 @@ const HomeHero = () => {
     window.location.href = `/annonces${cityParam}${searchParam}`;
   };
 
+  // Direction pour l'arabe
+  const isRTL = lang === "ar";
+
   return (
-    <div className="relative pt-nav min-h-screen flex flex-col items-center justify-center">
+    <div className={`relative pt-nav min-h-screen flex flex-col items-center justify-center ${isRTL ? "rtl" : ""}`}>
+      {/* Background Layer */}
       <div
         className={`hidden md:block absolute sm:inset-0 z-[-1] ${
-          i18n.language === "ar" && "hidden"
+          isRTL && "hidden"
         }`}
       >
         <img
@@ -67,13 +71,13 @@ const HomeHero = () => {
       </div>
 
       <div className="app-container flex flex-row items-center justify-center py-2">
-        {/* banner side */}
+        {/* Banner Left Side */}
         <Link
           to="https://careerlink.ma/"
           target="_blank"
           className="min-w-[300px] w-[300px] h-[600px] overflow-hidden bg-gray-200 rounded-md hidden lg:flex items-center justify-center text-gray-500"
         >
-          <img src={Banner1} alt="Banner 1" className="h-full w-full" />
+          <img src={Banner1} alt={t("banner.careerlink_alt")} className="h-full w-full" />
         </Link>
 
         <div className="flex flex-col items-center justify-center py-4 2xl:py-10 lg:py-8 w-full">
@@ -86,12 +90,12 @@ const HomeHero = () => {
               className={`text-4xl md:text-5xl xl:text-6xl 2xl:text-7xl font-extrabold text-primary-blue ${
                 lang === "fr" ? "max-w-[900px]" : "max-w-[700px]"
               } leading-tight ${
-                i18n.language === "ar" ? "mb-8" : "mb-4"
+                isRTL ? "mb-8" : "mb-4"
               } mx-auto`}
             >
-              Trouvez toutes les meilleures annonces{" "}
+              {t("hero.title")}{" "}
               <span className="after-gradient relative min-w-max inline-block">
-                au Maroc
+                {t("hero.title_highlight")}
               </span>
             </motion.h1>
             <motion.p
@@ -101,23 +105,25 @@ const HomeHero = () => {
               exit={{ opacity: 0, y: -50 }}
               className="text-sm sm:text-base text-primary-blue max-w-[600px] leading-tight mb-4 2xl:mb-8 mx-auto"
             >
-              Explorez une large gamme d'annonces fiables et variées à travers
-              tout le Maroc.
+              {t("hero.description")}
             </motion.p>
           </div>
-          {/* search */}{" "}
+
+          {/* Search Section */}
           <div className="w-full max-w-[600px] relative" ref={dropdownRef}>
             <div className="flex bg-gray-50 flex-row items-center gap-2 border border-gray-200 rounded-full overflow-hidden">
+              {/* City Dropdown */}
               <div
                 className="hidden sm:flex items-center cursor-pointer px-6 py-4 border-r border-gray-200 min-w-[80px] relative"
                 onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
               >
                 <span className="text-base text-gray-600 truncate">
-                  {selectedCity ? selectedCity.label : "Ville"}
+                  {selectedCity ? selectedCity.label : t("hero.city_placeholder")}
                 </span>
                 <RiArrowDownSLine className="ml-2 text-gray-400" />
               </div>
 
+              {/* Search Input */}
               <div className="flex items-center flex-1 max-sm:px-4">
                 <span className="flex items-center justify-center transition-all text-primary-blue ml-2">
                   <RiSearchLine className="text-xl" />
@@ -126,27 +132,23 @@ const HomeHero = () => {
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Que recherchez-vous ?"
+                  placeholder={t("hero.search_placeholder")}
                   className="flex-1 bg-transparent border-none outline-none px-2 py-2 text-base"
                 />
               </div>
 
+              {/* Search Button */}
               <button
                 onClick={handleSearchClick}
                 className="bg-primary-orange text-white px-6 py-4 shadow-orange-bottom-right hover:bg-opacity-80 transition-all m-1 rounded-full"
               >
-                {t("home.hero.chercher")}
+                {t("hero.search_button")}
               </button>
             </div>
 
+            {/* City Dropdown Menu */}
             {showCategoryDropdown && (
               <div className="absolute top-full left-0 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-50 max-h-60 overflow-y-auto">
-                {/* <div
-                  className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b"
-                  onClick={() => { setSelectedCity(null); setShowCategoryDropdown(false); }}
-                >
-                  Toutes les villes
-                </div> */}
                 {citiesLoading
                   ? Array.from(Array(5).keys()).map((n) => (
                       <div key={n} className="px-4 py-3 animate-pulse">
@@ -168,17 +170,15 @@ const HomeHero = () => {
               </div>
             )}
           </div>
-          {/* Popular Searches */}
+
+          {/* Popular Searches / Categories */}
           <div className="mt-4 2xl:mt-8 text-center w-full">
-            {/* <h2 className="text-base md:text-lg font-semibold text-primary-blue mb-2 sm:mb-4">
-              {t('home.hero.recherches_populaires')}
-            </h2> */}
             {!categoriesLoading &&
               (!categoriesData ||
                 !categoriesData.data ||
                 categoriesData.data.length === 0) && (
                 <div className="text-gray-400 text-sm mb-4">
-                  Aucune catégorie populaire trouvée.
+                  {t("hero.no_categories")}
                 </div>
               )}
             <ListView
@@ -186,9 +186,8 @@ const HomeHero = () => {
               data={categoriesData?.data?.slice(0, 4) || []}
               isLoading={categoriesLoading || categoriesError}
               renderItem={(category: Category) => (
-                <Link to={`/annonces?category=${category.id}`}>
+                <Link to={`/annonces?category=${category.id}`} key={category.id}>
                   <span
-                    key={category.id}
                     className="flex items-center justify-center cursor-pointer border border-gray-100 rounded-full px-4 py-2 text-primary-blue font-semibold transition-all hover:bg-primary-blue-all-800 hover:text-white"
                   >
                     {clearText(getFirstWord(category.label ?? ""))}
@@ -203,17 +202,17 @@ const HomeHero = () => {
           </div>
         </div>
 
-        {/* banner side */}
+        {/* Banner Right Side */}
         <Link
           to="https://devtitechnologie.com"
           target="_blank"
           className="min-w-[300px] w-[300px] h-[600px] overflow-hidden bg-gray-200 rounded-md hidden lg:flex items-center justify-center text-gray-500"
         >
-          <img src={Banner3} alt="Banner 3" className="h-full w-full" />
+          <img src={Banner3} alt={t("banner.devtitech_alt")} className="h-full w-full" />
         </Link>
       </div>
 
-      {/* Bottom Banner Ad Placeholder */}
+      {/* Bottom Banner */}
       <div>
         <Link
           to="https://devticloud.com/"
@@ -221,7 +220,7 @@ const HomeHero = () => {
           className="w-full h-[90px] flex items-center justify-center max-sm:px-4"
         >
           <div className="w-full sm:w-[728px] h-auto sm:h-[90px] overflow-hidden bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
-            <img src={BannerFooter} alt="Banner Footer" className="md:h-full" />
+            <img src={BannerFooter} alt={t("banner.devticloud_alt")} className="md:h-full" />
           </div>
         </Link>
       </div>

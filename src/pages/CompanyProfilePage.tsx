@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { RiAdvertisementLine, RiVideoLine } from "react-icons/ri";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { PrestataireCardV2 } from "../components/annonce/PrestataireCard";
 import Banner728X90 from "../components/banners/Banner728X90";
@@ -24,6 +25,8 @@ function NativeVideoModal({
   url: string;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
+  
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 md:p-8"
@@ -33,15 +36,14 @@ function NativeVideoModal({
         className="relative w-full max-w-3xl bg-black rounded-2xl overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
         <button
           className="absolute top-3 right-3 z-10 rounded-full bg-white/20 p-2 text-white hover:bg-white/40 transition backdrop-blur-sm"
           onClick={onClose}
-          aria-label="Fermer"
+          aria-label={t("company_profile.close")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 Pall w-5"
+            className="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -55,7 +57,6 @@ function NativeVideoModal({
           </svg>
         </button>
 
-        {/* Responsive Video */}
         <div className="relative w-full pt-[56.25%]">
           <video
             src={url}
@@ -72,6 +73,8 @@ function NativeVideoModal({
 }
 
 const CompanyProfilePage = () => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const { slug } = useParams<{ slug: string }>();
   const token = useAuthStore((state) => state.token);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
@@ -80,29 +83,29 @@ const CompanyProfilePage = () => {
 
   const companyAnnouncements = company?.announcements ?? [];
 
-const announcements = companyAnnouncements.filter(
-  (announcement) => announcement?.announcement_type !== "short"
-);
+  const announcements = companyAnnouncements.filter(
+    (announcement) => announcement?.announcement_type !== "short"
+  );
 
-const announcementsVideo = companyAnnouncements.filter(
-  (announcement) => announcement?.announcement_type === "short"
-);
+  const announcementsVideo = companyAnnouncements.filter(
+    (announcement) => announcement?.announcement_type === "short"
+  );
 
   const announcementsCount = announcements.length;
 
-  /* ———————— No Token: Show Login Prompt ———————— */
+  // No Token: Show Login Prompt
   if (!token) {
     return (
       <div className="app-container pt-nav min-h-screen page-pb">
         <div className="text-center py-10">
           <h2 className="text-2xl font-bold text-primary-blue mb-4">
-            Connexion requise
+            {t("company_profile.login_required")}
           </h2>
           <p className="text-gray-600 mb-6">
-            Vous devez être connecté pour voir les détails de cette entreprise.
+            {t("company_profile.login_required_desc")}
           </p>
           <a href="/login" className="btn-primary inline-block">
-            Se connecter
+            {t("company_profile.login")}
           </a>
         </div>
       </div>
@@ -118,21 +121,13 @@ const announcementsVideo = companyAnnouncements.filter(
   }
 
   if (error || !company) {
-    let errorMessage =
-      "Impossible de charger les informations de l'entreprise.";
+    let errorMessage = t("company_profile.error_general");
 
     if (error instanceof Error) {
-      if (
-        error.message.includes("404") ||
-        error.message.includes("not found")
-      ) {
-        errorMessage = "Cette entreprise n'existe pas ou a été supprimée.";
-      } else if (
-        error.message.includes("401") ||
-        error.message.includes("Unauthorized")
-      ) {
-        errorMessage =
-          "Vous devez être connecté pour voir les détails de cette entreprise.";
+      if (error.message.includes("404") || error.message.includes("not found")) {
+        errorMessage = t("company_profile.error_not_found");
+      } else if (error.message.includes("401") || error.message.includes("Unauthorized")) {
+        errorMessage = t("company_profile.error_unauthorized");
       }
     }
 
@@ -140,7 +135,7 @@ const announcementsVideo = companyAnnouncements.filter(
       <div className="app-container pt-nav min-h-screen page-pb">
         <div className="text-center py-10">
           <h2 className="text-2xl font-bold text-red-600 mb-4">
-            Une erreur s'est produite
+            {t("company_profile.error_title")}
           </h2>
           <p className="text-gray-600">{errorMessage}</p>
         </div>
@@ -149,8 +144,8 @@ const announcementsVideo = companyAnnouncements.filter(
   }
 
   return (
-    <div className="app-container pt-nav min-h-screen page-pb bg-gradient-to-b from-slate-50 to-white">
-      {/* ——— Company Header ——— */}
+    <div className={`app-container pt-nav min-h-screen page-pb bg-gradient-to-b from-slate-50 to-white ${isRTL ? "rtl" : ""}`}>
+      {/* Company Header */}
       <section className="py-12 md:py-16 border-b border-slate-200">
         <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* Logo */}
@@ -159,7 +154,7 @@ const announcementsVideo = companyAnnouncements.filter(
               {company.logo ? (
                 <img
                   src={company.logo}
-                  alt={`${company.name} logo`}
+                  alt={`${company.name} ${t("company_profile.logo_alt")}`}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -214,21 +209,21 @@ const announcementsVideo = companyAnnouncements.filter(
         </div>
       </section>
 
-      {/* ——— Middle Banner ——— */}
+      {/* Middle Banner */}
       <div className="flex justify-center py-8">
         <Banner728X90 />
       </div>
 
-      {/* ——— Video Section (Shorts) ——— */}
+      {/* Video Section (Shorts) */}
       {announcementsVideo.length > 0 && (
         <section className="py-12 md:py-16 border-b border-slate-200">
           <div className="mb-8">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2 flex items-center gap-3">
               <RiVideoLine className="text-primary-orange" />
-              <span>Nos Vidéos ({announcementsVideo.length})</span>
+              <span>{t("company_profile.our_videos")} ({announcementsVideo.length})</span>
             </h2>
             <p className="text-slate-600 text-lg">
-              Découvrez nos vidéos de présentation et démonstrations
+              {t("company_profile.videos_description")}
             </p>
           </div>
 
@@ -239,12 +234,11 @@ const announcementsVideo = companyAnnouncements.filter(
                 className="group relative rounded-xl overflow-hidden bg-slate-900 shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
                 onClick={() => setSelectedVideo(video.video_url)}
               >
-                {/* Thumbnail */}
                 <div className="aspect-video bg-slate-800 flex items-center justify-center relative overflow-hidden">
                   {video.thumbnail_url ? (
                     <img
                       src={video.thumbnail_url}
-                      alt={video.title}
+                      alt={video.title || t("company_profile.video_title")}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
@@ -261,7 +255,7 @@ const announcementsVideo = companyAnnouncements.filter(
 
                 <div className="p-4">
                   <h3 className="font-semibold text-slate-100 group-hover:text-primary-orange transition-colors line-clamp-2">
-                    {video.title || "Vidéo sans titre"}
+                    {video.title || t("company_profile.video_untitled")}
                   </h3>
                   {video.description && (
                     <p className="text-sm text-slate-400 mt-1 line-clamp-2">
@@ -273,25 +267,21 @@ const announcementsVideo = companyAnnouncements.filter(
             ))}
           </div>
 
-          {/* Native Video Modal */}
           {selectedVideo && (
-            <NativeVideoModal
-              url={selectedVideo}
-              onClose={() => setSelectedVideo(null)}
-            />
+            <NativeVideoModal url={selectedVideo} onClose={() => setSelectedVideo(null)} />
           )}
         </section>
       )}
 
-      {/* ——— Announcements Section ——— */}
+      {/* Announcements Section */}
       <section className="py-12 md:py-16 border-b border-slate-200">
         <div className="mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2 flex items-center gap-3">
             <RiAdvertisementLine className="text-primary-orange" />
-            <span>Nos Annonces ({announcementsCount})</span>
+            <span>{t("company_profile.our_ads")} ({announcementsCount})</span>
           </h2>
           <p className="text-slate-600 text-lg">
-            Découvrez toutes les annonces de cette entreprise
+            {t("company_profile.ads_description")}
           </p>
         </div>
 
@@ -305,13 +295,13 @@ const announcementsVideo = companyAnnouncements.filter(
           <div className="text-center py-12 bg-slate-100 rounded-xl">
             <RiAdvertisementLine className="text-5xl text-slate-300 mx-auto mb-4" />
             <p className="text-slate-500 text-lg">
-              Cette entreprise n'a pas encore publié d'annonces.
+              {t("company_profile.no_ads")}
             </p>
           </div>
         )}
       </section>
 
-      {/* ——— Bottom Banner ——— */}
+      {/* Bottom Banner */}
       <div className="flex justify-center py-8">
         <Banner728X90 />
       </div>
